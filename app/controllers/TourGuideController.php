@@ -169,14 +169,6 @@ class TourGuideController {
         // Extract data variables into the current symbol table
         extract($data);
         
-        // Debug view loading
-        echo "<div style='background:#f8f9fa;padding:10px;margin:10px 0;border:1px solid #ddd;'>";
-        echo "<h4>Debug View Loading</h4>";
-        echo "<p>Loading view: " . htmlspecialchars($view) . "</p>";
-        echo "<p>View path: " . htmlspecialchars(VIEW_PATH . '/' . $view . '.php') . "</p>";
-        echo "<p>File exists: " . (file_exists(VIEW_PATH . '/' . $view . '.php') ? 'Yes' : 'No') . "</p>";
-        echo "</div>";
-        
         // Load header
         $headerFile = VIEW_PATH . '/shares/header.php';
         if (file_exists($headerFile)) {
