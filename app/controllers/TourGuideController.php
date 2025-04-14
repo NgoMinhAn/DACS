@@ -35,13 +35,53 @@ class TourGuideController {
      * Browse all guides
      */
     public function browse() {
+        // Sample data for testing
+        $guides = [
+            [
+                'id' => 1,
+                'name' => 'John Smith',
+                'bio' => 'Experienced guide specializing in historical tours with deep knowledge of local architecture and customs.',
+                'rating' => 4.8,
+                'reviews' => 42,
+                'specialties' => ['Historical Tours', 'Architecture'],
+                'languages' => ['English', 'French'],
+                'image' => '/assets/images/guides/guide1.jpg',
+                'hourly_rate' => 45,
+                'available' => true
+            ],
+            [
+                'id' => 2,
+                'name' => 'Maria Garcia',
+                'bio' => 'Food enthusiast and culinary expert offering the best food tours in the region. Discover hidden gems and local delicacies.',
+                'rating' => 5.0,
+                'reviews' => 38,
+                'specialties' => ['Food & Cuisine', 'Local Culture'],
+                'languages' => ['English', 'Spanish'],
+                'image' => '/assets/images/guides/guide2.jpg',
+                'hourly_rate' => 55,
+                'available' => true
+            ],
+            [
+                'id' => 3,
+                'name' => 'Nguyen Van Minh',
+                'bio' => 'Adventure guide with expertise in outdoor activities. Perfect for those seeking thrilling experiences in nature.',
+                'rating' => 4.6,
+                'reviews' => 29,
+                'specialties' => ['Adventure', 'Nature & Wildlife'],
+                'languages' => ['English', 'Vietnamese'],
+                'image' => '/assets/images/guides/guide3.jpg',
+                'hourly_rate' => 50,
+                'available' => true
+            ]
+        ];
+        
         // Data to be passed to the view
         $data = [
             'title' => 'Browse All Guides',
-            'guides' => [] // To be populated from database
+            'guides' => $guides // Now populated with sample data
         ];
         
-        // Load view
+        // Load view - fixed case to match directory structure
         $this->loadView('tourGuides/browse', $data);
     }
     
