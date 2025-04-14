@@ -4,6 +4,11 @@
  * Focusing on connecting users directly with tour guides
  */
 
+// Enable error reporting
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 // Define base path constants
 define('ROOT_PATH', __DIR__);
 define('APP_PATH', ROOT_PATH . '/app');
