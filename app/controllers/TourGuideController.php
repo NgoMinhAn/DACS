@@ -169,13 +169,36 @@ class TourGuideController {
         // Extract data variables into the current symbol table
         extract($data);
         
+        // Debug view loading
+        echo "<div style='background:#f8f9fa;padding:10px;margin:10px 0;border:1px solid #ddd;'>";
+        echo "<h4>Debug View Loading</h4>";
+        echo "<p>Loading view: " . htmlspecialchars($view) . "</p>";
+        echo "<p>View path: " . htmlspecialchars(VIEW_PATH . '/' . $view . '.php') . "</p>";
+        echo "<p>File exists: " . (file_exists(VIEW_PATH . '/' . $view . '.php') ? 'Yes' : 'No') . "</p>";
+        echo "</div>";
+        
         // Load header
-        require_once VIEW_PATH . '/shares/header.php';
+        $headerFile = VIEW_PATH . '/shares/header.php';
+        if (file_exists($headerFile)) {
+            require_once $headerFile;
+        } else {
+            echo "<p>Error: Header file not found at {$headerFile}</p>";
+        }
         
         // Load the view
-        require_once VIEW_PATH . '/' . $view . '.php';
+        $viewFile = VIEW_PATH . '/' . $view . '.php';
+        if (file_exists($viewFile)) {
+            require_once $viewFile;
+        } else {
+            echo "<p>Error: View file not found at {$viewFile}</p>";
+        }
         
         // Load footer
-        require_once VIEW_PATH . '/shares/footer.php';
+        $footerFile = VIEW_PATH . '/shares/footer.php';
+        if (file_exists($footerFile)) {
+            require_once $footerFile;
+        } else {
+            echo "<p>Error: Footer file not found at {$footerFile}</p>";
+        }
     }
 } 

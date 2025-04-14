@@ -4,6 +4,11 @@
  * Focusing on connecting users directly with tour guides
  */
 
+// Enable error reporting
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 // Define base path constants
 define('ROOT_PATH', __DIR__);
 define('APP_PATH', ROOT_PATH . '/app');
@@ -35,6 +40,16 @@ $method = isset($url[1]) ? $url[1] : 'index';
 // Set parameters
 $params = array_slice($url, 2);
 
+// Debug info - remove in production
+echo "<h2>Debugging Information</h2>";
+echo "<pre>";
+echo "URL Parameter: " . (isset($_GET['url']) ? $_GET['url'] : 'Not set') . "\n";
+echo "Controller: $controller\n";
+echo "Controller File: $controllerFile\n";
+echo "File exists: " . (file_exists($controllerFile) ? 'Yes' : 'No') . "\n";
+echo "Method: $method\n";
+echo "</pre>";
+
 // Check if controller exists
 if (file_exists($controllerFile)) {
     require_once $controllerFile;
@@ -45,16 +60,22 @@ if (file_exists($controllerFile)) {
         
         // Check if method exists
         if (method_exists($controllerObj, $method)) {
+            // Debug info - remove in production
+            echo "<p>About to call method: {$controller}->{$method}()</p>";
+            
             call_user_func_array([$controllerObj, $method], $params);
         } else {
             // Method not found - redirect to 404
+            echo "<p>Method {$method} not found in controller {$controller}</p>";
             header('Location: /error/notFound');
         }
     } else {
         // Controller class not found - redirect to 404
+        echo "<p>Controller class {$controller} not found</p>";
         header('Location: /error/notFound');
     }
 } else {
     // Controller file not found - redirect to 404
+    echo "<p>Controller file {$controllerFile} not found</p>";
     header('Location: /error/notFound');
 }
