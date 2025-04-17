@@ -4,11 +4,8 @@
  * Handles database connection and queries
  */
 
-// Database Credentials
-define('DB_HOST', 'localhost');      // Database host
-define('DB_USER', 'root');           // Database username
-define('DB_PASS', '');               // Database password
-define('DB_NAME', 'TourGuide');      // Database name - changed from tour_guide_db to TourGuide as requested
+// Database credentials are defined in config.php
+// Do not redefine them here to avoid warnings
 
 /**
  * Database Connection Class
@@ -44,7 +41,21 @@ class Database {
             $this->dbh = new PDO($dsn, $this->user, $this->pass, $options);
         } catch(PDOException $e) {
             $this->error = $e->getMessage();
-            echo 'Database Connection Error: ' . $this->error;
+            // Log error to file instead of displaying directly
+            error_log('Database Connection Error: ' . $this->error);
+            
+            // Show user-friendly message
+            echo '<div style="background-color: #f8d7da; color: #721c24; padding: 10px; margin: 10px 0; border: 1px solid #f5c6cb; border-radius: 5px;">';
+            echo '<h3>Database Connection Error</h3>';
+            echo '<p>Unable to connect to the database. Please try again later or contact the administrator.</p>';
+            
+            // Show detailed error in development environment only
+            if (defined('ENVIRONMENT') && ENVIRONMENT === 'development') {
+                echo '<p><strong>Error:</strong> ' . $this->error . '</p>';
+            }
+            
+            echo '</div>';
+            exit;
         }
     }
     

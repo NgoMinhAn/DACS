@@ -101,13 +101,29 @@ class TourGuideController {
         $specialties = $this->guideModel->getGuideSpecialties($guide->guide_id);
         $languages = $this->guideModel->getGuideLanguages($guide->guide_id);
         
+        // Convert specialties and languages to arrays for easier display
+        $specialtiesArray = [];
+        foreach ($specialties as $specialty) {
+            $specialtiesArray[] = $specialty->name;
+        }
+        
+        $languagesArray = [];
+        foreach ($languages as $language) {
+            $languagesArray[] = [
+                'name' => $language->name,
+                'fluency' => $language->fluency_level
+            ];
+        }
+        
         // Data to be passed to the view
         $data = [
             'title' => $guide->name . ' - Tour Guide',
             'guide' => $guide,
             'reviews' => $reviews,
             'specialties' => $specialties,
-            'languages' => $languages
+            'specialties_array' => $specialtiesArray,
+            'languages' => $languages,
+            'languages_array' => $languagesArray
         ];
         
         // Load view
