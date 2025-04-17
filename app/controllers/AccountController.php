@@ -32,8 +32,8 @@ class AccountController {
         
         // Check if form is submitted
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // Sanitize POST data
-            $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+            // Sanitize POST data - replacing deprecated FILTER_SANITIZE_STRING
+            $_POST = $this->sanitizeInputArray($_POST);
             
             // Process form
             $data = [
@@ -113,9 +113,79 @@ class AccountController {
         
         // Check if form is submitted
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // Process registration form
-            // Will implement later
-            redirect('account/login');
+            // Sanitize POST data
+            $_POST = $this->sanitizeInputArray($_POST);
+            
+            // Process form
+            $data = [
+                'title' => 'Register Account',
+                'name' => trim($_POST['name']),
+                'email' => trim($_POST['email']),
+                'password' => trim($_POST['password']),
+                'confirm_password' => trim($_POST['confirm_password']),
+                'terms' => isset($_POST['terms']) ? 1 : 0,
+                'errors' => []
+            ];
+            
+            // Validate name
+            if (empty($data['name'])) {
+                $data['errors']['name'] = 'Please enter your full name';
+            }
+            
+            // Validate email
+            if (empty($data['email'])) {
+                $data['errors']['email'] = 'Please enter your email address';
+            } elseif (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
+                $data['errors']['email'] = 'Please enter a valid email address';
+            } elseif ($this->userModel->findUserByEmail($data['email'])) {
+                $data['errors']['email'] = 'Email is already registered';
+            }
+            
+            // Validate password
+            if (empty($data['password'])) {
+                $data['errors']['password'] = 'Please enter a password';
+            } elseif (strlen($data['password']) < 6) {
+                $data['errors']['password'] = 'Password must be at least 6 characters';
+            }
+            
+            // Validate confirm password
+            if (empty($data['confirm_password'])) {
+                $data['errors']['confirm_password'] = 'Please confirm your password';
+            } elseif ($data['password'] !== $data['confirm_password']) {
+                $data['errors']['confirm_password'] = 'Passwords do not match';
+            }
+            
+            // Validate terms
+            if (!$data['terms']) {
+                $data['errors']['terms'] = 'You must agree to the Terms of Service';
+            }
+            
+            // If no errors, register user
+            if (empty($data['errors'])) {
+                // Register user
+                $userData = [
+                    'name' => $data['name'],
+                    'email' => $data['email'],
+                    'password' => $data['password'],
+                    'user_type' => 'user',
+                    'status' => 'active' // For now, no email verification
+                ];
+                
+                $userId = $this->userModel->register($userData);
+                
+                if ($userId) {
+                    // Registration success
+                    flash('login_message', 'Registration successful! You can now log in.', 'alert alert-success');
+                    redirect('account/login');
+                } else {
+                    // Registration failed
+                    flash('register_message', 'Something went wrong. Please try again.', 'alert alert-danger');
+                    $this->loadView('tourGuides/Accounts/register', $data);
+                }
+            } else {
+                // Load view with errors
+                $this->loadView('tourGuides/Accounts/register', $data);
+            }
         } else {
             // Display registration form
             $data = [
@@ -219,10 +289,27 @@ class AccountController {
         
         // Check if form is submitted
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // Process forgot password form
-            // Will implement later
+            // Sanitize POST data
+            $_POST = $this->sanitizeInputArray($_POST);
             
-            // Show success message
+            // Process form
+            $email = trim($_POST['email']);
+            
+            // Validate email
+            if (empty($email)) {
+                $data = [
+                    'title' => 'Forgot Password',
+                    'email' => '',
+                    'errors' => ['email' => 'Please enter your email address']
+                ];
+                $this->loadView('tourGuides/Accounts/forgot-password', $data);
+                return;
+            }
+            
+            // Check if email exists and create token
+            $token = $this->userModel->createPasswordResetToken($email);
+            
+            // Always show success message even if email doesn't exist (security)
             flash('login_message', 'If the email exists in our system, a password reset link has been sent.', 'alert alert-success');
             redirect('account/login');
         } else {
@@ -264,6 +351,24 @@ class AccountController {
             // Set cookie
             setcookie('remember_token', $token, $expires, '/', '', false, true);
         }
+    }
+    
+    /**
+     * Sanitize input array
+     * 
+     * @param array $data The input array to sanitize
+     * @return array The sanitized array
+     */
+    private function sanitizeInputArray($data) {
+        $sanitized = [];
+        foreach ($data as $key => $value) {
+            if (is_array($value)) {
+                $sanitized[$key] = $this->sanitizeInputArray($value);
+            } else {
+                $sanitized[$key] = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
+            }
+        }
+        return $sanitized;
     }
     
     /**
