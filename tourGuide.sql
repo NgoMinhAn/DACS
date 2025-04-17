@@ -146,14 +146,14 @@ CREATE TABLE bookings (
 
 -- Insert sample data
 
--- Users (password is 'password123' hashed with bcrypt)
+-- Users (password is 'password' hashed with bcrypt)
 INSERT INTO users (name, email, password, user_type, status) VALUES
-('John Smith', 'john@example.com', '$2y$10$cJ9JjRTBiJ1V2zCSL5MBb.JXMslJC1JcKvz1LIlLm2JdXZA.FJ9fy', 'guide', 'active'),
-('Maria Garcia', 'maria@example.com', '$2y$10$cJ9JjRTBiJ1V2zCSL5MBb.JXMslJC1JcKvz1LIlLm2JdXZA.FJ9fy', 'guide', 'active'),
-('Nguyen Van Minh', 'minh@example.com', '$2y$10$cJ9JjRTBiJ1V2zCSL5MBb.JXMslJC1JcKvz1LIlLm2JdXZA.FJ9fy', 'guide', 'active'),
-('Sarah Johnson', 'sarah@example.com', '$2y$10$cJ9JjRTBiJ1V2zCSL5MBb.JXMslJC1JcKvz1LIlLm2JdXZA.FJ9fy', 'user', 'active'),
-('Robert Lee', 'robert@example.com', '$2y$10$cJ9JjRTBiJ1V2zCSL5MBb.JXMslJC1JcKvz1LIlLm2JdXZA.FJ9fy', 'user', 'active'),
-('Admin User', 'admin@example.com', '$2y$10$cJ9JjRTBiJ1V2zCSL5MBb.JXMslJC1JcKvz1LIlLm2JdXZA.FJ9fy', 'admin', 'active');
+('John Smith', 'john@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'guide', 'active'),
+('Maria Garcia', 'maria@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'guide', 'active'),
+('Nguyen Van Minh', 'minh@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'guide', 'active'),
+('Sarah Johnson', 'sarah@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'user', 'active'),
+('Robert Lee', 'robert@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'user', 'active'),
+('Admin User', 'admin@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin', 'active');
 
 -- User preferences
 INSERT INTO user_preferences (user_id, theme, notifications, language_preference, currency) VALUES
