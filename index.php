@@ -17,8 +17,30 @@ define('MODEL_PATH', APP_PATH . '/models');
 define('VIEW_PATH', APP_PATH . '/views');
 define('HELPER_PATH', APP_PATH . '/helpers');
 
+// Autoloader function for classes
+spl_autoload_register(function($className) {
+    // Check for Controller class
+    if (substr($className, -10) === 'Controller') {
+        $file = CONTROLLER_PATH . '/' . $className . '.php';
+        if (file_exists($file)) {
+            require_once $file;
+            return;
+        }
+    }
+    
+    // Check for Model class
+    $modelFile = MODEL_PATH . '/' . $className . '.php';
+    if (file_exists($modelFile)) {
+        require_once $modelFile;
+        return;
+    }
+    
+    // Can add more class types here (e.g., libraries, etc.)
+});
+
 // Include necessary files
 require_once APP_PATH . '/config/config.php';
+require_once APP_PATH . '/config/database.php';
 require_once HELPER_PATH . '/functions.php';
 
 // Start session
