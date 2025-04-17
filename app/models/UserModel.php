@@ -310,4 +310,53 @@ class UserModel {
         
         return $this->db->execute() && $this->db->rowCount() > 0;
     }
+    
+    /**
+     * Get total user count
+     * 
+     * @return int The number of users
+     */
+    public function getUserCount() {
+        $this->db->query('SELECT COUNT(*) as count FROM users WHERE user_type = "user"');
+        $result = $this->db->single();
+        return $result ? $result->count : 0;
+    }
+    
+    /**
+     * Get total guide count
+     * 
+     * @return int The number of guides
+     */
+    public function getGuideCount() {
+        $this->db->query('SELECT COUNT(*) as count FROM users WHERE user_type = "guide"');
+        $result = $this->db->single();
+        return $result ? $result->count : 0;
+    }
+    
+    /**
+     * Get all users (excluding guides and admins)
+     * 
+     * @return array The users
+     */
+    public function getAllUsers() {
+        $this->db->query('SELECT id, name, email, status, created_at, last_login FROM users WHERE user_type = "user" ORDER BY name');
+        return $this->db->resultSet();
+    }
+    
+    /**
+     * Get all guides
+     * 
+     * @return array The guides
+     */
+    public function getAllGuides() {
+        $this->db->query('
+            SELECT u.id, u.name, u.email, u.status, u.created_at, u.last_login, 
+                   g.verified, g.avg_rating, g.total_reviews
+            FROM users u
+            JOIN guide_profiles g ON u.id = g.user_id
+            WHERE u.user_type = "guide"
+            ORDER BY g.verified DESC, u.name
+        ');
+        return $this->db->resultSet();
+    }
 } 

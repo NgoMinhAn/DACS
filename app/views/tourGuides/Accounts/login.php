@@ -88,17 +88,17 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-4 mb-2">
-                                <button class="btn btn-outline-secondary w-100 demo-login" data-email="sarah@example.com" data-password="password123">
+                                <button class="btn btn-outline-secondary w-100 demo-login" data-email="sarah@example.com" data-password="password">
                                     <i class="fas fa-user"></i> User Account
                                 </button>
                             </div>
                             <div class="col-md-4 mb-2">
-                                <button class="btn btn-outline-secondary w-100 demo-login" data-email="john@example.com" data-password="password123">
+                                <button class="btn btn-outline-secondary w-100 demo-login" data-email="john@example.com" data-password="password">
                                     <i class="fas fa-map-marked-alt"></i> Guide Account
                                 </button>
                             </div>
                             <div class="col-md-4 mb-2">
-                                <button class="btn btn-outline-secondary w-100 demo-login" data-email="admin@example.com" data-password="password123">
+                                <button class="btn btn-outline-secondary w-100 demo-login" data-email="admin@example.com" data-password="password">
                                     <i class="fas fa-user-shield"></i> Admin Account
                                 </button>
                             </div>
