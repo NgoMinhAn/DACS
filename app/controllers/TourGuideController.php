@@ -10,8 +10,8 @@ class TourGuideController {
      * Constructor
      */
     public function __construct() {
-        // Load the guide model (to be implemented)
-        // $this->guideModel = new GuideModel();
+        // Load the guide model
+        $this->guideModel = new GuideModel();
     }
     
     /**
@@ -19,12 +19,18 @@ class TourGuideController {
      * Displays featured guides rather than tours
      */
     public function index() {
+        // Get featured guides from the database
+        $featuredGuides = $this->guideModel->getFeaturedGuides(4);
+        
+        // Get all specialties for category sections
+        $specialties = $this->guideModel->getAllSpecialties();
+        
         // Data to be passed to the view
         $data = [
             'title' => 'Connect with Expert Tour Guides',
             'subtitle' => 'Find the perfect local guide for your next adventure',
-            'featured_guides' => [], // To be populated from database
-            'guide_categories' => [] // To be populated from database
+            'featured_guides' => $featuredGuides,
+            'guide_categories' => $specialties
         ];
         
         // Load view
@@ -35,53 +41,39 @@ class TourGuideController {
      * Browse all guides
      */
     public function browse() {
-        // Sample data for testing
-        $guides = [
-            [
-                'id' => 1,
-                'name' => 'John Smith',
-                'bio' => 'Experienced guide specializing in historical tours with deep knowledge of local architecture and customs.',
-                'rating' => 4.8,
-                'reviews' => 42,
-                'specialties' => ['Historical Tours', 'Architecture'],
-                'languages' => ['English', 'French'],
-                'image' => '/assets/images/guides/guide1.jpg',
-                'hourly_rate' => 45,
-                'available' => true
-            ],
-            [
-                'id' => 2,
-                'name' => 'Maria Garcia',
-                'bio' => 'Food enthusiast and culinary expert offering the best food tours in the region. Discover hidden gems and local delicacies.',
-                'rating' => 5.0,
-                'reviews' => 38,
-                'specialties' => ['Food & Cuisine', 'Local Culture'],
-                'languages' => ['English', 'Spanish'],
-                'image' => '/assets/images/guides/guide2.jpg',
-                'hourly_rate' => 55,
-                'available' => true
-            ],
-            [
-                'id' => 3,
-                'name' => 'Nguyen Van Minh',
-                'bio' => 'Adventure guide with expertise in outdoor activities. Perfect for those seeking thrilling experiences in nature.',
-                'rating' => 4.6,
-                'reviews' => 29,
-                'specialties' => ['Adventure', 'Nature & Wildlife'],
-                'languages' => ['English', 'Vietnamese'],
-                'image' => '/assets/images/guides/guide3.jpg',
-                'hourly_rate' => 50,
-                'available' => true
-            ]
-        ];
+        // Get filter parameters if set
+        $filters = [];
+        if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+            if (isset($_GET['language']) && !empty($_GET['language'])) {
+                $filters['language'] = sanitize($_GET['language']);
+            }
+            
+            if (isset($_GET['specialty']) && !empty($_GET['specialty'])) {
+                $filters['specialty'] = sanitize($_GET['specialty']);
+            }
+            
+            if (isset($_GET['price_range']) && !empty($_GET['price_range'])) {
+                $filters['price_range'] = sanitize($_GET['price_range']);
+            }
+        }
+        
+        // Get guides from database with filters
+        $guides = $this->guideModel->getAllGuides($filters);
+        
+        // Get all languages and specialties for filter options
+        $languages = $this->guideModel->getAllLanguages();
+        $specialties = $this->guideModel->getAllSpecialties();
         
         // Data to be passed to the view
         $data = [
             'title' => 'Browse All Guides',
-            'guides' => $guides // Now populated with sample data
+            'guides' => $guides,
+            'languages' => $languages,
+            'specialties' => $specialties,
+            'current_filters' => $filters
         ];
         
-        // Load view - fixed case to match directory structure
+        // Load view
         $this->loadView('tourGuides/browse', $data);
     }
     
@@ -95,27 +87,27 @@ class TourGuideController {
             redirect('tourGuide/browse');
         }
         
-        // Get guide details (to be implemented with actual model)
-        // $guide = $this->guideModel->getGuideById($id);
+        // Get guide details from database
+        $guide = $this->guideModel->getGuideById($id);
         
-        // For now, use dummy data
-        $guide = [
-            'id' => $id,
-            'name' => 'Sample Guide',
-            'bio' => 'Expert local guide with 10+ years of experience',
-            'rating' => 4.8,
-            'reviews' => 24,
-            'specialties' => ['Historical Tours', 'Local Cuisine', 'Off the Beaten Path'],
-            'languages' => ['English', 'Spanish', 'French'],
-            'image' => 'default_guide.jpg',
-            'hourly_rate' => 50,
-            'available' => true
-        ];
+        // If guide not found, redirect to browse page
+        if (!$guide) {
+            flash('error_message', 'Guide not found', 'alert alert-danger');
+            redirect('tourGuide/browse');
+        }
+        
+        // Get guide reviews and additional details
+        $reviews = $this->guideModel->getGuideReviews($guide->guide_id);
+        $specialties = $this->guideModel->getGuideSpecialties($guide->guide_id);
+        $languages = $this->guideModel->getGuideLanguages($guide->guide_id);
         
         // Data to be passed to the view
         $data = [
-            'title' => $guide['name'] . ' - Tour Guide',
-            'guide' => $guide
+            'title' => $guide->name . ' - Tour Guide',
+            'guide' => $guide,
+            'reviews' => $reviews,
+            'specialties' => $specialties,
+            'languages' => $languages
         ];
         
         // Load view
