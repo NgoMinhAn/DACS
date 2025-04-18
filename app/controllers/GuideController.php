@@ -36,6 +36,13 @@ class GuideController {
         // Get guide profile
         $guide = $this->getGuideProfile($user->id);
         
+        // If guide profile doesn't exist, show error
+        if (!$guide) {
+            flash('guide_message', 'Guide profile not found. Please contact an administrator.', 'alert alert-danger');
+            redirect('');
+            return;
+        }
+        
         // Get guide's specialties
         $specialties = $this->getGuideSpecialties($guide->id);
         
@@ -55,11 +62,11 @@ class GuideController {
             'title' => 'Guide Dashboard',
             'user' => $user,
             'guide' => $guide,
-            'specialties' => $specialties,
-            'languages' => $languages,
+            'specialties' => $specialties ?? [],
+            'languages' => $languages ?? [],
             'stats' => $stats,
-            'recent_bookings' => $recent_bookings,
-            'recent_reviews' => $recent_reviews
+            'recent_bookings' => $recent_bookings ?? [],
+            'recent_reviews' => $recent_reviews ?? []
         ];
         
         $this->loadView('tourGuides/GuideDashboard/GuideDashboard', $data);
@@ -72,8 +79,8 @@ class GuideController {
      * @return object The guide profile
      */
     private function getGuideProfile($userId) {
-        // If GuideModel exists, use it
-        if ($this->guideModel) {
+        // If GuideModel exists and has the required method, use it
+        if ($this->guideModel && method_exists($this->guideModel, 'getGuideProfileByUserId')) {
             return $this->guideModel->getGuideProfileByUserId($userId);
         }
         
@@ -97,8 +104,8 @@ class GuideController {
      * @return array The specialties
      */
     private function getGuideSpecialties($guideId) {
-        // If GuideModel exists, use it
-        if ($this->guideModel) {
+        // If GuideModel exists and has the required method, use it
+        if ($this->guideModel && method_exists($this->guideModel, 'getGuideSpecialties')) {
             return $this->guideModel->getGuideSpecialties($guideId);
         }
         
@@ -123,8 +130,8 @@ class GuideController {
      * @return array The languages
      */
     private function getGuideLanguages($guideId) {
-        // If GuideModel exists, use it
-        if ($this->guideModel) {
+        // If GuideModel exists and has the required method, use it
+        if ($this->guideModel && method_exists($this->guideModel, 'getGuideLanguages')) {
             return $this->guideModel->getGuideLanguages($guideId);
         }
         
@@ -149,8 +156,8 @@ class GuideController {
      * @return object The statistics
      */
     private function getGuideStats($guideId) {
-        // If BookingModel exists, use it
-        if ($this->bookingModel) {
+        // If BookingModel exists and has the required method, use it
+        if ($this->bookingModel && method_exists($this->bookingModel, 'getGuideStats')) {
             return $this->bookingModel->getGuideStats($guideId);
         }
         
@@ -206,8 +213,8 @@ class GuideController {
      * @return array The bookings
      */
     private function getRecentBookings($guideId, $limit = 5) {
-        // If BookingModel exists, use it
-        if ($this->bookingModel) {
+        // If BookingModel exists and has the required method, use it
+        if ($this->bookingModel && method_exists($this->bookingModel, 'getRecentBookings')) {
             return $this->bookingModel->getRecentBookings($guideId, $limit);
         }
         
