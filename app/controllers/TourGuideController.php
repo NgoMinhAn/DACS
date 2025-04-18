@@ -34,7 +34,7 @@ class TourGuideController {
         ];
         
         // Load view
-        $this->loadView('tourGuides/index', $data);
+        $this->loadView('tourGuides/home', $data);
     }
     
     /**
