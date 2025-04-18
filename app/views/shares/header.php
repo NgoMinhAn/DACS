@@ -57,12 +57,16 @@
                                 <i class="fas fa-user"></i> <?php echo $_SESSION['user_name']; ?>
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a class="dropdown-item" href="<?php echo url('account/profile'); ?>">My Profile</a></li>
-                                <?php if (isGuide()): ?>
-                                    <li><a class="dropdown-item" href="<?php echo url('account/dashboard'); ?>">Guide Dashboard</a></li>
+                                <?php if ($_SESSION['user_type'] === 'admin'): ?>
+                                    <li><a class="dropdown-item" href="<?php echo url('admin/dashboard'); ?>">Admin Dashboard</a></li>
+                                <?php elseif ($_SESSION['user_type'] === 'guide'): ?>
+                                    <li><a class="dropdown-item" href="<?php echo url('guide/dashboard'); ?>">Guide Dashboard</a></li>
+                                    <li><a class="dropdown-item" href="<?php echo url('tourGuide/profile/' . $_SESSION['user_id']); ?>">View My Public Profile</a></li>
                                 <?php else: ?>
-                                    <li><a class="dropdown-item" href="<?php echo url('account/bookings'); ?>">My Bookings</a></li>
+                                    <li><a class="dropdown-item" href="<?php echo url('user/dashboard'); ?>">My Dashboard</a></li>
+                                    <li><a class="dropdown-item" href="<?php echo url('user/bookings'); ?>">My Bookings</a></li>
                                 <?php endif; ?>
+                                <li><a class="dropdown-item" href="<?php echo url('account/settings'); ?>">Account Settings</a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item" href="<?php echo url('account/logout'); ?>">Logout</a></li>
                             </ul>

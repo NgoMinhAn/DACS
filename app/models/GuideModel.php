@@ -88,25 +88,57 @@ class GuideModel {
     }
     
     /**
-     * Get guide reviews
+     * Get the number of approved reviews for a guide
      * 
      * @param int $guideId The guide ID
-     * @param int $limit Optional limit
-     * @return array
+     * @return int The number of approved reviews
      */
-    public function getGuideReviews($guideId, $limit = 5) {
-        $this->db->query("
-            SELECT r.*, u.name, u.profile_image
+    public function getApprovedReviewCount($guideId) {
+        $this->db->query('
+            SELECT COUNT(*) as count 
+            FROM guide_reviews 
+            WHERE guide_id = :guide_id AND status = "approved"
+        ');
+        $this->db->bind(':guide_id', $guideId);
+        
+        $result = $this->db->single();
+        return $result ? $result->count : 0;
+    }
+    
+    /**
+     * Get reviews for a guide (approved only)
+     * 
+     * @param int $guideId The guide ID
+     * @param int $limit Optional limit for pagination
+     * @param int $offset Optional offset for pagination
+     * @return array The reviews
+     */
+    public function getGuideReviews($guideId, $limit = null, $offset = null) {
+        $sql = '
+            SELECT r.*, u.name 
             FROM guide_reviews r
             JOIN users u ON r.user_id = u.id
-            WHERE r.guide_id = :guide_id
-            AND r.status = 'approved'
+            WHERE r.guide_id = :guide_id AND r.status = "approved"
             ORDER BY r.created_at DESC
-            LIMIT :limit
-        ");
+        ';
         
+        // Add limit and offset for pagination if provided
+        if ($limit !== null) {
+            $sql .= ' LIMIT :limit';
+            if ($offset !== null) {
+                $sql .= ' OFFSET :offset';
+            }
+        }
+        
+        $this->db->query($sql);
         $this->db->bind(':guide_id', $guideId);
-        $this->db->bind(':limit', $limit, PDO::PARAM_INT);
+        
+        if ($limit !== null) {
+            $this->db->bind(':limit', $limit, PDO::PARAM_INT);
+            if ($offset !== null) {
+                $this->db->bind(':offset', $offset, PDO::PARAM_INT);
+            }
+        }
         
         return $this->db->resultSet();
     }
@@ -180,6 +212,25 @@ class GuideModel {
             SELECT * FROM guide_listings
             WHERE featured = 1
             ORDER BY avg_rating DESC
+            LIMIT :limit
+        ");
+        
+        $this->db->bind(':limit', $limit, PDO::PARAM_INT);
+        
+        return $this->db->resultSet();
+    }
+    
+    /**
+     * Get top rated guides
+     * 
+     * @param int $limit Number of guides to return
+     * @return array
+     */
+    public function getTopRatedGuides($limit = 4) {
+        $this->db->query("
+            SELECT * FROM guide_listings
+            WHERE verified = 1 AND total_reviews > 0
+            ORDER BY avg_rating DESC, total_reviews DESC
             LIMIT :limit
         ");
         
