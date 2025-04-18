@@ -229,8 +229,27 @@
                             <div class="mb-4 pb-4 border-bottom">
                                 <div class="d-flex justify-content-between mb-2">
                                     <div>
-                                        <h5 class="mb-0"><?php echo htmlspecialchars($review->user_name); ?></h5>
-                                        <p class="text-muted small mb-0"><?php echo date('F j, Y', strtotime($review->created_at)); ?></p>
+                                        <h5 class="mb-0">
+                                            <?php 
+                                            // Check which property holds the user name
+                                            if (isset($review->user_name)) {
+                                                echo htmlspecialchars($review->user_name);
+                                            } elseif (isset($review->name)) {
+                                                echo htmlspecialchars($review->name);
+                                            } else {
+                                                echo 'Anonymous User';
+                                            }
+                                            ?>
+                                        </h5>
+                                        <p class="text-muted small mb-0">
+                                            <?php 
+                                            if (isset($review->created_at) && !empty($review->created_at)) {
+                                                echo date('F j, Y', strtotime($review->created_at));
+                                            } else {
+                                                echo 'Recently';
+                                            }
+                                            ?>
+                                        </p>
                                     </div>
                                     <div>
                                         <?php for($i = 1; $i <= 5; $i++): ?>
@@ -242,7 +261,7 @@
                                         <?php endfor; ?>
                                     </div>
                                 </div>
-                                <p class="mb-0"><?php echo nl2br(htmlspecialchars($review->review_text)); ?></p>
+                                <p class="mb-0"><?php echo nl2br(htmlspecialchars($review->review_text ?? '')); ?></p>
                                 
                                 <!-- Helpful Button (if implemented) -->
                                 <?php if(isset($review->helpful_votes) && $review->helpful_votes > 0): ?>

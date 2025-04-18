@@ -88,25 +88,20 @@ class GuideModel {
     }
     
     /**
-     * Get guide reviews
+     * Get reviews for a guide
      * 
      * @param int $guideId The guide ID
-     * @param int $limit Optional limit
-     * @return array
+     * @return array The reviews
      */
-    public function getGuideReviews($guideId, $limit = 5) {
-        $this->db->query("
-            SELECT r.*, u.name, u.profile_image
+    public function getGuideReviews($guideId) {
+        $this->db->query('
+            SELECT r.*, u.name 
             FROM guide_reviews r
             JOIN users u ON r.user_id = u.id
-            WHERE r.guide_id = :guide_id
-            AND r.status = 'approved'
+            WHERE r.guide_id = :guide_id AND r.status = "approved"
             ORDER BY r.created_at DESC
-            LIMIT :limit
-        ");
-        
+        ');
         $this->db->bind(':guide_id', $guideId);
-        $this->db->bind(':limit', $limit, PDO::PARAM_INT);
         
         return $this->db->resultSet();
     }
