@@ -111,7 +111,7 @@
         <div class="col-md-8">
             <!-- Statistics Cards -->
             <div class="row mb-4">
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <div class="card text-center h-100">
                         <div class="card-body">
                             <h5 class="card-title">Total Bookings</h5>
@@ -119,7 +119,15 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
+                    <div class="card text-center h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Total Reviews</h5>
+                            <p class="display-4"><?php echo $guide->total_reviews ?? 0; ?></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
                     <div class="card text-center h-100">
                         <div class="card-body">
                             <h5 class="card-title">Pending Bookings</h5>
@@ -127,7 +135,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <div class="card text-center h-100">
                         <div class="card-body">
                             <h5 class="card-title">Revenue (This Month)</h5>
