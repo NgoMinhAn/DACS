@@ -76,31 +76,38 @@
                     <?php foreach ($guides as $guide): ?>
                         <div class="col">
                             <div class="card h-100">
-                                <img src="<?php echo !empty($guide->profile_image) ? url('public/images/guides/' . $guide->profile_image) : url('public/images/default_guide.jpg'); ?>" 
-                                     class="card-img-top" alt="<?php echo htmlspecialchars($guide->name); ?>">
+                                <img src="<?php echo url('assets/images/profiles/' . ($guide->profile_image ?? 'default.jpg')); ?>" 
+                                     class="card-img-top" alt="<?php echo htmlspecialchars($guide->name); ?>"
+                                     style="height: 200px; object-fit: cover;">
                                 <div class="card-body">
                                     <h5 class="card-title"><?php echo htmlspecialchars($guide->name); ?></h5>
                                     <div class="mb-2">
                                         <span class="text-warning">
-                                            <?php for($i = 0; $i < floor($guide->avg_rating); $i++): ?>
-                                                <i class="fas fa-star"></i>
+                                            <?php for($i = 1; $i <= 5; $i++): ?>
+                                                <?php if($i <= round($guide->avg_rating)): ?>
+                                                    <i class="fas fa-star"></i>
+                                                <?php else: ?>
+                                                    <i class="far fa-star"></i>
+                                                <?php endif; ?>
                                             <?php endfor; ?>
-                                            <?php if ($guide->avg_rating - floor($guide->avg_rating) > 0): ?>
-                                                <i class="fas fa-star-half-alt"></i>
-                                            <?php endif; ?>
                                         </span>
-                                        <small class="text-muted">(<?php echo $guide->total_reviews; ?> reviews)</small>
+                                        <small class="text-muted">(<?php echo $guide->total_reviews; ?> <?php echo $guide->total_reviews == 1 ? 'review' : 'reviews'; ?>)</small>
                                     </div>
-                                    <p class="card-text"><?php echo htmlspecialchars(substr($guide->bio, 0, 100)) . '...'; ?></p>
+                                    <p class="card-text"><?php echo htmlspecialchars(substr($guide->bio ?? 'Expert local guide', 0, 100)) . '...'; ?></p>
                                     <p class="card-text">
                                         <small class="text-muted">
-                                            <i class="fas fa-tag"></i> $<?php echo number_format($guide->hourly_rate, 2); ?>/hour
+                                            <i class="fas fa-map-marker-alt me-1"></i> <?php echo htmlspecialchars($guide->location ?? 'Local area'); ?>
+                                        </small>
+                                    </p>
+                                    <p class="card-text">
+                                        <small class="text-muted">
+                                            <i class="fas fa-tag me-1"></i> $<?php echo number_format($guide->hourly_rate ?? 0, 2); ?>/hour
                                         </small>
                                     </p>
                                     <?php if (!empty($guide->specialties)): ?>
                                         <p class="card-text">
                                             <small class="text-muted">
-                                                <i class="fas fa-certificate"></i> <?php echo htmlspecialchars($guide->specialties); ?>
+                                                <i class="fas fa-certificate me-1"></i> <?php echo htmlspecialchars($guide->specialties); ?>
                                             </small>
                                         </p>
                                     <?php endif; ?>
@@ -114,7 +121,7 @@
                 <?php else: ?>
                     <div class="col-12">
                         <div class="alert alert-info" role="alert">
-                            <i class="fas fa-info-circle"></i> No tour guides found matching your criteria. Try adjusting your filters.
+                            <i class="fas fa-info-circle me-2"></i> No tour guides found matching your criteria. Try adjusting your filters.
                         </div>
                     </div>
                 <?php endif; ?>
