@@ -219,4 +219,23 @@ class GuideModel {
         
         return $this->db->resultSet();
     }
+    
+    /**
+     * Get top rated guides
+     * 
+     * @param int $limit Number of guides to return
+     * @return array
+     */
+    public function getTopRatedGuides($limit = 4) {
+        $this->db->query("
+            SELECT * FROM guide_listings
+            WHERE verified = 1 AND total_reviews > 0
+            ORDER BY avg_rating DESC, total_reviews DESC
+            LIMIT :limit
+        ");
+        
+        $this->db->bind(':limit', $limit, PDO::PARAM_INT);
+        
+        return $this->db->resultSet();
+    }
 } 

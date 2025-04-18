@@ -19,8 +19,8 @@ class TourGuideController {
      * Displays featured guides rather than tours
      */
     public function index() {
-        // Get featured guides from the database
-        $featuredGuides = $this->guideModel->getFeaturedGuides(4);
+        // Get top 4 guides ordered by rating
+        $featuredGuides = $this->guideModel->getTopRatedGuides(4);
         
         // Update featured guides with accurate review counts
         if (!empty($featuredGuides)) {

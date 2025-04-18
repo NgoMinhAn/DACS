@@ -25,17 +25,22 @@
     <div class="container">
         <div class="row">
             <div class="col-12 text-center mb-4">
-                <h2 class="fw-bold">Meet Our Top-Rated Guides</h2>
-                <p class="text-muted">Connect directly with experienced local guides who will make your trip unforgettable</p>
+                <h2 class="fw-bold">Our Top-Rated Guides</h2>
+                <p class="text-muted">Connect with our highest-rated local experts for an unforgettable experience</p>
             </div>
         </div>
         
         <div class="row">
             <!-- Featured Guides from Database -->
             <?php if(!empty($featured_guides)): ?>
-                <?php foreach($featured_guides as $guide): ?>
+                <?php foreach($featured_guides as $index => $guide): ?>
                     <div class="col-md-6 col-lg-3 mb-4">
                         <div class="card h-100 shadow-sm">
+                            <?php if($index < 3): ?>
+                                <div class="position-absolute top-0 start-0 p-2">
+                                    <span class="badge bg-danger">Top <?php echo $index + 1; ?></span>
+                                </div>
+                            <?php endif; ?>
                             <img src="<?php echo url('assets/images/profiles/' . ($guide->profile_image ?? 'default.jpg')); ?>" 
                                  class="card-img-top" alt="<?php echo htmlspecialchars($guide->name); ?>" 
                                  style="height: 200px; object-fit: cover;">
