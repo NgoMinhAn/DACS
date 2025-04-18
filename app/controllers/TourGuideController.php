@@ -22,6 +22,17 @@ class TourGuideController {
         // Get featured guides from the database
         $featuredGuides = $this->guideModel->getFeaturedGuides(4);
         
+        // Update featured guides with accurate review counts
+        if (!empty($featuredGuides)) {
+            foreach ($featuredGuides as $guide) {
+                // Get approved review count for each guide
+                $approvedReviewCount = $this->guideModel->getApprovedReviewCount($guide->guide_id);
+                
+                // Update the guide object with accurate review count
+                $guide->total_reviews = $approvedReviewCount;
+            }
+        }
+        
         // Get all specialties for category sections
         $specialties = $this->guideModel->getAllSpecialties();
         
@@ -59,6 +70,17 @@ class TourGuideController {
         
         // Get guides from database with filters
         $guides = $this->guideModel->getAllGuides($filters);
+        
+        // Update each guide with accurate review count
+        if (!empty($guides)) {
+            foreach ($guides as $guide) {
+                // Get approved review count for each guide
+                $approvedReviewCount = $this->guideModel->getApprovedReviewCount($guide->guide_id);
+                
+                // Update the guide object with accurate review count
+                $guide->total_reviews = $approvedReviewCount;
+            }
+        }
         
         // Get all languages and specialties for filter options
         $languages = $this->guideModel->getAllLanguages();
