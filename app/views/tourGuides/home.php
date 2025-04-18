@@ -31,31 +31,43 @@
         </div>
         
         <div class="row">
-            <!-- Sample Featured Guides (to be replaced with actual data) -->
-            <?php for($i = 1; $i <= 4; $i++): ?>
-                <div class="col-md-6 col-lg-3 mb-4">
-                    <div class="card h-100 shadow-sm">
-                        <img src="<?php echo url('public/img/guide' . $i . '.jpg'); ?>" class="card-img-top" alt="Tour Guide">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <h5 class="card-title mb-0">Guide Name <?php echo $i; ?></h5>
-                                <span class="badge bg-warning text-dark"><i class="fas fa-star"></i> 4.<?php echo rand(7, 9); ?></span>
+            <!-- Featured Guides from Database -->
+            <?php if(!empty($featured_guides)): ?>
+                <?php foreach($featured_guides as $guide): ?>
+                    <div class="col-md-6 col-lg-3 mb-4">
+                        <div class="card h-100 shadow-sm">
+                            <img src="<?php echo url('assets/images/profiles/' . ($guide->profile_image ?? 'default.jpg')); ?>" 
+                                 class="card-img-top" alt="<?php echo htmlspecialchars($guide->name); ?>" 
+                                 style="height: 200px; object-fit: cover;">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <h5 class="card-title mb-0"><?php echo htmlspecialchars($guide->name); ?></h5>
+                                    <span class="badge bg-warning text-dark">
+                                        <i class="fas fa-star"></i> <?php echo number_format($guide->avg_rating, 1); ?>
+                                    </span>
+                                </div>
+                                <p class="card-text text-muted small mb-2">
+                                    <i class="fas fa-map-marker-alt"></i> <?php echo htmlspecialchars($guide->location); ?>
+                                </p>
+                                <p class="card-text"><?php echo htmlspecialchars(substr($guide->bio ?? 'Expert local guide', 0, 60)) . '...'; ?></p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="text-primary fw-bold">$<?php echo number_format($guide->hourly_rate, 2); ?>/hour</span>
+                                    <a href="<?php echo url('tourGuide/profile/' . $guide->guide_id); ?>" class="btn btn-sm btn-outline-primary">View Profile</a>
+                                </div>
                             </div>
-                            <p class="card-text text-muted small mb-2">
-                                <i class="fas fa-map-marker-alt"></i> City Name, Country
-                            </p>
-                            <p class="card-text">Expert in history, local cuisine, and hidden gems.</p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span class="text-primary fw-bold">$<?php echo rand(30, 65); ?>/hour</span>
-                                <a href="<?php echo url('tourGuide/profile/' . $i); ?>" class="btn btn-sm btn-outline-primary">View Profile</a>
+                            <div class="card-footer bg-white">
+                                <small class="text-muted"><?php echo $guide->specialties ?? 'Various specialties'; ?></small>
                             </div>
-                        </div>
-                        <div class="card-footer bg-white">
-                            <small class="text-muted">Languages: English, Spanish, French</small>
                         </div>
                     </div>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <div class="col-12 text-center">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i> No featured guides available at the moment. Check back soon!
+                    </div>
                 </div>
-            <?php endfor; ?>
+            <?php endif; ?>
         </div>
         
         <div class="text-center mt-3">
@@ -75,54 +87,73 @@
         </div>
         
         <div class="row g-4">
-            <!-- Sample Categories (to be replaced with actual data) -->
-            <div class="col-md-6 col-lg-3">
-                <a href="<?php echo url('tourGuide/category/city'); ?>" class="text-decoration-none">
-                    <div class="card h-100 shadow-sm category-card">
-                        <img src="<?php echo url('public/img/category-city.jpg'); ?>" class="card-img-top" alt="City Tours">
-                        <div class="card-body text-center">
-                            <h5 class="card-title">City Guides</h5>
-                            <p class="card-text text-muted small">Explore urban landscapes with expert city guides</p>
-                        </div>
+            <!-- Guide Categories from Database -->
+            <?php if(!empty($guide_categories)): ?>
+                <?php foreach($guide_categories as $category): ?>
+                    <div class="col-md-6 col-lg-3">
+                        <a href="<?php echo url('tourGuide/category/' . urlencode($category->name)); ?>" class="text-decoration-none">
+                            <div class="card h-100 shadow-sm category-card">
+                                <img src="<?php echo url('public/img/category-' . strtolower(str_replace(' ', '-', $category->name)) . '.jpg'); ?>" 
+                                     class="card-img-top" alt="<?php echo htmlspecialchars($category->name); ?> Tours"
+                                     onerror="this.src='<?php echo url('public/img/category-default.jpg'); ?>'">
+                                <div class="card-body text-center">
+                                    <h5 class="card-title"><?php echo htmlspecialchars($category->name); ?></h5>
+                                    <p class="card-text text-muted small"><?php echo htmlspecialchars($category->description ?? 'Explore with our experienced guides'); ?></p>
+                                </div>
+                            </div>
+                        </a>
                     </div>
-                </a>
-            </div>
-            
-            <div class="col-md-6 col-lg-3">
-                <a href="<?php echo url('tourGuide/category/adventure'); ?>" class="text-decoration-none">
-                    <div class="card h-100 shadow-sm category-card">
-                        <img src="<?php echo url('public/img/category-adventure.jpg'); ?>" class="card-img-top" alt="Adventure Tours">
-                        <div class="card-body text-center">
-                            <h5 class="card-title">Adventure Guides</h5>
-                            <p class="card-text text-muted small">Thrilling experiences with adventure specialists</p>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <!-- Fallback Categories if None in Database -->
+                <div class="col-md-6 col-lg-3">
+                    <a href="<?php echo url('tourGuide/category/city'); ?>" class="text-decoration-none">
+                        <div class="card h-100 shadow-sm category-card">
+                            <img src="<?php echo url('public/img/category-city.jpg'); ?>" class="card-img-top" alt="City Tours">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">City Guides</h5>
+                                <p class="card-text text-muted small">Explore urban landscapes with expert city guides</p>
+                            </div>
                         </div>
-                    </div>
-                </a>
-            </div>
-            
-            <div class="col-md-6 col-lg-3">
-                <a href="<?php echo url('tourGuide/category/cultural'); ?>" class="text-decoration-none">
-                    <div class="card h-100 shadow-sm category-card">
-                        <img src="<?php echo url('public/img/category-cultural.jpg'); ?>" class="card-img-top" alt="Cultural Tours">
-                        <div class="card-body text-center">
-                            <h5 class="card-title">Cultural Guides</h5>
-                            <p class="card-text text-muted small">Immerse yourself in local culture and history</p>
+                    </a>
+                </div>
+                
+                <div class="col-md-6 col-lg-3">
+                    <a href="<?php echo url('tourGuide/category/adventure'); ?>" class="text-decoration-none">
+                        <div class="card h-100 shadow-sm category-card">
+                            <img src="<?php echo url('public/img/category-adventure.jpg'); ?>" class="card-img-top" alt="Adventure Tours">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">Adventure Guides</h5>
+                                <p class="card-text text-muted small">Thrilling experiences with adventure specialists</p>
+                            </div>
                         </div>
-                    </div>
-                </a>
-            </div>
-            
-            <div class="col-md-6 col-lg-3">
-                <a href="<?php echo url('tourGuide/category/food'); ?>" class="text-decoration-none">
-                    <div class="card h-100 shadow-sm category-card">
-                        <img src="<?php echo url('public/img/category-food.jpg'); ?>" class="card-img-top" alt="Food Tours">
-                        <div class="card-body text-center">
-                            <h5 class="card-title">Food & Cuisine Guides</h5>
-                            <p class="card-text text-muted small">Taste local flavors with culinary experts</p>
+                    </a>
+                </div>
+                
+                <div class="col-md-6 col-lg-3">
+                    <a href="<?php echo url('tourGuide/category/cultural'); ?>" class="text-decoration-none">
+                        <div class="card h-100 shadow-sm category-card">
+                            <img src="<?php echo url('public/img/category-cultural.jpg'); ?>" class="card-img-top" alt="Cultural Tours">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">Cultural Guides</h5>
+                                <p class="card-text text-muted small">Immerse yourself in local culture and history</p>
+                            </div>
                         </div>
-                    </div>
-                </a>
-            </div>
+                    </a>
+                </div>
+                
+                <div class="col-md-6 col-lg-3">
+                    <a href="<?php echo url('tourGuide/category/food'); ?>" class="text-decoration-none">
+                        <div class="card h-100 shadow-sm category-card">
+                            <img src="<?php echo url('public/img/category-food.jpg'); ?>" class="card-img-top" alt="Food Tours">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">Food & Cuisine Guides</h5>
+                                <p class="card-text text-muted small">Taste local flavors with culinary experts</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            <?php endif; ?>
         </div>
     </div>
 </section>
