@@ -58,6 +58,12 @@ class GuideController {
         // Get recent reviews
         $recent_reviews = $this->getRecentReviews($guide->id, 3);
         
+        // Get accurate review count
+        $reviewCount = $this->getApprovedReviewCount($guide->id);
+        
+        // Update guide object with accurate review count
+        $guide->total_reviews = $reviewCount;
+        
         $data = [
             'title' => 'Guide Dashboard',
             'user' => $user,
@@ -256,6 +262,31 @@ class GuideController {
         $db->bind(':limit', $limit, PDO::PARAM_INT);
         
         return $db->resultSet();
+    }
+    
+    /**
+     * Get the number of approved reviews for a guide
+     * 
+     * @param int $guideId The guide ID
+     * @return int The number of approved reviews
+     */
+    private function getApprovedReviewCount($guideId) {
+        // If GuideModel exists and has the required method, use it
+        if ($this->guideModel && method_exists($this->guideModel, 'getApprovedReviewCount')) {
+            return $this->guideModel->getApprovedReviewCount($guideId);
+        }
+        
+        // Otherwise, use a database query directly
+        $db = new Database();
+        $db->query('
+            SELECT COUNT(*) as count 
+            FROM guide_reviews 
+            WHERE guide_id = :guide_id AND status = "approved"
+        ');
+        $db->bind(':guide_id', $guideId);
+        
+        $result = $db->single();
+        return $result ? $result->count : 0;
     }
     
     /**
