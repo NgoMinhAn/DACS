@@ -96,8 +96,15 @@ class TourGuideController {
             redirect('tourGuide/browse');
         }
         
+        // Get the number of approved reviews
+        $approvedReviewCount = $this->guideModel->getApprovedReviewCount($guide->guide_id);
+        
         // Get guide reviews and additional details
-        $reviews = $this->guideModel->getGuideReviews($guide->guide_id);
+        $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        $perPage = 5; // Show 5 reviews per page
+        $offset = ($page - 1) * $perPage;
+        
+        $reviews = $this->guideModel->getGuideReviews($guide->guide_id, $perPage, $offset);
         $specialties = $this->guideModel->getGuideSpecialties($guide->guide_id);
         $languages = $this->guideModel->getGuideLanguages($guide->guide_id);
         
@@ -131,35 +138,47 @@ class TourGuideController {
             }
         }
         
-        // Calculate percentages for rating distribution
-        $total_reviews = count($reviews);
+        // Calculate percentages for rating distribution based on all reviews
         $ratings_distribution = [
             5 => [
                 'count' => $five_star_count,
-                'percentage' => $total_reviews > 0 ? ($five_star_count / $total_reviews * 100) : 0
+                'percentage' => $approvedReviewCount > 0 ? ($five_star_count / $approvedReviewCount * 100) : 0
             ],
             4 => [
                 'count' => $four_star_count,
-                'percentage' => $total_reviews > 0 ? ($four_star_count / $total_reviews * 100) : 0
+                'percentage' => $approvedReviewCount > 0 ? ($four_star_count / $approvedReviewCount * 100) : 0
             ],
             3 => [
                 'count' => $three_star_count,
-                'percentage' => $total_reviews > 0 ? ($three_star_count / $total_reviews * 100) : 0
+                'percentage' => $approvedReviewCount > 0 ? ($three_star_count / $approvedReviewCount * 100) : 0
             ],
             2 => [
                 'count' => $two_star_count,
-                'percentage' => $total_reviews > 0 ? ($two_star_count / $total_reviews * 100) : 0
+                'percentage' => $approvedReviewCount > 0 ? ($two_star_count / $approvedReviewCount * 100) : 0
             ],
             1 => [
                 'count' => $one_star_count,
-                'percentage' => $total_reviews > 0 ? ($one_star_count / $total_reviews * 100) : 0
+                'percentage' => $approvedReviewCount > 0 ? ($one_star_count / $approvedReviewCount * 100) : 0
             ]
         ];
+        
+        // Setup pagination
+        $totalPages = ceil($approvedReviewCount / $perPage);
+        $pagination = (object) [
+            'current_page' => $page,
+            'total_pages' => $totalPages,
+            'per_page' => $perPage,
+            'total_records' => $approvedReviewCount
+        ];
+        
+        // Create a custom guide object with accurate review count
+        $guideWithAccurateReviewCount = clone $guide;
+        $guideWithAccurateReviewCount->total_reviews = $approvedReviewCount;
         
         // Data to be passed to the view
         $data = [
             'title' => $guide->name . ' - Tour Guide',
-            'guide' => $guide,
+            'guide' => $guideWithAccurateReviewCount,
             'reviews' => $reviews,
             'specialties' => $specialties,
             'languages' => $languages,
@@ -168,7 +187,9 @@ class TourGuideController {
             'four_star_count' => $four_star_count,
             'three_star_count' => $three_star_count,
             'two_star_count' => $two_star_count,
-            'one_star_count' => $one_star_count
+            'one_star_count' => $one_star_count,
+            'pagination' => $pagination,
+            'approved_review_count' => $approvedReviewCount
         ];
         
         // Load view - use the new profile view
