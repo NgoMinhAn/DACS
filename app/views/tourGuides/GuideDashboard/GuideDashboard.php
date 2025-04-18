@@ -24,7 +24,10 @@
                                 <i class="far fa-star text-warning"></i>
                             <?php endif; ?>
                         <?php endfor; ?>
-                        <span class="ms-2">(<?php echo $guide->total_reviews; ?> reviews)</span>
+                        <span class="ms-2">
+                            <?php echo number_format($guide->avg_rating, 1); ?> 
+                            (<?php echo $guide->total_reviews; ?> <?php echo $guide->total_reviews == 1 ? 'review' : 'reviews'; ?>)
+                        </span>
                     </div>
                     
                     <div class="d-grid">
