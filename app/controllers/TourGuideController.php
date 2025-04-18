@@ -101,19 +101,60 @@ class TourGuideController {
         $specialties = $this->guideModel->getGuideSpecialties($guide->guide_id);
         $languages = $this->guideModel->getGuideLanguages($guide->guide_id);
         
-        // Convert specialties and languages to arrays for easier display
-        $specialtiesArray = [];
-        foreach ($specialties as $specialty) {
-            $specialtiesArray[] = $specialty->name;
+        // Calculate rating distribution
+        $five_star_count = 0;
+        $four_star_count = 0;
+        $three_star_count = 0;
+        $two_star_count = 0;
+        $one_star_count = 0;
+        
+        // Count reviews by rating
+        if (!empty($reviews)) {
+            foreach ($reviews as $review) {
+                switch ($review->rating) {
+                    case 5:
+                        $five_star_count++;
+                        break;
+                    case 4:
+                        $four_star_count++;
+                        break;
+                    case 3:
+                        $three_star_count++;
+                        break;
+                    case 2:
+                        $two_star_count++;
+                        break;
+                    case 1:
+                        $one_star_count++;
+                        break;
+                }
+            }
         }
         
-        $languagesArray = [];
-        foreach ($languages as $language) {
-            $languagesArray[] = [
-                'name' => $language->name,
-                'fluency' => $language->fluency_level
-            ];
-        }
+        // Calculate percentages for rating distribution
+        $total_reviews = count($reviews);
+        $ratings_distribution = [
+            5 => [
+                'count' => $five_star_count,
+                'percentage' => $total_reviews > 0 ? ($five_star_count / $total_reviews * 100) : 0
+            ],
+            4 => [
+                'count' => $four_star_count,
+                'percentage' => $total_reviews > 0 ? ($four_star_count / $total_reviews * 100) : 0
+            ],
+            3 => [
+                'count' => $three_star_count,
+                'percentage' => $total_reviews > 0 ? ($three_star_count / $total_reviews * 100) : 0
+            ],
+            2 => [
+                'count' => $two_star_count,
+                'percentage' => $total_reviews > 0 ? ($two_star_count / $total_reviews * 100) : 0
+            ],
+            1 => [
+                'count' => $one_star_count,
+                'percentage' => $total_reviews > 0 ? ($one_star_count / $total_reviews * 100) : 0
+            ]
+        ];
         
         // Data to be passed to the view
         $data = [
@@ -121,13 +162,17 @@ class TourGuideController {
             'guide' => $guide,
             'reviews' => $reviews,
             'specialties' => $specialties,
-            'specialties_array' => $specialtiesArray,
             'languages' => $languages,
-            'languages_array' => $languagesArray
+            'ratings_distribution' => $ratings_distribution,
+            'five_star_count' => $five_star_count,
+            'four_star_count' => $four_star_count,
+            'three_star_count' => $three_star_count,
+            'two_star_count' => $two_star_count,
+            'one_star_count' => $one_star_count
         ];
         
-        // Load view
-        $this->loadView('tourGuides/profile', $data);
+        // Load view - use the new profile view
+        $this->loadView('tourGuides/Accounts/profile', $data);
     }
     
     /**
