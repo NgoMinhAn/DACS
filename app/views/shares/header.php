@@ -40,7 +40,7 @@
                             <li><a class="dropdown-item" href="<?php echo url('tourGuide/category/cultural'); ?>">Cultural Tours</a></li>
                             <li><a class="dropdown-item" href="<?php echo url('tourGuide/category/food'); ?>">Food Tours</a></li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="<?php echo url('tourGuide/categories'); ?>">All Categories</a></li>
+                            <li><a class="dropdown-item" href="<?php echo url('tourGuide/category/categories'); ?>">All Categories</a></li>
                         </ul>
                     </li>
                     <li class="nav-item">

@@ -238,4 +238,40 @@ class GuideModel {
         
         return $this->db->resultSet();
     }
+    
+    /**
+     * Get guides by specialty or category
+     * 
+     * @param string $specialty The specialty or category name
+     * @param int $limit Optional limit for pagination
+     * @param int $offset Optional offset for pagination
+     * @return array The guides with the specified specialty
+     */
+    public function getGuidesBySpecialty($specialty, $limit = null, $offset = null) {
+        $sql = "
+            SELECT * FROM guide_listings 
+            WHERE specialties LIKE :specialty 
+            ORDER BY avg_rating DESC
+        ";
+        
+        // Add limit and offset for pagination if provided
+        if ($limit !== null) {
+            $sql .= ' LIMIT :limit';
+            if ($offset !== null) {
+                $sql .= ' OFFSET :offset';
+            }
+        }
+        
+        $this->db->query($sql);
+        $this->db->bind(':specialty', '%' . $specialty . '%');
+        
+        if ($limit !== null) {
+            $this->db->bind(':limit', $limit, PDO::PARAM_INT);
+            if ($offset !== null) {
+                $this->db->bind(':offset', $offset, PDO::PARAM_INT);
+            }
+        }
+        
+        return $this->db->resultSet();
+    }
 } 

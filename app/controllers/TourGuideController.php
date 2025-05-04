@@ -219,6 +219,76 @@ class TourGuideController {
     }
     
     /**
+     * Category method - handles all category-related views
+     * 
+     * @param string $type The category type (city, adventure, cultural, food, categories)
+     */
+    public function category($type = null) {
+        // If no type specified, redirect to browse page
+        if ($type === null) {
+            redirect('tourGuide/browse');
+        }
+        
+        // Get guides by category/specialty
+        $categoryGuides = [];
+        $title = '';
+        
+        // Handle different category types
+        switch ($type) {
+            case 'city':
+                $categoryGuides = $this->guideModel->getGuidesBySpecialty('City');
+                $title = 'City Tour Guides';
+                break;
+            case 'adventure':
+                $categoryGuides = $this->guideModel->getGuidesBySpecialty('Adventure');
+                $title = 'Adventure Tour Guides';
+                break;
+            case 'cultural':
+                $categoryGuides = $this->guideModel->getGuidesBySpecialty('Cultural');
+                $title = 'Cultural Tour Guides';
+                break;
+            case 'food':
+                $categoryGuides = $this->guideModel->getGuidesBySpecialty('Food');
+                $title = 'Food & Cuisine Guides';
+                break;
+            case 'categories':
+                // Get all categories
+                $guideCategories = $this->guideModel->getAllSpecialties();
+                $data = [
+                    'title' => 'Tour Guide Categories',
+                    'guide_categories' => $guideCategories
+                ];
+                $this->loadView('tourGuides/category/categories', $data);
+                return;
+            default:
+                redirect('tourGuide/browse');
+        }
+        
+        // Get sorting options if set
+        $sort = isset($_GET['sort']) ? $_GET['sort'] : null;
+        
+        // Apply sorting if specified
+        if ($sort) {
+            // Sort logic would go here
+            // For example:
+            if ($sort === 'rating') {
+                // Sort by rating
+            } elseif ($sort === 'price_low') {
+                // Sort by price low to high
+            }
+        }
+        
+        // Data to be passed to the view
+        $data = [
+            'title' => $title,
+            'category_guides' => $categoryGuides
+        ];
+        
+        // Load the specific category view
+        $this->loadView('tourGuides/category/' . $type, $data);
+    }
+    
+    /**
      * Contact a guide
      * 
      * @param int $id The guide ID
