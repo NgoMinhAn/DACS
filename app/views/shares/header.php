@@ -35,12 +35,12 @@
                             Guide Categories
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="<?php echo url('tourGuide/category/city'); ?>">City Tours</a></li>
-                            <li><a class="dropdown-item" href="<?php echo url('tourGuide/category/adventure'); ?>">Adventure Tours</a></li>
-                            <li><a class="dropdown-item" href="<?php echo url('tourGuide/category/cultural'); ?>">Cultural Tours</a></li>
-                            <li><a class="dropdown-item" href="<?php echo url('tourGuide/category/food'); ?>">Food Tours</a></li>
+                            <li><a class="dropdown-item" href="<?php echo url('tourGuides/category/city'); ?>">City Tours</a></li>
+                            <li><a class="dropdown-item" href="<?php echo url('tourGuides/category/adventure'); ?>">Adventure Tours</a></li>
+                            <li><a class="dropdown-item" href="<?php echo url('tourGuides/category/cultural'); ?>">Cultural Tours</a></li>
+                            <li><a class="dropdown-item" href="<?php echo url('tourGuides/category/food'); ?>">Food Tours</a></li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="<?php echo url('tourGuide/categories'); ?>">All Categories</a></li>
+                            <li><a class="dropdown-item" href="<?php echo url('tourGuides/category/categories'); ?>">All Categories</a></li>
                         </ul>
                     </li>
                     <li class="nav-item">
