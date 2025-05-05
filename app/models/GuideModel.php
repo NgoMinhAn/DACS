@@ -248,9 +248,12 @@ class GuideModel {
      * @return array The guides with the specified specialty
      */
     public function getGuidesBySpecialty($specialty, $limit = null, $offset = null) {
+        // Debug log for troubleshooting
+        error_log("Searching for guides with specialty: " . $specialty);
+        
         $sql = "
             SELECT * FROM guide_listings 
-            WHERE specialties LIKE :specialty 
+            WHERE LOWER(specialties) LIKE LOWER(:specialty)
             ORDER BY avg_rating DESC
         ";
         
@@ -272,6 +275,9 @@ class GuideModel {
             }
         }
         
-        return $this->db->resultSet();
+        $result = $this->db->resultSet();
+        error_log("Found " . count($result) . " guides for specialty: " . $specialty);
+        
+        return $result;
     }
 } 

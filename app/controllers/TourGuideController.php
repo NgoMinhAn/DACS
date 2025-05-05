@@ -278,15 +278,45 @@ class TourGuideController {
                 return;
             default:
                 // For all other specialties, try to find guides with that specialty
-                $specialty = ucfirst($type); // Capitalize first letter for consistency
-                $categoryGuides = $this->guideModel->getGuidesBySpecialty($specialty);
+                error_log("Processing category: " . $type);
                 
+                // Try different capitalizations and formats
+                $categoryGuides = [];
+                
+                // Try direct match first
+                $categoryGuides = $this->guideModel->getGuidesBySpecialty($type);
+                
+                // If no results, try with first letter capitalized
+                if (empty($categoryGuides)) {
+                    $specialty = ucfirst($type);
+                    $categoryGuides = $this->guideModel->getGuidesBySpecialty($specialty);
+                    error_log("Trying with ucfirst: " . $specialty);
+                }
+                
+                // If still no results, try all capitalized
+                if (empty($categoryGuides)) {
+                    $specialty = strtoupper($type);
+                    $categoryGuides = $this->guideModel->getGuidesBySpecialty($specialty);
+                    error_log("Trying with strtoupper: " . $specialty);
+                }
+                
+                // If still no results, try various forms
+                if (empty($categoryGuides)) {
+                    // Try with spaces replaced by dashes
+                    $specialty = str_replace('-', ' ', $type);
+                    $categoryGuides = $this->guideModel->getGuidesBySpecialty($specialty);
+                    error_log("Trying with spaces: " . $specialty);
+                }
+                
+                // Use the last specialty name we tried
                 if (empty($categoryGuides)) {
                     flash('error_message', 'No guides found for this specialty.', 'alert alert-info');
+                    error_log("No guides found for any variation of: " . $type);
                     redirect('tourGuide/browse');
                 }
                 
-                $title = $specialty . ' Tour Guides';
+                $title = ucwords(str_replace('-', ' ', $type)) . ' Tour Guides';
+                error_log("Found guides for category: " . $type . ", title: " . $title);
                 break;
         }
         
