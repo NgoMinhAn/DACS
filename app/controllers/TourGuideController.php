@@ -348,12 +348,12 @@ class TourGuideController {
         }
         
         // Load header
-        require_once VIEW_PATH . '/includes/header.php';
+        require_once VIEW_PATH . '/shares/header.php';
         
         // Load the requested view
         require_once VIEW_PATH . '/' . $view . '.php';
         
         // Load footer
-        require_once VIEW_PATH . '/includes/footer.php';
+        require_once VIEW_PATH . '/shares/footer.php';
     }
 } 
