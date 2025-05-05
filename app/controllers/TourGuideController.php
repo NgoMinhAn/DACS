@@ -251,9 +251,25 @@ class TourGuideController {
                 $categoryGuides = $this->guideModel->getGuidesBySpecialty('Food');
                 $title = 'Food & Cuisine Guides';
                 break;
+            case 'historical':
+            case 'history':
+                // Redirect to browse instead of showing historical tours
+                redirect('tourGuide/browse');
+                break;
             case 'categories':
                 // Get all categories
                 $guideCategories = $this->guideModel->getAllSpecialties();
+                // Additional filtering directly in controller to ensure removal
+                if (!empty($guideCategories)) {
+                    $filteredCategories = [];
+                    foreach ($guideCategories as $category) {
+                        // Skip any historical or off-beaten path categories
+                        if (!in_array(strtolower($category->name), ['historical', 'history', 'historical tours', 'off-beaten path', 'off the beaten path'])) {
+                            $filteredCategories[] = $category;
+                        }
+                    }
+                    $guideCategories = $filteredCategories;
+                }
                 $data = [
                     'title' => 'Tour Guide Categories',
                     'guide_categories' => $guideCategories
@@ -261,7 +277,85 @@ class TourGuideController {
                 $this->loadView('tourGuides/category/categories', $data);
                 return;
             default:
-                redirect('tourGuide/browse');
+                // For all other specialties, try to find guides with that specialty
+                error_log("Processing category: " . $type);
+                
+                // Define a mapping from URL slugs to exact specialty names in the database
+                $specialtyMap = [
+                    // Exact URL-friendly versions of database names
+                    'adventure' => 'Adventure',
+                    'historical-tours' => 'Historical Tours',
+                    'food-cuisine' => 'Food & Cuisine',
+                    'nature-wildlife' => 'Nature & Wildlife',
+                    'architecture' => 'Architecture',
+                    'cultural-immersion' => 'Cultural Immersion',
+                    'off-the-beaten-path' => 'Off the Beaten Path',
+                    'city-tours' => 'City Tours',
+                    
+                    // Common variations and shortcuts
+                    'historical' => 'Historical Tours',
+                    'history' => 'Historical Tours',
+                    'food' => 'Food & Cuisine',
+                    'cuisine' => 'Food & Cuisine',
+                    'nature' => 'Nature & Wildlife',
+                    'wildlife' => 'Nature & Wildlife',
+                    'cultural' => 'Cultural Immersion',
+                    'culture' => 'Cultural Immersion',
+                    'off-beaten-path' => 'Off the Beaten Path',
+                    'city' => 'City Tours'
+                ];
+                
+                error_log("Trying to map '" . $type . "' to a database specialty");
+                
+                // Check if we have a direct mapping for this slug
+                if (isset($specialtyMap[$type])) {
+                    $exactSpecialty = $specialtyMap[$type];
+                    error_log("Found exact specialty mapping: $type -> $exactSpecialty");
+                    $categoryGuides = $this->guideModel->getGuidesBySpecialty($exactSpecialty);
+                } else {
+                    // Try different capitalizations and formats
+                    $categoryGuides = [];
+                    
+                    // Try direct match first
+                    $categoryGuides = $this->guideModel->getGuidesBySpecialty($type);
+                    
+                    // If no results, try with first letter capitalized
+                    if (empty($categoryGuides)) {
+                        $specialty = ucfirst($type);
+                        $categoryGuides = $this->guideModel->getGuidesBySpecialty($specialty);
+                        error_log("Trying with ucfirst: " . $specialty);
+                    }
+                    
+                    // If still no results, try replacing dashes with spaces
+                    if (empty($categoryGuides)) {
+                        $specialty = str_replace('-', ' ', $type);
+                        $specialty = ucwords($specialty); // Capitalize first letter of each word
+                        $categoryGuides = $this->guideModel->getGuidesBySpecialty($specialty);
+                        error_log("Trying with dashes replaced by spaces: " . $specialty);
+                    }
+                    
+                    // If still no results, try replacing dashes with ampersand
+                    if (empty($categoryGuides)) {
+                        $specialty = str_replace('-and-', ' & ', $type);
+                        $specialty = str_replace('-', ' ', $specialty);
+                        $specialty = ucwords($specialty);
+                        $categoryGuides = $this->guideModel->getGuidesBySpecialty($specialty);
+                        error_log("Trying with ampersand: " . $specialty);
+                    }
+                }
+                
+                // Use the last specialty name we tried
+                if (empty($categoryGuides)) {
+                    flash('error_message', 'No guides found for this specialty.', 'alert alert-info');
+                    error_log("No guides found for any variation of: " . $type);
+                    redirect('tourGuide/browse');
+                }
+                
+                // For title display, use a readable version
+                $displayTitle = isset($specialtyMap[$type]) ? $specialtyMap[$type] : ucwords(str_replace('-', ' ', $type));
+                $title = $displayTitle . ' Tour Guides';
+                error_log("Found guides for category: " . $type . ", title: " . $title);
+                break;
         }
         
         // Get sorting options if set
@@ -284,8 +378,16 @@ class TourGuideController {
             'category_guides' => $categoryGuides
         ];
         
-        // Load the specific category view
-        $this->loadView('tourGuides/category/' . $type, $data);
+        // Try to load type-specific view first, fall back to generic if not found
+        $specificView = 'tourGuides/category/' . $type;
+        $genericView = 'tourGuides/category/generic';
+        
+        if (file_exists(VIEW_PATH . '/' . $specificView . '.php')) {
+            $this->loadView($specificView, $data);
+        } else {
+            // Create a generic view if not found
+            $this->loadView($genericView, $data);
+        }
     }
     
     /**
@@ -332,31 +434,28 @@ class TourGuideController {
      * @param array $data The data to pass to the view
      */
     private function loadView($view, $data = []) {
-        // Extract data variables into the current symbol table
+        // Extract data to make it available in the view
         extract($data);
         
-        // Load header
-        $headerFile = VIEW_PATH . '/shares/header.php';
-        if (file_exists($headerFile)) {
-            require_once $headerFile;
-        } else {
-            echo "<p>Error: Header file not found at {$headerFile}</p>";
+        // If we're loading the categories view, filter out extra categories
+        if ($view === 'tourGuides/category/categories' && isset($guide_categories)) {
+            $filtered_categories = [];
+            foreach ($guide_categories as $category) {
+                // Skip Architecture, History, Nature & Wildlife, and Off The Beaten Path categories
+                if (!in_array($category->name, ['Architecture', 'History', 'Nature & Wildlife', 'Off The Beaten Path'])) {
+                    $filtered_categories[] = $category;
+                }
+            }
+            $guide_categories = $filtered_categories;
         }
         
-        // Load the view
-        $viewFile = VIEW_PATH . '/' . $view . '.php';
-        if (file_exists($viewFile)) {
-            require_once $viewFile;
-        } else {
-            echo "<p>Error: View file not found at {$viewFile}</p>";
-        }
+        // Load header
+        require_once VIEW_PATH . '/shares/header.php';
+        
+        // Load the requested view
+        require_once VIEW_PATH . '/' . $view . '.php';
         
         // Load footer
-        $footerFile = VIEW_PATH . '/shares/footer.php';
-        if (file_exists($footerFile)) {
-            require_once $footerFile;
-        } else {
-            echo "<p>Error: Footer file not found at {$footerFile}</p>";
-        }
+        require_once VIEW_PATH . '/shares/footer.php';
     }
 } 

@@ -187,7 +187,7 @@ class GuideModel {
      * @return array
      */
     public function getAllSpecialties() {
-        $this->db->query("SELECT * FROM specialties ORDER BY name");
+        $this->db->query("SELECT * FROM specialties WHERE name NOT IN ('Historical', 'Off-Beaten Path', 'Off The Beaten Path', 'History') ORDER BY name");
         return $this->db->resultSet();
     }
     
@@ -248,9 +248,13 @@ class GuideModel {
      * @return array The guides with the specified specialty
      */
     public function getGuidesBySpecialty($specialty, $limit = null, $offset = null) {
+        // Debug log for troubleshooting
+        error_log("Searching for guides with specialty: " . $specialty);
+        
+        // Simple LIKE search - most reliable approach
         $sql = "
             SELECT * FROM guide_listings 
-            WHERE specialties LIKE :specialty 
+            WHERE specialties LIKE :specialty
             ORDER BY avg_rating DESC
         ";
         
@@ -272,6 +276,9 @@ class GuideModel {
             }
         }
         
-        return $this->db->resultSet();
+        $result = $this->db->resultSet();
+        error_log("Found " . count($result) . " guides for specialty: " . $specialty);
+        
+        return $result;
     }
 } 

@@ -18,11 +18,11 @@
             <?php if(!empty($guide_categories)): ?>
                 <?php foreach($guide_categories as $category): ?>
                     <div class="col-md-6 col-lg-3 mb-4">
-                        <a href="<?php echo url('tourGuide/category/' . urlencode($category->name)); ?>" class="text-decoration-none">
+                        <a href="<?php echo url('tourGuide/category/' . strtolower(str_replace(' & ', '-', str_replace(' ', '-', $category->name)))); ?>" class="text-decoration-none">
                             <div class="card h-100 shadow-sm category-card">
-                                <img src="<?php echo url('public/img/category-' . strtolower(str_replace(' ', '-', $category->name)) . '.jpg'); ?>" 
+                                <!-- Always use category-default.jpg as the fallback image -->
+                                <img src="<?php echo url('public/img/category-default.jpg'); ?>" 
                                      class="card-img-top" alt="<?php echo htmlspecialchars($category->name); ?> Tours"
-                                     onerror="this.src='<?php echo url('public/img/category-default.jpg'); ?>'" 
                                      style="height: 200px; object-fit: cover;">
                                 <div class="card-body text-center">
                                     <h5 class="card-title"><?php echo htmlspecialchars($category->name); ?></h5>
@@ -38,7 +38,7 @@
                 <div class="col-md-6 col-lg-3 mb-4">
                     <a href="<?php echo url('tourGuide/category/city'); ?>" class="text-decoration-none">
                         <div class="card h-100 shadow-sm category-card">
-                            <img src="<?php echo url('public/img/category-city.jpg'); ?>" class="card-img-top" alt="City Tours" style="height: 200px; object-fit: cover;">
+                            <img src="<?php echo url('public/img/category-default.jpg'); ?>" class="card-img-top" alt="City Tours" style="height: 200px; object-fit: cover;">
                             <div class="card-body text-center">
                                 <h5 class="card-title">City Guides</h5>
                                 <p class="card-text text-muted">Explore urban landscapes with expert city guides</p>
@@ -51,7 +51,7 @@
                 <div class="col-md-6 col-lg-3 mb-4">
                     <a href="<?php echo url('tourGuide/category/adventure'); ?>" class="text-decoration-none">
                         <div class="card h-100 shadow-sm category-card">
-                            <img src="<?php echo url('public/img/category-adventure.jpg'); ?>" class="card-img-top" alt="Adventure Tours" style="height: 200px; object-fit: cover;">
+                            <img src="<?php echo url('public/img/category-default.jpg'); ?>" class="card-img-top" alt="Adventure Tours" style="height: 200px; object-fit: cover;">
                             <div class="card-body text-center">
                                 <h5 class="card-title">Adventure Guides</h5>
                                 <p class="card-text text-muted">Thrilling experiences with adventure specialists</p>
