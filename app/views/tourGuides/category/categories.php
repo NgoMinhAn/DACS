@@ -18,7 +18,7 @@
             <?php if(!empty($guide_categories)): ?>
                 <?php foreach($guide_categories as $category): ?>
                     <div class="col-md-6 col-lg-3 mb-4">
-                        <a href="<?php echo url('tourGuide/category/' . urlencode($category->name)); ?>" class="text-decoration-none">
+                        <a href="<?php echo url('tourGuide/category/' . strtolower(str_replace(' & ', '-', str_replace(' ', '-', $category->name)))); ?>" class="text-decoration-none">
                             <div class="card h-100 shadow-sm category-card">
                                 <!-- Always use category-default.jpg as the fallback image -->
                                 <img src="<?php echo url('public/img/category-default.jpg'); ?>" 

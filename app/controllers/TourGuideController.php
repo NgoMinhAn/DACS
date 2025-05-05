@@ -282,6 +282,7 @@ class TourGuideController {
                 
                 // Define a mapping from URL slugs to exact specialty names in the database
                 $specialtyMap = [
+                    // Exact URL-friendly versions of database names
                     'adventure' => 'Adventure',
                     'historical-tours' => 'Historical Tours',
                     'food-cuisine' => 'Food & Cuisine',
@@ -290,7 +291,8 @@ class TourGuideController {
                     'cultural-immersion' => 'Cultural Immersion',
                     'off-the-beaten-path' => 'Off the Beaten Path',
                     'city-tours' => 'City Tours',
-                    // Add URL-friendly versions of all categories
+                    
+                    // Common variations and shortcuts
                     'historical' => 'Historical Tours',
                     'history' => 'Historical Tours',
                     'food' => 'Food & Cuisine',
@@ -302,6 +304,8 @@ class TourGuideController {
                     'off-beaten-path' => 'Off the Beaten Path',
                     'city' => 'City Tours'
                 ];
+                
+                error_log("Trying to map '" . $type . "' to a database specialty");
                 
                 // Check if we have a direct mapping for this slug
                 if (isset($specialtyMap[$type])) {
@@ -322,19 +326,21 @@ class TourGuideController {
                         error_log("Trying with ucfirst: " . $specialty);
                     }
                     
-                    // If still no results, try all capitalized
+                    // If still no results, try replacing dashes with spaces
                     if (empty($categoryGuides)) {
-                        $specialty = strtoupper($type);
+                        $specialty = str_replace('-', ' ', $type);
+                        $specialty = ucwords($specialty); // Capitalize first letter of each word
                         $categoryGuides = $this->guideModel->getGuidesBySpecialty($specialty);
-                        error_log("Trying with strtoupper: " . $specialty);
+                        error_log("Trying with dashes replaced by spaces: " . $specialty);
                     }
                     
-                    // If still no results, try various forms
+                    // If still no results, try replacing dashes with ampersand
                     if (empty($categoryGuides)) {
-                        // Try with spaces replaced by dashes
-                        $specialty = str_replace('-', ' ', $type);
+                        $specialty = str_replace('-and-', ' & ', $type);
+                        $specialty = str_replace('-', ' ', $specialty);
+                        $specialty = ucwords($specialty);
                         $categoryGuides = $this->guideModel->getGuidesBySpecialty($specialty);
-                        error_log("Trying with spaces: " . $specialty);
+                        error_log("Trying with ampersand: " . $specialty);
                     }
                 }
                 
