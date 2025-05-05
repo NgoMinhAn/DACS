@@ -280,32 +280,62 @@ class TourGuideController {
                 // For all other specialties, try to find guides with that specialty
                 error_log("Processing category: " . $type);
                 
-                // Try different capitalizations and formats
-                $categoryGuides = [];
+                // Define a mapping from URL slugs to exact specialty names in the database
+                $specialtyMap = [
+                    'adventure' => 'Adventure',
+                    'historical-tours' => 'Historical Tours',
+                    'food-cuisine' => 'Food & Cuisine',
+                    'nature-wildlife' => 'Nature & Wildlife',
+                    'architecture' => 'Architecture',
+                    'cultural-immersion' => 'Cultural Immersion',
+                    'off-the-beaten-path' => 'Off the Beaten Path',
+                    'city-tours' => 'City Tours',
+                    // Add URL-friendly versions of all categories
+                    'historical' => 'Historical Tours',
+                    'history' => 'Historical Tours',
+                    'food' => 'Food & Cuisine',
+                    'cuisine' => 'Food & Cuisine',
+                    'nature' => 'Nature & Wildlife',
+                    'wildlife' => 'Nature & Wildlife',
+                    'cultural' => 'Cultural Immersion',
+                    'culture' => 'Cultural Immersion',
+                    'off-beaten-path' => 'Off the Beaten Path',
+                    'city' => 'City Tours'
+                ];
                 
-                // Try direct match first
-                $categoryGuides = $this->guideModel->getGuidesBySpecialty($type);
-                
-                // If no results, try with first letter capitalized
-                if (empty($categoryGuides)) {
-                    $specialty = ucfirst($type);
-                    $categoryGuides = $this->guideModel->getGuidesBySpecialty($specialty);
-                    error_log("Trying with ucfirst: " . $specialty);
-                }
-                
-                // If still no results, try all capitalized
-                if (empty($categoryGuides)) {
-                    $specialty = strtoupper($type);
-                    $categoryGuides = $this->guideModel->getGuidesBySpecialty($specialty);
-                    error_log("Trying with strtoupper: " . $specialty);
-                }
-                
-                // If still no results, try various forms
-                if (empty($categoryGuides)) {
-                    // Try with spaces replaced by dashes
-                    $specialty = str_replace('-', ' ', $type);
-                    $categoryGuides = $this->guideModel->getGuidesBySpecialty($specialty);
-                    error_log("Trying with spaces: " . $specialty);
+                // Check if we have a direct mapping for this slug
+                if (isset($specialtyMap[$type])) {
+                    $exactSpecialty = $specialtyMap[$type];
+                    error_log("Found exact specialty mapping: $type -> $exactSpecialty");
+                    $categoryGuides = $this->guideModel->getGuidesBySpecialty($exactSpecialty);
+                } else {
+                    // Try different capitalizations and formats
+                    $categoryGuides = [];
+                    
+                    // Try direct match first
+                    $categoryGuides = $this->guideModel->getGuidesBySpecialty($type);
+                    
+                    // If no results, try with first letter capitalized
+                    if (empty($categoryGuides)) {
+                        $specialty = ucfirst($type);
+                        $categoryGuides = $this->guideModel->getGuidesBySpecialty($specialty);
+                        error_log("Trying with ucfirst: " . $specialty);
+                    }
+                    
+                    // If still no results, try all capitalized
+                    if (empty($categoryGuides)) {
+                        $specialty = strtoupper($type);
+                        $categoryGuides = $this->guideModel->getGuidesBySpecialty($specialty);
+                        error_log("Trying with strtoupper: " . $specialty);
+                    }
+                    
+                    // If still no results, try various forms
+                    if (empty($categoryGuides)) {
+                        // Try with spaces replaced by dashes
+                        $specialty = str_replace('-', ' ', $type);
+                        $categoryGuides = $this->guideModel->getGuidesBySpecialty($specialty);
+                        error_log("Trying with spaces: " . $specialty);
+                    }
                 }
                 
                 // Use the last specialty name we tried
@@ -315,7 +345,9 @@ class TourGuideController {
                     redirect('tourGuide/browse');
                 }
                 
-                $title = ucwords(str_replace('-', ' ', $type)) . ' Tour Guides';
+                // For title display, use a readable version
+                $displayTitle = isset($specialtyMap[$type]) ? $specialtyMap[$type] : ucwords(str_replace('-', ' ', $type));
+                $title = $displayTitle . ' Tour Guides';
                 error_log("Found guides for category: " . $type . ", title: " . $title);
                 break;
         }

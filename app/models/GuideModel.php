@@ -251,10 +251,21 @@ class GuideModel {
         // Debug log for troubleshooting
         error_log("Searching for guides with specialty: " . $specialty);
         
+        // First try an exact match with the whole word, which is more likely to work
         $sql = "
             SELECT * FROM guide_listings 
-            WHERE LOWER(specialties) LIKE LOWER(:specialty)
-            ORDER BY avg_rating DESC
+            WHERE specialties = :exact_specialty
+               OR specialties LIKE :start_specialty
+               OR specialties LIKE :middle_specialty
+               OR specialties LIKE :end_specialty
+            ORDER BY 
+               CASE 
+                  WHEN specialties = :exact_specialty THEN 1
+                  WHEN specialties LIKE :start_specialty THEN 2
+                  WHEN specialties LIKE :end_specialty THEN 3
+                  ELSE 4
+               END,
+               avg_rating DESC
         ";
         
         // Add limit and offset for pagination if provided
@@ -266,7 +277,10 @@ class GuideModel {
         }
         
         $this->db->query($sql);
-        $this->db->bind(':specialty', '%' . $specialty . '%');
+        $this->db->bind(':exact_specialty', $specialty);
+        $this->db->bind(':start_specialty', $specialty . ',%');
+        $this->db->bind(':middle_specialty', '%, ' . $specialty . ',%');
+        $this->db->bind(':end_specialty', '%, ' . $specialty);
         
         if ($limit !== null) {
             $this->db->bind(':limit', $limit, PDO::PARAM_INT);
@@ -276,6 +290,38 @@ class GuideModel {
         }
         
         $result = $this->db->resultSet();
+        
+        // If we didn't find anything, try a more flexible LIKE search
+        if (empty($result)) {
+            error_log("No exact matches found, trying flexible search for: " . $specialty);
+            
+            $sql = "
+                SELECT * FROM guide_listings 
+                WHERE LOWER(specialties) LIKE LOWER(:flexible_specialty)
+                ORDER BY avg_rating DESC
+            ";
+            
+            // Add limit and offset for pagination if provided
+            if ($limit !== null) {
+                $sql .= ' LIMIT :limit';
+                if ($offset !== null) {
+                    $sql .= ' OFFSET :offset';
+                }
+            }
+            
+            $this->db->query($sql);
+            $this->db->bind(':flexible_specialty', '%' . $specialty . '%');
+            
+            if ($limit !== null) {
+                $this->db->bind(':limit', $limit, PDO::PARAM_INT);
+                if ($offset !== null) {
+                    $this->db->bind(':offset', $offset, PDO::PARAM_INT);
+                }
+            }
+            
+            $result = $this->db->resultSet();
+        }
+        
         error_log("Found " . count($result) . " guides for specialty: " . $specialty);
         
         return $result;
