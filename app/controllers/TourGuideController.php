@@ -332,31 +332,28 @@ class TourGuideController {
      * @param array $data The data to pass to the view
      */
     private function loadView($view, $data = []) {
-        // Extract data variables into the current symbol table
+        // Extract data to make it available in the view
         extract($data);
         
-        // Load header
-        $headerFile = VIEW_PATH . '/shares/header.php';
-        if (file_exists($headerFile)) {
-            require_once $headerFile;
-        } else {
-            echo "<p>Error: Header file not found at {$headerFile}</p>";
+        // If we're loading the categories view, filter out extra categories
+        if ($view === 'tourGuides/category/categories' && isset($guide_categories)) {
+            $filtered_categories = [];
+            foreach ($guide_categories as $category) {
+                // Skip Architecture, History, Nature & Wildlife, and Off The Beaten Path categories
+                if (!in_array($category->name, ['Architecture', 'History', 'Nature & Wildlife', 'Off The Beaten Path'])) {
+                    $filtered_categories[] = $category;
+                }
+            }
+            $guide_categories = $filtered_categories;
         }
         
-        // Load the view
-        $viewFile = VIEW_PATH . '/' . $view . '.php';
-        if (file_exists($viewFile)) {
-            require_once $viewFile;
-        } else {
-            echo "<p>Error: View file not found at {$viewFile}</p>";
-        }
+        // Load header
+        require_once APPROOT . '/views/includes/header.php';
+        
+        // Load the requested view
+        require_once APPROOT . '/views/' . $view . '.php';
         
         // Load footer
-        $footerFile = VIEW_PATH . '/shares/footer.php';
-        if (file_exists($footerFile)) {
-            require_once $footerFile;
-        } else {
-            echo "<p>Error: Footer file not found at {$footerFile}</p>";
-        }
+        require_once APPROOT . '/views/includes/footer.php';
     }
 } 
