@@ -277,7 +277,17 @@ class TourGuideController {
                 $this->loadView('tourGuides/category/categories', $data);
                 return;
             default:
-                redirect('tourGuide/browse');
+                // For all other specialties, try to find guides with that specialty
+                $specialty = ucfirst($type); // Capitalize first letter for consistency
+                $categoryGuides = $this->guideModel->getGuidesBySpecialty($specialty);
+                
+                if (empty($categoryGuides)) {
+                    flash('error_message', 'No guides found for this specialty.', 'alert alert-info');
+                    redirect('tourGuide/browse');
+                }
+                
+                $title = $specialty . ' Tour Guides';
+                break;
         }
         
         // Get sorting options if set
@@ -300,8 +310,16 @@ class TourGuideController {
             'category_guides' => $categoryGuides
         ];
         
-        // Load the specific category view
-        $this->loadView('tourGuides/category/' . $type, $data);
+        // Try to load type-specific view first, fall back to generic if not found
+        $specificView = 'tourGuides/category/' . $type;
+        $genericView = 'tourGuides/category/generic';
+        
+        if (file_exists(VIEW_PATH . '/' . $specificView . '.php')) {
+            $this->loadView($specificView, $data);
+        } else {
+            // Create a generic view if not found
+            $this->loadView($genericView, $data);
+        }
     }
     
     /**
