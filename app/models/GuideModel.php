@@ -187,7 +187,7 @@ class GuideModel {
      * @return array
      */
     public function getAllSpecialties() {
-        $this->db->query("SELECT * FROM specialties ORDER BY name");
+        $this->db->query("SELECT * FROM specialties WHERE name NOT IN ('Historical', 'Off-Beaten Path', 'Off The Beaten Path', 'History') ORDER BY name");
         return $this->db->resultSet();
     }
     
