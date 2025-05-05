@@ -251,9 +251,25 @@ class TourGuideController {
                 $categoryGuides = $this->guideModel->getGuidesBySpecialty('Food');
                 $title = 'Food & Cuisine Guides';
                 break;
+            case 'historical':
+            case 'history':
+                // Redirect to browse instead of showing historical tours
+                redirect('tourGuide/browse');
+                break;
             case 'categories':
                 // Get all categories
                 $guideCategories = $this->guideModel->getAllSpecialties();
+                // Additional filtering directly in controller to ensure removal
+                if (!empty($guideCategories)) {
+                    $filteredCategories = [];
+                    foreach ($guideCategories as $category) {
+                        // Skip any historical or off-beaten path categories
+                        if (!in_array(strtolower($category->name), ['historical', 'history', 'historical tours', 'off-beaten path', 'off the beaten path'])) {
+                            $filteredCategories[] = $category;
+                        }
+                    }
+                    $guideCategories = $filteredCategories;
+                }
                 $data = [
                     'title' => 'Tour Guide Categories',
                     'guide_categories' => $guideCategories
