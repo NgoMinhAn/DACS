@@ -41,6 +41,52 @@ class PageController {
     }
     
     /**
+     * Submit contact form
+     */
+    public function submit_contact() {
+        // Check if form is submitted
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            redirect('contact');
+        }
+        
+        // Sanitize POST data
+        $_POST = filter_input_array(INPUT_POST, [
+            'name' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+            'email' => FILTER_SANITIZE_EMAIL,
+            'subject' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+            'message' => FILTER_SANITIZE_FULL_SPECIAL_CHARS
+        ]);
+        
+        // Validate inputs
+        $name = trim($_POST['name']);
+        $email = trim($_POST['email']);
+        $subject = trim($_POST['subject']);
+        $message = trim($_POST['message']);
+        $privacy = isset($_POST['privacy']) ? true : false;
+        
+        // Check for empty values
+        if (empty($name) || empty($email) || empty($subject) || empty($message) || !$privacy) {
+            flash('contact_message', 'Please fill in all fields and accept the privacy policy', 'alert alert-danger');
+            redirect('contact');
+        }
+        
+        // Validate email
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            flash('contact_message', 'Please enter a valid email address', 'alert alert-danger');
+            redirect('contact');
+        }
+        
+        // In a real application, you would:
+        // 1. Store the message in a database
+        // 2. Send an email notification
+        // 3. Possibly set up an admin notification
+        
+        // For demonstration purposes, we'll just show a success message
+        flash('contact_message', 'Thank you for your message. We will get back to you soon!', 'alert alert-success');
+        redirect('contact');
+    }
+    
+    /**
      * Terms method - displays the terms of service
      */
     public function terms() {
