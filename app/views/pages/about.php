@@ -1,15 +1,3 @@
-<?php
-/**
- * About Us Page
- */
-
-// Set page title
-$title = 'About Us';
-
-// Include header
-require_once 'app/views/shares/header.php';
-?>
-
 <!-- About Us Hero Section -->
 <div class="bg-light py-5 mb-5">
     <div class="container">
@@ -200,9 +188,4 @@ require_once 'app/views/shares/header.php';
             </div>
         </div>
     </div>
-</div>
-
-<?php
-// Include footer
-require_once 'app/views/shares/footer.php';
-?>
+</div> 
