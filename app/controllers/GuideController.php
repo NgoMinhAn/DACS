@@ -309,7 +309,21 @@ class GuideController {
         
         redirect('guide/dashboard');
     }
-    
+    /**
+     * Accept a booking
+     * 
+     * @param int $id The booking ID
+     */
+    public function bookingDetails($id) {
+        $guideId = $_SESSION['guide_id']; // or however you get the logged-in guide's ID
+        $booking = $this->guideModel->getBookingById($id, $guideId);
+        if (!$booking) {
+            // Show 404 or error
+            $this->view('errors/404');
+            return;
+        }
+        $this->view('tourGuides/bookingDetails', ['booking' => $booking]);
+    }
     /**
      * Load a view with the header and footer
      * 
