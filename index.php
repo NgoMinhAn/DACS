@@ -6,9 +6,6 @@
 
 
 
-require_once APP_PATH . '/config/config.php';
-require_once APP_PATH . '/config/database.php';
-require_once HELPER_PATH . '/functions.php';
 // Enable error reporting
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
@@ -21,6 +18,11 @@ define('CONTROLLER_PATH', APP_PATH . '/controllers');
 define('MODEL_PATH', APP_PATH . '/models');
 define('VIEW_PATH', APP_PATH . '/views');
 define('HELPER_PATH', APP_PATH . '/helpers');
+
+
+require_once APP_PATH . '/config/config.php';
+require_once APP_PATH . '/config/database.php';
+require_once HELPER_PATH . '/functions.php';
 
 if (preg_match('#/guide/booking/(\d+)$#', $_SERVER['REQUEST_URI'], $matches)) {
     require_once 'app/controllers/GuideController.php';
