@@ -310,18 +310,25 @@ class GuideModel {
      * @param string $query The search query
      * @return array The matching guides
      */
-    public function searchGuides($query) {
-        // Build a search query that looks for matches in name, bio, location, and specialties
-        $sql = "SELECT * FROM guide_listings 
-                WHERE name LIKE :query 
-                OR bio LIKE :query 
-                OR location LIKE :query 
-                OR specialties LIKE :query
-                ORDER BY avg_rating DESC";
-        
-        $this->db->query($sql);
-        $this->db->bind(':query', '%' . $query . '%');
-        
-        return $this->db->resultSet();
-    }
+<?php
+// ...existing code...
+public function searchGuides($query) {
+    // Use positional placeholders for each field
+    $sql = "SELECT * FROM guide_listings 
+            WHERE name LIKE ? 
+            OR bio LIKE ? 
+            OR location LIKE ? 
+            OR specialties LIKE ?
+            ORDER BY avg_rating DESC";
+    
+    $this->db->query($sql);
+    $param = '%' . $query . '%';
+    $this->db->bind(1, $param);
+    $this->db->bind(2, $param);
+    $this->db->bind(3, $param);
+    $this->db->bind(4, $param);
+    
+    return $this->db->resultSet();
+}
+// ...existing code...
 }
