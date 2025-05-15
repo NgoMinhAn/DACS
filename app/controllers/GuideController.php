@@ -309,7 +309,80 @@ class GuideController {
         
         redirect('guide/dashboard');
     }
-    
+    /**
+     * Accept a booking
+     * 
+     * @param int $id The booking ID
+     */
+    public function booking($id) {
+    $userId = $_SESSION['user_id'];
+    $guide = $this->getGuideProfile($userId);
+    $guideId = $guide ? $guide->id : null;
+
+    $booking = $this->guideModel->getBookingById($id, $guideId);
+    if (!$booking) {
+        $this->loadView('errors/404');
+        return;
+    }
+    $this->loadView('tourGuides/bookingDetails', ['booking' => $booking]);
+}
+
+    public function acceptBooking($id) {
+    $userId = $_SESSION['user_id'];
+    $guide = $this->getGuideProfile($userId);
+    $guideId = $guide ? $guide->id : null;
+
+    // Only allow if this guide owns the booking
+    $booking = $this->guideModel->getBookingById($id, $guideId);
+    if ($booking && $booking->status === 'pending') {
+        $this->guideModel->updateBookingStatus($id, 'accepted');
+        flash('guide_message', 'Booking accepted!', 'alert alert-success');
+    }
+    redirect('guide/booking/' . $id);
+}
+
+public function declineBooking($id) {
+    $userId = $_SESSION['user_id'];
+    $guide = $this->getGuideProfile($userId);
+    $guideId = $guide ? $guide->id : null;
+
+    $booking = $this->guideModel->getBookingById($id, $guideId);
+    if ($booking && $booking->status === 'pending') {
+        $this->guideModel->updateBookingStatus($id, 'declined');
+        flash('guide_message', 'Booking declined.', 'alert alert-warning');
+    }
+    redirect('guide/booking/' . $id);
+}
+
+    /**
+     * Chat with client
+     * 
+     * @param int $id The booking ID
+     */
+public function chat($bookingId) {
+    $userId = $_SESSION['user_id'];
+    $guide = $this->getGuideProfile($userId);
+    $guideId = $guide ? $guide->id : null;
+
+    $booking = $this->guideModel->getBookingById($bookingId, $guideId);
+    if (!$booking) {
+        $this->loadView('errors/404');
+        return;
+    }
+
+    $messageModel = new MessageModel();
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['message'])) {
+        $messageModel->sendMessage($bookingId, $userId, $_POST['message']);
+        redirect('guide/chat/' . $bookingId);
+    }
+    $messages = $messageModel->getMessages($bookingId);
+
+    $this->loadView('tourGuides/chat', [
+        'booking' => $booking,
+        'messages' => $messages,
+        'currentUserId' => $userId
+    ]);
+}
     /**
      * Load a view with the header and footer
      * 
