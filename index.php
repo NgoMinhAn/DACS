@@ -6,6 +6,7 @@
 
 
 require_once __DIR__ . '/app/routes/web.php';
+$router->dispatch($_SERVER['REQUEST_URI']);
 // Enable error reporting
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
@@ -19,6 +20,12 @@ define('MODEL_PATH', APP_PATH . '/models');
 define('VIEW_PATH', APP_PATH . '/views');
 define('HELPER_PATH', APP_PATH . '/helpers');
 
+if (preg_match('#^/guide/booking/(\d+)$#', $_SERVER['REQUEST_URI'], $matches)) {
+    require_once 'app/controllers/GuideController.php';
+    $controller = new GuideController();
+    $controller->bookingDetails($matches[1]);
+    exit;
+}
 // Autoloader function for classes
 spl_autoload_register(function($className) {
     // Check for Controller class
