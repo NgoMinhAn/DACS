@@ -569,4 +569,23 @@ class TourGuideController {
         // Load footer
         require_once VIEW_PATH . '/shares/footer.php';
     }
+
+        // Accept booking
+    public function acceptBooking($bookingId) {
+        $this->guideModel->updateBookingStatus($bookingId, 'accepted');
+        // Redirect or show confirmation
+    }
+
+    // Decline booking
+    public function declineBooking($bookingId) {
+        $this->guideModel->updateBookingStatus($bookingId, 'declined');
+        // Redirect or show confirmation
+    }
+
+    // Chat view
+    public function chat($bookingId) {
+        $messageModel = new MessageModel();
+        $messages = $messageModel->getMessages($bookingId);
+        // Load chat view with $messages
+    }
 } 

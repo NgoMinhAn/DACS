@@ -310,22 +310,41 @@ class GuideModel {
      * @param string $query The search query
      * @return array The matching guides
      */
-public function searchGuides($query) {
-    // Use positional placeholders for each field
-    $sql = "SELECT * FROM guide_listings 
-            WHERE name LIKE ? 
-            OR bio LIKE ? 
-            OR location LIKE ? 
-            OR specialties LIKE ?
-            ORDER BY avg_rating DESC";
-    
-    $this->db->query($sql);
-    $param = '%' . $query . '%';
-    $this->db->bind(1, $param);
-    $this->db->bind(2, $param);
-    $this->db->bind(3, $param);
-    $this->db->bind(4, $param);
-    
-    return $this->db->resultSet();
+    public function searchGuides($query) {
+        // Use positional placeholders for each field
+        $sql = "SELECT * FROM guide_listings 
+                WHERE name LIKE ? 
+                OR bio LIKE ? 
+                OR location LIKE ? 
+                OR specialties LIKE ?
+                ORDER BY avg_rating DESC";
+        
+        $this->db->query($sql);
+        $param = '%' . $query . '%';
+        $this->db->bind(1, $param);
+        $this->db->bind(2, $param);
+        $this->db->bind(3, $param);
+        $this->db->bind(4, $param);
+        
+        return $this->db->resultSet();
+    }
+
+    public function updateBookingStatus($bookingId, $status) {
+    $this->db->query("UPDATE bookings SET status = :status, updated_at = NOW() WHERE id = :id");
+    $this->db->bind(':status', $status);
+    $this->db->bind(':id', $bookingId);
+    return $this->db->execute();
 }
+
+    public function getBookingById($bookingId) {
+        $this->db->query("SELECT * FROM bookings WHERE id = :id");
+        $this->db->bind(':id', $bookingId);
+        return $this->db->single();
+    }
+
+    public function getBookingsByGuideId($guideId) {
+        $this->db->query("SELECT * FROM bookings WHERE guide_id = :guide_id");
+        $this->db->bind(':guide_id', $guideId);
+        return $this->db->resultSet();
+    }
 }
