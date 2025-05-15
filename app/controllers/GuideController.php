@@ -314,16 +314,75 @@ class GuideController {
      * 
      * @param int $id The booking ID
      */
-    public function bookingDetails($id) {
-        $guideId = $_SESSION['guide_id']; // or however you get the logged-in guide's ID
-        $booking = $this->guideModel->getBookingById($id, $guideId);
-        if (!$booking) {
-            // Show 404 or error
-            $this->view('errors/404');
-            return;
-        }
-        $this->view('tourGuides/bookingDetails', ['booking' => $booking]);
+    public function booking($id) {
+    $userId = $_SESSION['user_id'];
+    $guide = $this->getGuideProfile($userId);
+    $guideId = $guide ? $guide->id : null;
+
+    $booking = $this->guideModel->getBookingById($id, $guideId);
+    if (!$booking) {
+        $this->loadView('errors/404');
+        return;
     }
+    $this->loadView('tourGuides/bookingDetails', ['booking' => $booking]);
+}
+
+    public function acceptBooking($id) {
+    $userId = $_SESSION['user_id'];
+    $guide = $this->getGuideProfile($userId);
+    $guideId = $guide ? $guide->id : null;
+
+    // Only allow if this guide owns the booking
+    $booking = $this->guideModel->getBookingById($id, $guideId);
+    if ($booking && $booking->status === 'pending') {
+        $this->guideModel->updateBookingStatus($id, 'accepted');
+        flash('guide_message', 'Booking accepted!', 'alert alert-success');
+    }
+    redirect('guide/booking/' . $id);
+}
+
+public function declineBooking($id) {
+    $userId = $_SESSION['user_id'];
+    $guide = $this->getGuideProfile($userId);
+    $guideId = $guide ? $guide->id : null;
+
+    $booking = $this->guideModel->getBookingById($id, $guideId);
+    if ($booking && $booking->status === 'pending') {
+        $this->guideModel->updateBookingStatus($id, 'declined');
+        flash('guide_message', 'Booking declined.', 'alert alert-warning');
+    }
+    redirect('guide/booking/' . $id);
+}
+
+    /**
+     * Chat with client
+     * 
+     * @param int $id The booking ID
+     */
+public function chat($bookingId) {
+    $userId = $_SESSION['user_id'];
+    $guide = $this->getGuideProfile($userId);
+    $guideId = $guide ? $guide->id : null;
+
+    $booking = $this->guideModel->getBookingById($bookingId, $guideId);
+    if (!$booking) {
+        $this->loadView('errors/404');
+        return;
+    }
+
+    $messageModel = new MessageModel();
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['message'])) {
+        $messageModel->sendMessage($bookingId, $userId, $_POST['message']);
+        redirect('guide/chat/' . $bookingId);
+    }
+    $messages = $messageModel->getMessages($bookingId);
+
+    $this->loadView('tourGuides/chat', [
+        'booking' => $booking,
+        'messages' => $messages,
+        'currentUserId' => $userId
+    ]);
+}
     /**
      * Load a view with the header and footer
      * 

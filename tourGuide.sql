@@ -144,6 +144,18 @@ CREATE TABLE bookings (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
+CREATE TABLE messages (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    booking_id INT NOT NULL,
+    sender_id INT NOT NULL,
+    message TEXT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (booking_id) REFERENCES bookings(id) ON DELETE CASCADE
+	FOREIGN KEY (sender_id) REFERENCES users(id)
+);
+
+SHOW COLUMNS FROM bookings LIKE 'status';
+ALTER TABLE bookings MODIFY status ENUM('pending','confirmed','completed','cancelled','accepted','declined') NOT NULL DEFAULT 'pending';
 -- Insert sample data
 
 -- Users (password is 'password' hashed with bcrypt)
