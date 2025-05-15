@@ -336,9 +336,13 @@ class GuideModel {
     return $this->db->execute();
 }
 
-    public function getBookingById($bookingId) {
-        $this->db->query("SELECT * FROM bookings WHERE id = :id");
+    public function getBookingById($bookingId, $guideId) {
+        $this->db->query("SELECT b.*, u.name as client_name, u.email as client_email
+                        FROM bookings b
+                        JOIN users u ON b.user_id = u.id
+                        WHERE b.id = :id AND b.guide_id = :guide_id");
         $this->db->bind(':id', $bookingId);
+        $this->db->bind(':guide_id', $guideId);
         return $this->db->single();
     }
 
