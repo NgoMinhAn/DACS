@@ -5,8 +5,6 @@
  */
 
 
-require_once __DIR__ . '/app/routes/web.php';
-$router->dispatch($_SERVER['REQUEST_URI']);
 // Enable error reporting
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
