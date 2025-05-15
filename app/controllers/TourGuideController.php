@@ -505,8 +505,38 @@ class TourGuideController {
             redirect('tourGuide/browse');
         }
     }
- 
-    
+
+    /**
+     * Search for tour guides based on query
+     */
+    public function search() {
+        // Get the search query from GET parameter
+        $query = isset($_GET['q']) ? sanitize($_GET['q']) : '';
+        
+        // If no query provided, redirect to browse page
+        if (empty($query)) {
+            redirect('tourGuide/browse');
+        }
+        
+        // Call model to search for guides
+        $guides = $this->guideModel->searchGuides($query);
+        
+        // If no guides found, show message
+        if (empty($guides)) {
+            flash('search_message', 'No guides found matching "' . htmlspecialchars($query) . '". Try a different search term.', 'alert alert-info');
+        }
+        
+        // Data to be passed to the view
+        $data = [
+            'title' => 'Search Results for "' . htmlspecialchars($query) . '"',
+            'query' => $query,
+            'guides' => $guides,
+            'result_count' => count($guides)
+        ];
+        
+        // Load view - using browse view to display results
+        $this->loadView('tourGuides/search', $data);
+    }
     
     /**
      * Load a view with the header and footer

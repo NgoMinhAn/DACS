@@ -281,7 +281,8 @@ class GuideModel {
         
         return $result;
     }
-     /**
+    
+    /**
      * Create a new booking
      * @param array $data
      * @return bool
@@ -303,6 +304,24 @@ class GuideModel {
         return $this->db->execute();
     }
 
- 
-
+    /**
+     * Search for guides based on a query
+     * 
+     * @param string $query The search query
+     * @return array The matching guides
+     */
+    public function searchGuides($query) {
+        // Build a search query that looks for matches in name, bio, location, and specialties
+        $sql = "SELECT * FROM guide_listings 
+                WHERE name LIKE :query 
+                OR bio LIKE :query 
+                OR location LIKE :query 
+                OR specialties LIKE :query
+                ORDER BY avg_rating DESC";
+        
+        $this->db->query($sql);
+        $this->db->bind(':query', '%' . $query . '%');
+        
+        return $this->db->resultSet();
+    }
 }
