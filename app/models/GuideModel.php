@@ -310,8 +310,6 @@ class GuideModel {
      * @param string $query The search query
      * @return array The matching guides
      */
-<?php
-// ...existing code...
 public function searchGuides($query) {
     // Use positional placeholders for each field
     $sql = "SELECT * FROM guide_listings 
@@ -330,5 +328,4 @@ public function searchGuides($query) {
     
     return $this->db->resultSet();
 }
-// ...existing code...
 }
