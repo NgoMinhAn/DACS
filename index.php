@@ -5,7 +5,7 @@
  */
 
 
-require_once __DIR__ . '/routes/web.php';
+require_once __DIR__ . '/app/routes/web.php';
 // Enable error reporting
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
