@@ -150,7 +150,7 @@ CREATE TABLE messages (
     sender_id INT NOT NULL,
     message TEXT NOT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (booking_id) REFERENCES bookings(id) ON DELETE CASCADE
+    FOREIGN KEY (booking_id) REFERENCES bookings(id) ON DELETE CASCADE,
 	FOREIGN KEY (sender_id) REFERENCES users(id)
 );
 

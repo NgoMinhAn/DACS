@@ -11,6 +11,12 @@ $routes = [
     ['pattern' => '#^guide/chat/(\d+)$#', 'controller' => 'GuideController', 'method' => 'chat', 'params' => [1]],
     // Add more custom routes as needed
 ];
+$routes[] = [
+    'pattern' => '#^user/chat/(\d+)$#',
+    'controller' => 'UserController',
+    'method' => 'chat',
+    'params' => [1]
+];
 
 function handle_custom_routes($uri, $routes) {
     foreach ($routes as $route) {

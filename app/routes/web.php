@@ -3,4 +3,10 @@
 $router->get('guide/booking/{id}', 'GuideController@bookingDetails');
 $router->get('guide/bookings', 'GuideController@bookingsList');
 $router->get('guide/dashboard', 'GuideController@dashboard');
-// Add more routes as needed
+$routes[] = [
+    'pattern' => '#^user/dashboard$#',
+    'controller' => 'UserController',
+    'method' => 'dashboard',
+    'params' => []
+];
+    
