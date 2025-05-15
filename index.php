@@ -24,7 +24,12 @@ require_once APP_PATH . '/config/config.php';
 require_once APP_PATH . '/config/database.php';
 require_once HELPER_PATH . '/functions.php';
 
-if (preg_match('#/guide/booking/(\d+)$#', $_SERVER['REQUEST_URI'], $matches)) {
+$uri = $_SERVER['REQUEST_URI'];
+$base = dirname($_SERVER['SCRIPT_NAME']);
+if (strpos($uri, $base) === 0) {
+    $uri = substr($uri, strlen($base));
+}
+if (preg_match('#^/guide/booking/(\d+)$#', $uri, $matches)) {
     require_once 'app/controllers/GuideController.php';
     $controller = new GuideController();
     $controller->bookingDetails($matches[1]);
