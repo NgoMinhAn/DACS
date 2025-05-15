@@ -5,6 +5,10 @@
  */
 
 
+
+require_once APP_PATH . '/config/config.php';
+require_once APP_PATH . '/config/database.php';
+require_once HELPER_PATH . '/functions.php';
 // Enable error reporting
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
