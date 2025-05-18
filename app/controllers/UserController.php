@@ -38,7 +38,7 @@ class UserController {
     public function dashboard() {
     $userId = $_SESSION['user_id'];
     $bookingModel = new BookingModel();
-    $bookings = $bookingModel->getBookingsByUserId($userId);
+    $bookings = $bookingModel->getUserBookings($userId);
     $this->loadView('user/dashboard', ['bookings' => $bookings]);
     }
     public function chat($bookingId) {

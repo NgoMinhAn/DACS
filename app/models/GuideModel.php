@@ -351,4 +351,29 @@ class GuideModel {
         $this->db->bind(':guide_id', $guideId);
         return $this->db->resultSet();
     }
+
+    // Cập nhật rating trung bình của guide
+    public function updateAverageRating($guide_id) {
+        // Lấy thống kê rating từ tất cả các review
+        $this->db->query('SELECT 
+            AVG(rating) as avg_rating,
+            COUNT(*) as total_reviews
+            FROM guide_reviews 
+            WHERE guide_id = :guide_id');
+        
+        $this->db->bind(':guide_id', $guide_id);
+        $result = $this->db->single();
+
+        // Cập nhật guide_profiles
+        $this->db->query('UPDATE guide_profiles 
+            SET avg_rating = :avg_rating,
+                total_reviews = :total_reviews
+            WHERE id = :guide_id');
+        
+        $this->db->bind(':guide_id', $guide_id);
+        $this->db->bind(':avg_rating', $result->avg_rating ?? 0);
+        $this->db->bind(':total_reviews', $result->total_reviews ?? 0);
+
+        return $this->db->execute();
+    }
 }

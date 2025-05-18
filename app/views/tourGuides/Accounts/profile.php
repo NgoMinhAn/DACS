@@ -157,9 +157,8 @@
                     
                     <!-- Add Review Button (show only if logged in and not viewing own profile) -->
                     <?php if(isLoggedIn() && $_SESSION['user_id'] != $guide->user_id): ?>
-                        <a href="<?php echo url('reviews/add/' . $guide->guide_id); ?>" class="btn btn-sm btn-outline-primary">
-                            <i class="fas fa-edit me-1"></i> Write a Review
-                        </a>
+                    <a href="<?php echo url('tourGuide/review/' . $guide->guide_id); ?>" class="btn btn-sm btn-outline-primary">                        
+                         <i class="fas fa-edit me-1"></i> Write a Review</a>
                     <?php endif; ?>
                 </div>
                 <div class="card-body">
@@ -183,131 +182,132 @@
                                 </p>
                             </div>
                             <div class="col-md-9">
-                                <?php
-                                // Rating distribution would come from the controller
-                                $distribution = $ratings_distribution ?? [
-                                    5 => [
-                                        'count' => $five_star_count ?? 0,
-                                        'percentage' => $five_star_count ? ($five_star_count / $guide->total_reviews * 100) : 0
-                                    ],
-                                    4 => [
-                                        'count' => $four_star_count ?? 0,
-                                        'percentage' => $four_star_count ? ($four_star_count / $guide->total_reviews * 100) : 0
-                                    ],
-                                    3 => [
-                                        'count' => $three_star_count ?? 0,
-                                        'percentage' => $three_star_count ? ($three_star_count / $guide->total_reviews * 100) : 0
-                                    ],
-                                    2 => [
-                                        'count' => $two_star_count ?? 0,
-                                        'percentage' => $two_star_count ? ($two_star_count / $guide->total_reviews * 100) : 0
-                                    ],
-                                    1 => [
-                                        'count' => $one_star_count ?? 0,
-                                        'percentage' => $one_star_count ? ($one_star_count / $guide->total_reviews * 100) : 0
-                                    ]
-                                ];
-                                ?>
-                                
-                                <?php for($i = 5; $i >= 1; $i--): ?>
+                                <?php foreach($ratings_distribution as $rating => $data): ?>
                                     <div class="d-flex align-items-center mb-2">
                                         <div class="me-3" style="width: 60px;">
-                                            <?php echo $i; ?> <?php echo $i == 1 ? 'star' : 'stars'; ?>
+                                            <?php echo $rating; ?> <?php echo $rating == 1 ? 'star' : 'stars'; ?>
                                         </div>
                                         <div class="progress flex-grow-1" style="height: 10px;">
                                             <div class="progress-bar bg-warning" role="progressbar" 
-                                                 style="width: <?php echo $distribution[$i]['percentage']; ?>%" 
-                                                 aria-valuenow="<?php echo $distribution[$i]['percentage']; ?>" 
+                                                 style="width: <?php echo $data['percentage']; ?>%" 
+                                                 aria-valuenow="<?php echo $data['percentage']; ?>" 
                                                  aria-valuemin="0" aria-valuemax="100"></div>
                                         </div>
                                         <div class="ms-3" style="width: 40px;">
-                                            <?php echo $distribution[$i]['count']; ?>
+                                            <?php echo $data['count']; ?>
                                         </div>
                                     </div>
-                                <?php endfor; ?>
+                                <?php endforeach; ?>
                             </div>
                         </div>
                         
                         <hr>
                         
                         <!-- Individual Reviews -->
-                        <?php foreach($reviews as $review): ?>
-                            <div class="mb-4 pb-4 border-bottom">
-                                <div class="d-flex justify-content-between mb-2">
-                                    <div>
-                                        <h5 class="mb-0">
-                                            <?php 
-                                            // Check which property holds the user name
-                                            if (isset($review->user_name)) {
-                                                echo htmlspecialchars($review->user_name);
-                                            } elseif (isset($review->name)) {
-                                                echo htmlspecialchars($review->name);
-                                            } else {
-                                                echo 'Anonymous User';
-                                            }
-                                            ?>
-                                        </h5>
-                                        <p class="text-muted small mb-0">
-                                            <?php 
-                                            if (isset($review->created_at) && !empty($review->created_at)) {
-                                                echo date('F j, Y', strtotime($review->created_at));
-                                            } else {
-                                                echo 'Recently';
-                                            }
-                                            ?>
-                                        </p>
+                        <div id="reviewsList">
+                            <?php 
+                            $totalReviews = count($reviews);
+                            $initialReviews = array_slice($reviews, 0, 3);
+                            foreach($initialReviews as $review): 
+                            ?>
+                                <div class="mb-4 pb-4 border-bottom review-item">
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <div>
+                                            <h5 class="mb-0">
+                                                <?php 
+                                                if (isset($review->user_name)) {
+                                                    echo htmlspecialchars($review->user_name);
+                                                } elseif (isset($review->name)) {
+                                                    echo htmlspecialchars($review->name);
+                                                } else {
+                                                    echo 'Anonymous User';
+                                                }
+                                                ?>
+                                            </h5>
+                                            <p class="text-muted small mb-0">
+                                                <?php 
+                                                if (isset($review->created_at) && !empty($review->created_at)) {
+                                                    echo date('F j, Y', strtotime($review->created_at));
+                                                } else {
+                                                    echo 'Recently';
+                                                }
+                                                ?>
+                                            </p>
+                                        </div>
+                                        <div>
+                                            <?php for($i = 1; $i <= 5; $i++): ?>
+                                                <?php if($i <= $review->rating): ?>
+                                                    <i class="fas fa-star text-warning"></i>
+                                                <?php else: ?>
+                                                    <i class="far fa-star text-warning"></i>
+                                                <?php endif; ?>
+                                            <?php endfor; ?>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <?php for($i = 1; $i <= 5; $i++): ?>
-                                            <?php if($i <= $review->rating): ?>
-                                                <i class="fas fa-star text-warning"></i>
-                                            <?php else: ?>
-                                                <i class="far fa-star text-warning"></i>
-                                            <?php endif; ?>
-                                        <?php endfor; ?>
-                                    </div>
+                                    <p class="mb-0"><?php echo nl2br(htmlspecialchars($review->review_text ?? '')); ?></p>
                                 </div>
-                                <p class="mb-0"><?php echo nl2br(htmlspecialchars($review->review_text ?? '')); ?></p>
-                                
-                                <!-- Helpful Button (if implemented) -->
-                                <?php if(isset($review->helpful_votes) && $review->helpful_votes > 0): ?>
-                                    <div class="mt-2 text-muted small">
-                                        <i class="far fa-thumbs-up me-1"></i> <?php echo $review->helpful_votes; ?> found this helpful
+                            <?php endforeach; ?>
+                        </div>
+
+                        <!-- Hidden Reviews -->
+                        <div id="hiddenReviews" style="display: none;">
+                            <?php 
+                            $remainingReviews = array_slice($reviews, 3);
+                            foreach($remainingReviews as $review): 
+                            ?>
+                                <div class="mb-4 pb-4 border-bottom review-item">
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <div>
+                                            <h5 class="mb-0">
+                                                <?php 
+                                                if (isset($review->user_name)) {
+                                                    echo htmlspecialchars($review->user_name);
+                                                } elseif (isset($review->name)) {
+                                                    echo htmlspecialchars($review->name);
+                                                } else {
+                                                    echo 'Anonymous User';
+                                                }
+                                                ?>
+                                            </h5>
+                                            <p class="text-muted small mb-0">
+                                                <?php 
+                                                if (isset($review->created_at) && !empty($review->created_at)) {
+                                                    echo date('F j, Y', strtotime($review->created_at));
+                                                } else {
+                                                    echo 'Recently';
+                                                }
+                                                ?>
+                                            </p>
+                                        </div>
+                                        <div>
+                                            <?php for($i = 1; $i <= 5; $i++): ?>
+                                                <?php if($i <= $review->rating): ?>
+                                                    <i class="fas fa-star text-warning"></i>
+                                                <?php else: ?>
+                                                    <i class="far fa-star text-warning"></i>
+                                                <?php endif; ?>
+                                            <?php endfor; ?>
+                                        </div>
                                     </div>
-                                <?php endif; ?>
+                                    <p class="mb-0"><?php echo nl2br(htmlspecialchars($review->review_text ?? '')); ?></p>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+
+                        <?php if($totalReviews > 3): ?>
+                            <div class="text-center mt-4" id="viewAllContainer">
+                                <button class="btn btn-outline-primary" id="viewAllBtn">
+                                    View All Reviews (<?php echo $totalReviews; ?>)
+                                </button>
                             </div>
-                        <?php endforeach; ?>
-                        
-                        <!-- Pagination (if needed) -->
-                        <?php if(isset($pagination) && $pagination->total_pages > 1): ?>
-                            <nav aria-label="Review pagination">
-                                <ul class="pagination justify-content-center">
-                                    <?php if($pagination->current_page > 1): ?>
-                                        <li class="page-item">
-                                            <a class="page-link" href="<?php echo url('tourGuide/profile/' . $guide->id . '?page=' . ($pagination->current_page - 1)); ?>">
-                                                Previous
-                                            </a>
-                                        </li>
-                                    <?php endif; ?>
-                                    
-                                    <?php for($i = 1; $i <= $pagination->total_pages; $i++): ?>
-                                        <li class="page-item <?php echo $i == $pagination->current_page ? 'active' : ''; ?>">
-                                            <a class="page-link" href="<?php echo url('tourGuide/profile/' . $guide->id . '?page=' . $i); ?>">
-                                                <?php echo $i; ?>
-                                            </a>
-                                        </li>
-                                    <?php endfor; ?>
-                                    
-                                    <?php if($pagination->current_page < $pagination->total_pages): ?>
-                                        <li class="page-item">
-                                            <a class="page-link" href="<?php echo url('tourGuide/profile/' . $guide->id . '?page=' . ($pagination->current_page + 1)); ?>">
-                                                Next
-                                            </a>
-                                        </li>
-                                    <?php endif; ?>
-                                </ul>
-                            </nav>
                         <?php endif; ?>
+
+                        <script>
+                            document.getElementById('viewAllBtn')?.addEventListener('click', function() {
+                                document.getElementById('hiddenReviews').style.display = 'block';
+                                document.getElementById('viewAllContainer').style.display = 'none';
+                            });
+                        </script>
                     
                     <?php else: ?>
                         <div class="alert alert-info">
