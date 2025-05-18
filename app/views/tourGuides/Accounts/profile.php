@@ -25,7 +25,7 @@
                     
                     <h3 class="card-title"><?php echo htmlspecialchars($guide->name); ?></h3>
                     <p class="text-muted">
-                        <i class="fas fa-map-marker-alt me-2"></i><?php echo htmlspecialchars($guide->location); ?>
+                        <i class="fas fa-map-marker-alt me-2"></i><?php echo htmlspecialchars($guide->location ?? ''); ?>
                     </p>
 
                     <!-- Rating -->
@@ -54,7 +54,8 @@
 
                     <!-- Experience -->
                     <p class="mb-2">
-                        <i class="fas fa-briefcase me-2"></i> <?php echo $guide->experience_years; ?> years of experience
+                        <i class="fas fa-briefcase me-2"></i>
+                        <?php echo isset($guide->experience_years) ? (int)$guide->experience_years : 0; ?> years of experience
                     </p>
 
                     <!-- Quick info -->
@@ -102,7 +103,7 @@
                     <h4 class="mb-0">About <?php echo htmlspecialchars($guide->name); ?></h4>
                 </div>
                 <div class="card-body">
-                    <p class="card-text"><?php echo nl2br(htmlspecialchars($guide->bio)); ?></p>
+                    <p class="card-text"><?php echo nl2br(htmlspecialchars($guide->bio ?? '')); ?></p>
                 </div>
             </div>
             
