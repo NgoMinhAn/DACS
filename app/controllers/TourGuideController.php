@@ -5,6 +5,7 @@
  */
 class TourGuideController {
     private $guideModel;
+    private $reviewModel;
     
     /**
      * Constructor
@@ -12,6 +13,7 @@ class TourGuideController {
     public function __construct() {
         // Load the guide model
         $this->guideModel = new GuideModel();
+        $this->reviewModel = new ReviewModel();
     }
     
     /**
@@ -570,7 +572,7 @@ class TourGuideController {
         require_once VIEW_PATH . '/shares/footer.php';
     }
 
-        // Accept booking
+    // Accept booking
     public function acceptBooking($bookingId) {
         $this->guideModel->updateBookingStatus($bookingId, 'accepted');
         // Redirect or show confirmation
@@ -587,5 +589,85 @@ class TourGuideController {
         $messageModel = new MessageModel();
         $messages = $messageModel->getMessages($bookingId);
         // Load chat view with $messages
+    }
+
+    // Hiển thị trang review
+    public function review($guide_id) {
+        // Kiểm tra đăng nhập
+        if (!isLoggedIn()) {
+            redirect('account/login');
+        }
+
+        // Lấy thông tin guide
+        $guide = $this->guideModel->getGuideById($guide_id);
+        
+        if (!$guide) {
+            die('Guide not found');
+        }
+
+        // Kiểm tra xem người dùng có phải là chính guide này không
+        if ($_SESSION['user_id'] == $guide->user_id) {
+            die('You cannot review yourself');
+        }
+
+        $data = [
+            'guide' => $guide
+        ];
+
+        $this->loadView('tourGuides/Accounts/review', $data);
+    }
+
+    // Xử lý submit review
+    public function submitReview() {
+        if ($_SERVER['REQUEST_METHOD'] != 'POST') {
+            redirect('');
+        }
+
+        // Kiểm tra đăng nhập
+        if (!isLoggedIn()) {
+            redirect('account/login');
+        }
+
+        // Validate dữ liệu
+        $guide_id = $_POST['guide_id'] ?? null;
+        $rating = $_POST['rating'] ?? null;
+        $review_text = $_POST['review_text'] ?? null;
+
+        if (!$guide_id || !$rating || !$review_text) {
+            die('Missing required fields');
+        }
+
+        // Validate rating
+        if (!is_numeric($rating) || $rating < 1 || $rating > 5) {
+            die('Invalid rating');
+        }
+
+        // Lấy thông tin guide
+        $guide = $this->guideModel->getGuideById($guide_id);
+        if (!$guide) {
+            die('Guide not found');
+        }
+
+        // Kiểm tra xem người dùng có phải là chính guide này không
+        if ($_SESSION['user_id'] == $guide->user_id) {
+            die('You cannot review yourself');
+        }
+
+        // Lưu review
+        $review = [
+            'user_id' => $_SESSION['user_id'],
+            'guide_id' => $guide_id,
+            'rating' => $rating,
+            'review_text' => $review_text,
+            'created_at' => date('Y-m-d H:i:s')
+        ];
+
+        if ($this->reviewModel->addReview($review)) {
+            // Cập nhật rating trung bình của guide
+            $this->guideModel->updateAverageRating($guide_id);
+            redirect('tourGuide/profile/' . $guide_id);
+        } else {
+            die('Something went wrong');
+        }
     }
 } 
