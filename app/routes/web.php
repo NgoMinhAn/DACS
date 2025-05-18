@@ -9,4 +9,21 @@ $routes[] = [
     'method' => 'dashboard',
     'params' => []
 ];
-    
+$routes[] = [
+    'pattern' => '#^admin/users$#',
+    'controller' => 'AdminController',
+    'method' => 'users',
+    'params' => []
+];
+$routes[] = [
+    'pattern' => '#^admin/editUser/(\d+)$#',
+    'controller' => 'AdminController',
+    'method' => 'editUser',
+    'params' => [1]
+];
+$routes[] = [
+    'pattern' => '#^admin/deleteUser/(\d+)$#',
+    'controller' => 'AdminController',
+    'method' => 'deleteUser',
+    'params' => [1]
+];

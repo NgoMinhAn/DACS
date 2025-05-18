@@ -359,5 +359,22 @@ class UserModel {
         ');
         return $this->db->resultSet();
     }
+    public function getUserById($id) {
+    $this->db->query("SELECT id, name, email FROM users WHERE id = :id");
+    $this->db->bind(':id', $id);
+    return $this->db->single();
+    }
 
+    public function updateUser($id, $name, $email) {
+        $this->db->query("UPDATE users SET name = :name, email = :email WHERE id = :id");
+        $this->db->bind(':name', $name);
+        $this->db->bind(':email', $email);
+        $this->db->bind(':id', $id);
+        return $this->db->execute();
+    }
+    public function deleteUser($id) {
+    $this->db->query("DELETE FROM users WHERE id = :id");
+    $this->db->bind(':id', $id);
+    return $this->db->execute();
+}
 } 

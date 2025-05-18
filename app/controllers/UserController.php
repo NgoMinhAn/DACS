@@ -64,7 +64,7 @@ class UserController {
         'currentUserId' => $userId
     ]);
 }
-    
+
     /**
      * Load view helper
      */

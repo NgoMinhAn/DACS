@@ -40,17 +40,10 @@ class AdminController {
      * List all users
      */
     public function users() {
-        // Get all users
-        $users = $this->userModel->getAllUsers();
-        
-        $data = [
-            'title' => 'Manage Users',
-            'users' => $users
-        ];
-        
-        $this->loadView('admin/users', $data);
+        $userModel = new UserModel();
+        $users = $userModel->getAllUsers();
+        $this->loadView('admin/users', ['users' => $users]);
     }
-    
     /**
      * List all guides
      */
@@ -130,5 +123,23 @@ class AdminController {
         
         // Load footer
         require_once VIEW_PATH . '/shares/footer.php';
+    }
+
+        public function editUser($id) {
+        $userModel = new UserModel();
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $name = $_POST['name'] ?? '';
+            $email = $_POST['email'] ?? '';
+            $userModel->updateUser($id, $name, $email);
+            redirect('admin/users');
+        }
+        $user = $userModel->getUserById($id);
+        $this->loadView('admin/editUser', ['user' => $user]);
+    }
+        
+    public function deleteUser($id) {
+        $userModel = new UserModel();
+        $userModel->deleteUser($id);
+        redirect('admin/users');
     }
 } 
