@@ -27,7 +27,6 @@
         </div>
         <div class="card-body">
             <a href="<?php echo url('admin/users'); ?>" class="btn btn-outline-primary">View All Users</a>
-            <a href="<?php echo url('admin/addUser'); ?>" class="btn btn-outline-success">Add New User</a>
         </div>
     </div>
 
@@ -38,7 +37,6 @@
         </div>
         <div class="card-body">
             <a href="<?php echo url('admin/guides'); ?>" class="btn btn-outline-secondary">View All Guides</a>
-            <a href="<?php echo url('admin/addGuide'); ?>" class="btn btn-outline-success">Add New Guide</a>
         </div>
     </div>
 </div>
