@@ -1,4 +1,3 @@
-<?php
 <!-- In your bookingsList.php -->
 <?php if($booking->status == 'pending'): ?>
     <a href="<?php echo url('tourGuide/acceptBooking/' . $booking->id); ?>" class="btn btn-success btn-sm">Accept</a>
