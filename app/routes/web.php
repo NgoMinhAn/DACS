@@ -5,6 +5,7 @@ $router->post('tourGuide/submitReview', 'TourGuideController@submitReview');
 $router->get('guide/booking/{id}', 'GuideController@bookingDetails');
 $router->get('guide/bookings', 'GuideController@bookingsList');
 $router->get('guide/dashboard', 'GuideController@dashboard');
+$router->get('guide/reviews', 'GuideController@reviewsList');
 $routes[] = [
     'pattern' => '#^user/dashboard$#',
     'controller' => 'UserController',
