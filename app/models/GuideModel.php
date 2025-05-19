@@ -493,4 +493,84 @@ class GuideModel
             }
         }
     }
+
+    /**
+     * Get guide profile by user ID
+     * 
+     * @param int $userId The user ID
+     * @return object|boolean The guide profile or false
+     */
+    public function getGuideProfileByUserId($userId)
+    {
+        $this->db->query('
+            SELECT g.*, u.name, u.email, u.profile_image, u.created_at
+            FROM guide_profiles g
+            JOIN users u ON g.user_id = u.id
+            WHERE u.id = :user_id
+        ');
+        $this->db->bind(':user_id', $userId);
+        
+        return $this->db->single();
+    }
+
+    /**
+     * Get guide statistics
+     * 
+     * @param int $guideId The guide ID
+     * @return object The statistics
+     */
+    public function getGuideStats($guideId)
+    {
+        $stats = new stdClass();
+        
+        // Total bookings
+        $this->db->query('SELECT COUNT(*) as count FROM bookings WHERE guide_id = :guide_id');
+        $this->db->bind(':guide_id', $guideId);
+        $result = $this->db->single();
+        $stats->total_bookings = $result ? $result->count : 0;
+        
+        // Pending bookings
+        $this->db->query('SELECT COUNT(*) as count FROM bookings WHERE guide_id = :guide_id AND status = "pending"');
+        $this->db->bind(':guide_id', $guideId);
+        $result = $this->db->single();
+        $stats->pending_bookings = $result ? $result->count : 0;
+        
+        // Monthly revenue
+        $this->db->query('
+            SELECT SUM(total_price) as revenue 
+            FROM bookings 
+            WHERE guide_id = :guide_id 
+            AND status = "completed"
+            AND MONTH(booking_date) = MONTH(CURRENT_DATE())
+            AND YEAR(booking_date) = YEAR(CURRENT_DATE())
+        ');
+        $this->db->bind(':guide_id', $guideId);
+        $result = $this->db->single();
+        $stats->monthly_revenue = $result ? $result->revenue : 0;
+        
+        return $stats;
+    }
+
+    /**
+     * Get recent bookings for a guide
+     * 
+     * @param int $guideId The guide ID
+     * @param int $limit The number of bookings to get
+     * @return array The bookings
+     */
+    public function getRecentBookings($guideId, $limit = 5)
+    {
+        $this->db->query('
+            SELECT b.*, u.name as client_name
+            FROM bookings b
+            JOIN users u ON b.user_id = u.id
+            WHERE b.guide_id = :guide_id
+            ORDER BY b.created_at DESC
+            LIMIT :limit
+        ');
+        $this->db->bind(':guide_id', $guideId);
+        $this->db->bind(':limit', $limit, PDO::PARAM_INT);
+        
+        return $this->db->resultSet();
+    }
 }
