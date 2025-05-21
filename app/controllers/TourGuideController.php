@@ -451,6 +451,19 @@ class TourGuideController {
                 }
             }
 
+            // Store booking info in session
+            $_SESSION['pending_booking'] = [
+                'guide_id' => $guide_id,
+                'booking_date' => $_POST['booking_date'] ?? '',
+                'booking_type' => $booking_type,
+                'start_time' => $_POST['start_time'] ?? '',
+                'hours' => $hours,
+                'number_of_people' => $_POST['number_of_people'] ?? '',
+                'meeting_location' => $_POST['meeting_location'] ?? '',
+                'special_requests' => $_POST['special_requests'] ?? '',
+                'total_amount' => $total_amount
+            ];
+
             $data = [
                 'guide_id' => $guide_id,
                 'booking_date' => $_POST['booking_date'] ?? '',

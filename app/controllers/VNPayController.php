@@ -85,7 +85,48 @@ class VNPayController {
         // Verify the payment result
         if ($vnp_ResponseCode == '00') {
             // Payment successful
-            flash('success_message', 'Payment successful! Your booking has been confirmed.', 'alert alert-success');
+            if (isset($_SESSION['pending_booking'])) {
+                $booking_data = $_SESSION['pending_booking'];
+                $user_id = $_SESSION['user_id'] ?? null;
+
+                // Calculate end_time and total_price
+                if ($booking_data['booking_type'] === 'hourly') {
+                    $end_time = date('H:i:s', strtotime($booking_data['start_time']) + ($booking_data['hours'] * 3600));
+                    $total_hours = $booking_data['hours'];
+                } else {
+                    $start_time = '09:00:00';
+                    $end_time = '17:00:00';
+                    $total_hours = 8;
+                }
+
+                // Create booking with paid status
+                $db = new Database();
+                $db->query('INSERT INTO bookings (guide_id, user_id, booking_date, start_time, end_time, total_hours, total_price, status, payment_status, transaction_id, special_requests, number_of_people, meeting_location) VALUES (:guide_id, :user_id, :booking_date, :start_time, :end_time, :total_hours, :total_price, :status, :payment_status, :transaction_id, :special_requests, :number_of_people, :meeting_location)');
+                
+                $db->bind(':guide_id', $booking_data['guide_id']);
+                $db->bind(':user_id', $user_id);
+                $db->bind(':booking_date', $booking_data['booking_date']);
+                $db->bind(':start_time', $booking_data['start_time']);
+                $db->bind(':end_time', $end_time);
+                $db->bind(':total_hours', $total_hours);
+                $db->bind(':total_price', $booking_data['total_amount']);
+                $db->bind(':status', 'confirmed');
+                $db->bind(':payment_status', 'paid');
+                $db->bind(':transaction_id', $vnp_TransactionNo);
+                $db->bind(':special_requests', $booking_data['special_requests']);
+                $db->bind(':number_of_people', $booking_data['number_of_people']);
+                $db->bind(':meeting_location', $booking_data['meeting_location']);
+
+                if ($db->execute()) {
+                    // Clear pending booking from session
+                    unset($_SESSION['pending_booking']);
+                    flash('success_message', 'Payment successful! Your booking has been confirmed.', 'alert alert-success');
+                } else {
+                    flash('error_message', 'Payment successful but failed to create booking. Please contact support.', 'alert alert-warning');
+                }
+            } else {
+                flash('error_message', 'Payment successful but booking information is missing. Please contact support.', 'alert alert-warning');
+            }
         } else {
             // Payment failed
             flash('error_message', 'Payment failed. Please try again.', 'alert alert-danger');
