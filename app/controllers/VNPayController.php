@@ -85,12 +85,9 @@ class VNPayController {
         // Verify the payment result
         if ($vnp_ResponseCode == '00') {
             // Payment successful
-            // Update booking status
-            $this->guideModel->updatePaymentStatus($vnp_TxnRef, 'paid', $vnp_TransactionNo);
             flash('success_message', 'Payment successful! Your booking has been confirmed.', 'alert alert-success');
         } else {
             // Payment failed
-            $this->guideModel->updatePaymentStatus($vnp_TxnRef, 'pending');
             flash('error_message', 'Payment failed. Please try again.', 'alert alert-danger');
         }
 

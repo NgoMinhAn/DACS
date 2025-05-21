@@ -340,23 +340,6 @@ class GuideModel
         return $this->db->execute();
     }
 
-    public function updatePaymentStatus($bookingId, $paymentStatus, $transactionId = null)
-    {
-        $sql = "UPDATE bookings SET payment_status = :payment_status, updated_at = NOW()";
-        if ($transactionId) {
-            $sql .= ", transaction_id = :transaction_id";
-        }
-        $sql .= " WHERE id = :id";
-        
-        $this->db->query($sql);
-        $this->db->bind(':payment_status', $paymentStatus);
-        $this->db->bind(':id', $bookingId);
-        if ($transactionId) {
-            $this->db->bind(':transaction_id', $transactionId);
-        }
-        return $this->db->execute();
-    }
-
     public function getBookingById($bookingId, $guideId)
     {
         $this->db->query("SELECT b.*, u.name as client_name, u.email as client_email
