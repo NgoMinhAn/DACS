@@ -434,15 +434,33 @@ class TourGuideController {
      */
     public function confirmBooking() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $guide_id = $_POST['guide_id'] ?? '';
+            $booking_type = $_POST['booking_type'] ?? '';
+            $hours = $_POST['hours'] ?? 0;
+
+            // Get guide details to calculate price
+            $guide = $this->guideModel->getGuideById($guide_id);
+            
+            // Calculate total amount
+            $total_amount = 0;
+            if ($guide) {
+                if ($booking_type === 'hourly') {
+                    $total_amount = $guide->hourly_rate * $hours;
+                } else {
+                    $total_amount = $guide->daily_rate;
+                }
+            }
+
             $data = [
-                'guide_id' => $_POST['guide_id'] ?? '',
+                'guide_id' => $guide_id,
                 'booking_date' => $_POST['booking_date'] ?? '',
-                'booking_type' => $_POST['booking_type'] ?? '',
+                'booking_type' => $booking_type,
                 'start_time' => $_POST['start_time'] ?? '',
-                'hours' => $_POST['hours'] ?? '',
+                'hours' => $hours,
                 'number_of_people' => $_POST['number_of_people'] ?? '',
                 'meeting_location' => $_POST['meeting_location'] ?? '',
                 'special_requests' => $_POST['special_requests'] ?? '',
+                'total_amount' => $total_amount
             ];
             $this->loadView('tourGuides/confirmBooking', $data);
         } else {
