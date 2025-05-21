@@ -62,18 +62,11 @@
                         <div class="mb-4">
                             <div class="d-flex justify-content-between align-items-center mb-3">
                                 <h5 class="mb-0">Total Amount:</h5>
-                                <h4 class="mb-0 text-primary"><?php echo number_format($total_amount, 0, ',', '.'); ?> VND</h4>
+                                <div class="text-end">
+                                    <h4 class="mb-0 text-primary">$<?php echo number_format($total_amount, 2); ?> USD</h4>
+                                    <small class="text-muted">≈ <?php echo number_format($total_amount * 24500, 0, ',', '.'); ?> VND</small>
+                                </div>
                             </div>
-                        </div>
-
-                        <div class="mb-4">
-                            <label for="payment_amount" class="form-label">Payment Amount (VND)</label>
-                            <div class="input-group">
-                                <input type="number" class="form-control" id="payment_amount" name="payment_amount" 
-                                       value="<?php echo $total_amount; ?>" min="0" step="1000" required>
-                                <span class="input-group-text">VND</span>
-                            </div>
-                            <small class="text-muted">You can modify the payment amount if needed</small>
                         </div>
 
                         <div class="d-grid gap-2">
@@ -97,11 +90,7 @@
 <script>
 function processPayment(event) {
     event.preventDefault();
-    var amount = document.getElementById('payment_amount').value;
-    if (!amount || amount <= 0) {
-        alert('Please enter a valid payment amount');
-        return false;
-    }
+    var amount = <?php echo $total_amount * 24500; ?>;
     var url = '<?php echo url('vnpay/createPayment'); ?>' + 
             '?amount=' + amount + 
             '&orderInfo=Tour Booking for Guide ID: <?php echo $guide_id; ?>' + 
