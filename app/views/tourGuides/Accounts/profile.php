@@ -407,9 +407,7 @@
                                 <?php if(isLoggedIn()): ?>
                                     <button type="submit" class="btn btn-primary btn-lg">Request Booking</button>
                                 <?php else: ?>
-                                    <a href="<?php echo url('account/login?redirect=' . urlencode('tourGuide/profile/' . $guide->id)); ?>" class="btn btn-primary btn-lg">
-                                        Log in to Book
-                                    </a>
+                                                                        <a href="<?php echo url('account/login?redirect=' . urlencode('tourGuide/profile/' . $guide->guide_id)); ?>" class="btn btn-primary btn-lg">                                        Log in to Book                                    </a>
                                 <?php endif; ?>
                             </div>
                                <script>

@@ -129,11 +129,21 @@ class PageController {
         // Extract the data to make it available in the view
         extract($data);
         
+        // Check if view file exists
+        $viewFile = VIEW_PATH . '/' . $view . '.php';
+        if (!file_exists($viewFile)) {
+            // Log error
+            error_log("View file not found: " . $viewFile);
+            // Redirect to 404 page
+            header('Location: ' . url('error/notFound'));
+            exit;
+        }
+        
         // Include header
         require_once VIEW_PATH . '/shares/header.php';
         
         // Include main view
-        require_once VIEW_PATH . '/' . $view . '.php';
+        require_once $viewFile;
         
         // Include footer
         require_once VIEW_PATH . '/shares/footer.php';

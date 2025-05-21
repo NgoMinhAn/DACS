@@ -8,7 +8,7 @@
             <li class="list-group-item"><strong>Time:</strong> <?php echo htmlspecialchars($booking->start_time); ?> - <?php echo htmlspecialchars($booking->end_time); ?></li>
             <li class="list-group-item"><strong>Status:</strong> <?php echo htmlspecialchars($booking->status); ?></li>
             <li class="list-group-item"><strong>Price:</strong> $<?php echo number_format($booking->total_price, 2); ?></li>
-            <li class="list-group-item"><strong>Special Requests:</strong> <?php echo htmlspecialchars($booking->special_requests); ?></li>
+            <li class="list-group-item"><strong>Special Requests:</strong> <?php echo !is_null($booking->special_requests) ? htmlspecialchars($booking->special_requests) : ''; ?></li>
         </ul>
 
         <!-- Accept Button (only if not already accepted/declined) -->

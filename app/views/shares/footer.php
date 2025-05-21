@@ -84,4 +84,37 @@
         </div>
       </div>
     </div>
+
+    <!-- Back to Top Button -->
+    <button id="backToTop" class="btn btn-primary rounded-circle shadow position-fixed" 
+            style="bottom: 30px; right: 30px; width: 36px; height: 36px; display: none; z-index: 1050;"
+            title="Back to top">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Custom JavaScript for Back to Top -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const backToTopButton = document.getElementById('backToTop');
+        
+        // Hiển thị nút khi cuộn xuống 300px
+        window.onscroll = function() {
+            if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+                backToTopButton.style.display = "block";
+            } else {
+                backToTopButton.style.display = "none";
+            }
+        };
+        
+       // Scroll to top of page when button is clicked
+        backToTopButton.addEventListener('click', function() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    });
+    </script>
+</body>
+</html>
     
