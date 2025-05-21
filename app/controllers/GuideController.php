@@ -19,11 +19,8 @@ class GuideController {
         
         // Load models
         $this->userModel = new UserModel();
-        
-        // These models would need to be created
-        // For now we'll initialize them with null and handle this gracefully
-        $this->guideModel = class_exists('GuideModel') ? new GuideModel() : null;
-        $this->bookingModel = class_exists('BookingModel') ? new BookingModel() : null;
+        $this->guideModel = new GuideModel();
+        $this->bookingModel = new BookingModel();
     }
     
     /**
@@ -315,74 +312,105 @@ class GuideController {
      * @param int $id The booking ID
      */
     public function booking($id) {
-    $userId = $_SESSION['user_id'];
-    $guide = $this->getGuideProfile($userId);
-    $guideId = $guide ? $guide->id : null;
+        $userId = $_SESSION['user_id'];
+        $guide = $this->getGuideProfile($userId);
+        $guideId = $guide ? $guide->id : null;
 
-    $booking = $this->guideModel->getBookingById($id, $guideId);
-    if (!$booking) {
-        $this->loadView('errors/404');
-        return;
+        $booking = $this->guideModel->getBookingById($id, $guideId);
+        if (!$booking) {
+            $this->loadView('errors/404');
+            return;
+        }
+        $this->loadView('tourGuides/bookingDetails', ['booking' => $booking]);
     }
-    $this->loadView('tourGuides/bookingDetails', ['booking' => $booking]);
-}
 
     public function acceptBooking($id) {
-    $userId = $_SESSION['user_id'];
-    $guide = $this->getGuideProfile($userId);
-    $guideId = $guide ? $guide->id : null;
+        $userId = $_SESSION['user_id'];
+        $guide = $this->getGuideProfile($userId);
+        $guideId = $guide ? $guide->id : null;
 
-    // Only allow if this guide owns the booking
-    $booking = $this->guideModel->getBookingById($id, $guideId);
-    if ($booking && $booking->status === 'pending') {
-        $this->guideModel->updateBookingStatus($id, 'accepted');
-        flash('guide_message', 'Booking accepted!', 'alert alert-success');
+        // Only allow if this guide owns the booking
+        $booking = $this->guideModel->getBookingById($id, $guideId);
+        if ($booking && $booking->status === 'pending') {
+            $this->guideModel->updateBookingStatus($id, 'accepted');
+            flash('guide_message', 'Booking accepted!', 'alert alert-success');
+        }
+        redirect('guide/booking/' . $id);
     }
-    redirect('guide/booking/' . $id);
-}
 
-public function declineBooking($id) {
-    $userId = $_SESSION['user_id'];
-    $guide = $this->getGuideProfile($userId);
-    $guideId = $guide ? $guide->id : null;
+    public function declineBooking($id) {
+        $userId = $_SESSION['user_id'];
+        $guide = $this->getGuideProfile($userId);
+        $guideId = $guide ? $guide->id : null;
 
-    $booking = $this->guideModel->getBookingById($id, $guideId);
-    if ($booking && $booking->status === 'pending') {
-        $this->guideModel->updateBookingStatus($id, 'declined');
-        flash('guide_message', 'Booking declined.', 'alert alert-warning');
+        $booking = $this->guideModel->getBookingById($id, $guideId);
+        if ($booking && $booking->status === 'pending') {
+            $this->guideModel->updateBookingStatus($id, 'declined');
+            flash('guide_message', 'Booking declined.', 'alert alert-warning');
+        }
+        redirect('guide/booking/' . $id);
     }
-    redirect('guide/booking/' . $id);
-}
 
     /**
      * Chat with client
      * 
      * @param int $id The booking ID
      */
-public function chat($bookingId) {
-    $userId = $_SESSION['user_id'];
-    $guide = $this->getGuideProfile($userId);
-    $guideId = $guide ? $guide->id : null;
+    public function chat($bookingId) {
+        $userId = $_SESSION['user_id'];
+        $guide = $this->getGuideProfile($userId);
+        $guideId = $guide ? $guide->id : null;
 
-    $booking = $this->guideModel->getBookingById($bookingId, $guideId);
-    if (!$booking) {
-        $this->loadView('errors/404');
-        return;
+        $booking = $this->guideModel->getBookingById($bookingId, $guideId);
+        if (!$booking) {
+            $this->loadView('errors/404');
+            return;
+        }
+
+        $messageModel = new MessageModel();
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['message'])) {
+            $messageModel->sendMessage($bookingId, $userId, $_POST['message']);
+            redirect('guide/chat/' . $bookingId);
+        }
+        $messages = $messageModel->getMessages($bookingId);
+
+        $this->loadView('tourGuides/chat', [
+            'booking' => $booking,
+            'messages' => $messages,
+            'currentUserId' => $userId
+        ]);
     }
 
-    $messageModel = new MessageModel();
-    if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['message'])) {
-        $messageModel->sendMessage($bookingId, $userId, $_POST['message']);
-        redirect('guide/chat/' . $bookingId);
-    }
-    $messages = $messageModel->getMessages($bookingId);
+    /**
+     * Display all reviews for the guide
+     */
+    public function reviewsList() {
+        // Get guide information
+        $user = $this->userModel->findUserById($_SESSION['user_id']);
+        $guide = $this->getGuideProfile($user->id);
+        
+        if (!$guide) {
+            flash('guide_message', 'Guide profile not found.', 'alert alert-danger');
+            redirect('guide/dashboard');
+            return;
+        }
 
-    $this->loadView('tourGuides/chat', [
-        'booking' => $booking,
-        'messages' => $messages,
-        'currentUserId' => $userId
-    ]);
-}
+        // Get all reviews for the guide
+        $reviews = $this->guideModel->getGuideReviews($guide->id);
+        
+        // Get accurate review count
+        $reviewCount = $this->getApprovedReviewCount($guide->id);
+        
+        $data = [
+            'title' => 'My Reviews',
+            'guide' => $guide,
+            'reviews' => $reviews,
+            'total_reviews' => $reviewCount
+        ];
+        
+        $this->loadView('tourGuides/GuideDashboard/reviews', $data);
+    }
+
     /**
      * Load a view with the header and footer
      * 

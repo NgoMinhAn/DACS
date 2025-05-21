@@ -206,7 +206,7 @@
             <div class="card mb-4">
                 <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">Recent Reviews</h5>
-                    <a href="<?php echo url('guide/reviews'); ?>" class="btn btn-sm btn-light">View All</a>
+                    <a href="/DACS/guide/reviews" class="btn btn-sm btn-light">View All</a>
                 </div>
                 <div class="card-body">
                     <?php if(!empty($recent_reviews)): ?>
