@@ -359,10 +359,180 @@ class UserModel {
         ');
         return $this->db->resultSet();
     }
+
+    /**
+     * Get user by ID
+     */
     public function getUserById($id) {
-    $this->db->query("SELECT id, name, email FROM users WHERE id = :id");
-    $this->db->bind(':id', $id);
-    return $this->db->single();
+        $this->db->query('SELECT * FROM users WHERE id = :id');
+        $this->db->bind(':id', $id);
+        return $this->db->single();
+    }
+
+    /**
+     * Find user by email except current user
+     */
+    public function findUserByEmailExcept($email, $userId) {
+        $this->db->query('SELECT * FROM users WHERE email = :email AND id != :id');
+        $this->db->bind(':email', $email);
+        $this->db->bind(':id', $userId);
+        return $this->db->single();
+    }
+
+    /**
+     * Update user profile
+     */
+    public function updateProfile($data) {
+        try {
+            $this->db->beginTransaction();
+
+            // Start with basic fields that exist in users table
+            $sql = 'UPDATE users SET 
+                    name = :name, 
+                    email = :email, 
+                    phone = :phone, 
+                    address = :address';
+
+            // Add avatar field if it exists
+            if (isset($data['avatar'])) {
+                $sql .= ', profile_image = :avatar';
+            }
+
+            $sql .= ' WHERE id = :id';
+
+            $this->db->query($sql);
+
+            // Bind basic parameters
+            $this->db->bind(':name', $data['name']);
+            $this->db->bind(':email', $data['email']);
+            $this->db->bind(':phone', $data['phone']);
+            $this->db->bind(':address', $data['address']);
+            $this->db->bind(':id', $data['user_id']);
+
+            // Bind avatar parameter if it exists
+            if (isset($data['avatar'])) {
+                $this->db->bind(':avatar', $data['avatar']);
+            }
+
+            // Execute update for users table
+            if (!$this->db->execute()) {
+                throw new Exception('Failed to update user profile');
+            }
+
+            $this->db->commit();
+            return true;
+
+        } catch (Exception $e) {
+            $this->db->rollBack();
+            error_log('Error updating profile: ' . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Verify user password
+     */
+    public function verifyPassword($userId, $password) {
+        $this->db->query('SELECT password FROM users WHERE id = :id');
+        $this->db->bind(':id', $userId);
+        
+        $row = $this->db->single();
+        if ($row) {
+            return password_verify($password, $row->password);
+        }
+        return false;
+    }
+
+    /**
+     * Update user password
+     */
+    public function updatePassword($userId, $newPassword) {
+        $this->db->query('UPDATE users SET password = :password WHERE id = :id');
+        $this->db->bind(':password', password_hash($newPassword, PASSWORD_DEFAULT));
+        $this->db->bind(':id', $userId);
+        return $this->db->execute();
+    }
+
+    /**
+     * Delete user account
+     */
+    public function deleteAccount($userId) {
+        // First get user info to delete profile image if exists
+        $this->db->query('SELECT profile_image FROM users WHERE id = :id');
+        $this->db->bind(':id', $userId);
+        $user = $this->db->single();
+
+        // Delete profile image file if exists and is not default
+        if ($user && !empty($user->profile_image) && $user->profile_image !== 'default.jpg') {
+            $imagePath = 'public/uploads/avatars/' . $user->profile_image;
+            if (file_exists($imagePath)) {
+                unlink($imagePath);
+            }
+        }
+
+        // Start transaction
+        $this->db->beginTransaction();
+
+        try {
+            // If user is a guide, delete related records first
+            $this->db->query('SELECT user_type FROM users WHERE id = :id');
+            $this->db->bind(':id', $userId);
+            $userType = $this->db->single();
+
+            if ($userType && $userType->user_type === 'guide') {
+                // Get guide_id first
+                $this->db->query('SELECT id FROM guide_profiles WHERE user_id = :user_id');
+                $this->db->bind(':user_id', $userId);
+                $guide = $this->db->single();
+
+                if ($guide) {
+                    // Delete from guide_languages
+                    $this->db->query('DELETE FROM guide_languages WHERE guide_id = :guide_id');
+                    $this->db->bind(':guide_id', $guide->id);
+                    $this->db->execute();
+
+                    // Delete from guide_specialties
+                    $this->db->query('DELETE FROM guide_specialties WHERE guide_id = :guide_id');
+                    $this->db->bind(':guide_id', $guide->id);
+                    $this->db->execute();
+
+                    // Delete from guide_reviews
+                    $this->db->query('DELETE FROM guide_reviews WHERE guide_id = :guide_id');
+                    $this->db->bind(':guide_id', $guide->id);
+                    $this->db->execute();
+
+                    // Delete from guide_profiles
+                    $this->db->query('DELETE FROM guide_profiles WHERE user_id = :user_id');
+                    $this->db->bind(':user_id', $userId);
+                    $this->db->execute();
+                }
+            }
+
+            // Delete from user_preferences
+            $this->db->query('DELETE FROM user_preferences WHERE user_id = :user_id');
+            $this->db->bind(':user_id', $userId);
+            $this->db->execute();
+
+            // Delete from account_recovery
+            $this->db->query('DELETE FROM account_recovery WHERE user_id = :user_id');
+            $this->db->bind(':user_id', $userId);
+            $this->db->execute();
+
+            // Finally delete the user
+            $this->db->query('DELETE FROM users WHERE id = :id');
+            $this->db->bind(':id', $userId);
+            $this->db->execute();
+
+            // Commit transaction
+            $this->db->commit();
+            return true;
+
+        } catch (Exception $e) {
+            // Rollback transaction on error
+            $this->db->rollBack();
+            error_log('Error deleting account: ' . $e->getMessage());
+            return false;
+        }
     }
 
     public function updateUser($id, $name, $email) {
@@ -372,9 +542,10 @@ class UserModel {
         $this->db->bind(':id', $id);
         return $this->db->execute();
     }
+
     public function deleteUser($id) {
-    $this->db->query("DELETE FROM users WHERE id = :id");
-    $this->db->bind(':id', $id);
-    return $this->db->execute();
-}
+        $this->db->query("DELETE FROM users WHERE id = :id");
+        $this->db->bind(':id', $id);
+        return $this->db->execute();
+    }
 } 

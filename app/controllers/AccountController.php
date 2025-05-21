@@ -390,4 +390,243 @@ class AccountController {
         // Load footer
         require_once VIEW_PATH . '/shares/footer.php';
     }
+
+    /**
+     * Account Settings
+     */
+    public function settings($section = 'general') {
+        // Check if user is logged in
+        if (!isLoggedIn()) {
+            redirect('account/login');
+        }
+
+        // Get user data
+        $userId = $_SESSION['user_id'];
+        $user = $this->userModel->getUserById($userId);
+
+        if (!$user) {
+            redirect('account/login');
+        }
+
+        // Redirect if not a regular user
+        if ($user->user_type !== 'user') {
+            redirect('');
+        }
+
+        // Handle different sections
+        switch ($section) {
+            case 'profile':
+                if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                    // Process profile update
+                    $data = [
+                        'name' => trim($_POST['name']),
+                        'email' => trim($_POST['email']),
+                        'phone' => trim($_POST['phone']),
+                        'address' => trim($_POST['address']),
+                        'errors' => []
+                    ];
+
+                    // Validate name
+                    if (empty($data['name'])) {
+                        $data['errors']['name'] = 'Please enter your name';
+                    }
+
+                    // Validate email
+                    if (empty($data['email'])) {
+                        $data['errors']['email'] = 'Please enter your email';
+                    } elseif (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
+                        $data['errors']['email'] = 'Please enter a valid email';
+                    } elseif ($this->userModel->findUserByEmailExcept($data['email'], $userId)) {
+                        $data['errors']['email'] = 'Email is already taken';
+                    }
+
+                    // Handle profile image upload
+                    if (!empty($_FILES['avatar']['name'])) {
+                        $uploadDir = dirname(dirname(__DIR__)) . '/public/uploads/avatars/';
+                        if (!is_dir($uploadDir)) {
+                            mkdir($uploadDir, 0777, true);
+                        }
+
+                        $fileExtension = strtolower(pathinfo($_FILES['avatar']['name'], PATHINFO_EXTENSION));
+                        $allowedTypes = ['jpg', 'jpeg', 'png'];
+
+                        if (!in_array($fileExtension, $allowedTypes)) {
+                            $data['errors']['avatar'] = 'Only JPG, JPEG & PNG files are allowed';
+                        } elseif ($_FILES['avatar']['size'] > 5000000) { // 5MB
+                            $data['errors']['avatar'] = 'File size must not exceed 5MB';
+                        } else {
+                            $fileName = uniqid('avatar_') . '.' . $fileExtension;
+                            $targetPath = $uploadDir . $fileName;
+
+                            if (move_uploaded_file($_FILES['avatar']['tmp_name'], $targetPath)) {
+                                // Delete old avatar if exists
+                                if ($user->profile_image && $user->profile_image !== 'default.jpg') {
+                                    $oldAvatar = $uploadDir . $user->profile_image;
+                                    if (file_exists($oldAvatar)) {
+                                        unlink($oldAvatar);
+                                    }
+                                }
+                                $data['profile_image'] = $fileName;
+                            } else {
+                                $data['errors']['avatar'] = 'Error uploading file';
+                            }
+                        }
+                    }
+
+                    if (empty($data['errors'])) {
+                        // Prepare data for update
+                        $updateData = [
+                            'user_id' => $userId,
+                            'name' => $data['name'],
+                            'email' => $data['email'],
+                            'phone' => $data['phone'] ?? '',
+                            'address' => $data['address'] ?? ''
+                        ];
+                        
+                        // Add profile image if uploaded
+                        if (isset($data['profile_image'])) {
+                            $updateData['avatar'] = $data['profile_image'];
+                        }
+
+                        // Update profile
+                        if ($this->userModel->updateProfile($updateData)) {
+                            // Update session
+                            $_SESSION['user_name'] = $data['name'];
+                            $_SESSION['user_email'] = $data['email'];
+                            if (isset($data['profile_image'])) {
+                                $_SESSION['user_image'] = $data['profile_image'];
+                            }
+
+                            flash('settings_message', 'Profile updated successfully!', 'alert alert-success');
+                        } else {
+                            flash('settings_message', 'Error updating profile', 'alert alert-danger');
+                        }
+                        redirect('account/settings/profile');
+                    } else {
+                        // Load view with errors
+                        $data['user'] = $user;
+                        $data['title'] = 'Profile Settings';
+                        $data['section'] = 'profile';
+                        $this->loadView('user/accountsetting/profile', $data);
+                    }
+                } else {
+                    $data = [
+                        'title' => 'Profile Settings',
+                        'user' => $user,
+                        'section' => 'profile'
+                    ];
+                    $this->loadView('user/accountsetting/profile', $data);
+                }
+                break;
+
+            case 'password':
+                if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                    $data = [
+                        'current_password' => trim($_POST['current_password']),
+                        'new_password' => trim($_POST['new_password']),
+                        'confirm_password' => trim($_POST['confirm_password']),
+                        'errors' => []
+                    ];
+
+                    // Validate current password
+                    if (empty($data['current_password'])) {
+                        $data['errors']['current_password'] = 'Please enter current password';
+                    } elseif (!$this->userModel->verifyPassword($userId, $data['current_password'])) {
+                        $data['errors']['current_password'] = 'Current password is incorrect';
+                    }
+
+                    // Validate new password
+                    if (empty($data['new_password'])) {
+                        $data['errors']['new_password'] = 'Please enter new password';
+                    } elseif (strlen($data['new_password']) < 6) {
+                        $data['errors']['new_password'] = 'Password must be at least 6 characters';
+                    }
+
+                    // Validate confirm password
+                    if (empty($data['confirm_password'])) {
+                        $data['errors']['confirm_password'] = 'Please confirm new password';
+                    } elseif ($data['new_password'] !== $data['confirm_password']) {
+                        $data['errors']['confirm_password'] = 'Passwords do not match';
+                    }
+
+                    if (empty($data['errors'])) {
+                        if ($this->userModel->updatePassword($userId, $data['new_password'])) {
+                            flash('settings_message', 'Password updated successfully!', 'alert alert-success');
+                        } else {
+                            flash('settings_message', 'Error updating password', 'alert alert-danger');
+                        }
+                        redirect('account/settings/password');
+                    } else {
+                        $data['user'] = $user;
+                        $data['title'] = 'Change Password';
+                        $data['section'] = 'password';
+                        $this->loadView('user/accountsetting/password', $data);
+                    }
+                } else {
+                    $data = [
+                        'title' => 'Change Password',
+                        'user' => $user,
+                        'section' => 'password'
+                    ];
+                    $this->loadView('user/accountsetting/password', $data);
+                }
+                break;
+
+            default:
+                $data = [
+                    'title' => 'Account Settings',
+                    'user' => $user,
+                    'section' => 'general'
+                ];
+                $this->loadView('user/accountsetting/settings', $data);
+                break;
+        }
+    }
+
+    /**
+     * Delete Account
+     */
+    public function delete() {
+        // Check if user is logged in
+        if (!isLoggedIn()) {
+            redirect('account/login');
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // Sanitize POST data
+            $_POST = $this->sanitizeInputArray($_POST);
+
+            $userId = $_SESSION['user_id'];
+            $password = trim($_POST['password']);
+
+            // Verify password
+            if (empty($password)) {
+                flash('settings_message', 'Please enter your password to confirm account deletion.', 'alert alert-danger');
+                redirect('account/settings');
+            }
+
+            if (!$this->userModel->verifyPassword($userId, $password)) {
+                flash('settings_message', 'Incorrect password. Account deletion cancelled.', 'alert alert-danger');
+                redirect('account/settings');
+            }
+
+            // Delete account
+            if ($this->userModel->deleteAccount($userId)) {
+                // Destroy session
+                unset($_SESSION['user_id']);
+                unset($_SESSION['user_name']);
+                unset($_SESSION['user_email']);
+                unset($_SESSION['user_type']);
+                session_destroy();
+
+                flash('login_message', 'Your account has been successfully deleted.', 'alert alert-success');
+                redirect('account/login');
+            } else {
+                flash('settings_message', 'An error occurred while deleting your account. Please try again.', 'alert alert-danger');
+                redirect('account/settings');
+            }
+        } else {
+            redirect('account/settings');
+        }
+    }
 } 
