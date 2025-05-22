@@ -573,4 +573,39 @@ class GuideController
         // Load footer
         require_once VIEW_PATH . '/shares/footer.php';
     }
+
+    /**
+     * Display all bookings for the guide
+     */
+    public function bookingsList()
+    {
+        // Get guide information
+        $user = $this->userModel->findUserById($_SESSION['user_id']);
+        $guide = $this->getGuideProfile($user->id);
+
+        if (!$guide) {
+            flash('guide_message', 'Guide profile not found. Please contact an administrator.', 'alert alert-danger');
+            redirect('');
+            return;
+        }
+
+        // Get all bookings for this guide
+        $db = new Database();
+        $db->query('
+            SELECT b.*, u.name as client_name, u.email as client_email
+            FROM bookings b
+            JOIN users u ON b.user_id = u.id
+            WHERE b.guide_id = :guide_id
+            ORDER BY b.booking_date DESC, b.start_time DESC
+        ');
+        $db->bind(':guide_id', $guide->id);
+        $bookings = $db->resultSet();
+
+        $data = [
+            'title' => 'All Bookings',
+            'bookings' => $bookings
+        ];
+
+        $this->loadView('tourGuides/bookings', $data);
+    }
 }
