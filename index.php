@@ -79,6 +79,27 @@ if ($uri === '/guide/reviews' || $uri === 'guide/reviews') {
 // Parse the URL
 $url = explode('/', trim($uri, '/'));
 
+// Special URL handling for static pages
+if (!empty($url[0])) {
+    $static_pages = ['about', 'contact', 'terms', 'privacy', 'careers'];
+    
+    if (in_array($url[0], $static_pages)) {
+        // Route static pages to PageController
+        require_once CONTROLLER_PATH . '/PageController.php';
+        $pageController = new PageController();
+        
+        // Call the corresponding method if it exists
+        $method = $url[0];
+        if (method_exists($pageController, $method)) {
+            $pageController->$method();
+        } else {
+            // Default to index if method doesn't exist
+            $pageController->index();
+        }
+        exit;
+    }
+}
+
 // Set the controller (default to tourGuide if none specified)
 $controller = !empty($url[0]) ? $url[0] : 'tourGuide';
 $controller = ucfirst($controller) . 'Controller';
@@ -112,25 +133,4 @@ if (file_exists($controllerFile)) {
 } else {
     // Controller file not found - redirect to 404
     header('Location: /error/notFound');
-}
-
-// Special URL handling for static pages
-if (!empty($url[0])) {
-    $static_pages = ['about', 'contact', 'terms', 'privacy', 'careers'];
-    
-    if (in_array($url[0], $static_pages)) {
-        // Route static pages to PageController
-        require_once CONTROLLER_PATH . '/PageController.php';
-        $pageController = new PageController();
-        
-        // Call the corresponding method if it exists
-        $method = $url[0];
-        if (method_exists($pageController, $method)) {
-            $pageController->$method();
-        } else {
-            // Default to index if method doesn't exist
-            $pageController->index();
-        }
-        exit;
-    }
 }
