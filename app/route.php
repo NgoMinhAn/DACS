@@ -11,6 +11,12 @@ $routes = [
     ['pattern' => '#^guide/chat/(\d+)$#', 'controller' => 'GuideController', 'method' => 'chat', 'params' => [1]],
     // User routes
     ['pattern' => '#^user/chat/(\d+)$#', 'controller' => 'UserController', 'method' => 'chat', 'params' => [1]],
+     [
+    'pattern' => '#^user/booking/(\d+)$#',
+    'controller' => 'UserController',
+    'method' => 'bookingDetail',
+    'params' => [1]
+     ],
     // Admin routes
     ['pattern' => '#^admin/users$#', 'controller' => 'AdminController', 'method' => 'users', 'params' => []],
     ['pattern' => '#^admin/editUser/(\d+)$#', 'controller' => 'AdminController', 'method' => 'editUser', 'params' => [1]],

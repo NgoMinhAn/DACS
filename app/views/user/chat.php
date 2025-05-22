@@ -1,7 +1,7 @@
 <div class="container py-4">
     <h2>Chat with Guide</h2>
     <div class="mb-3">
-        <a href="<?php echo url('user/dashboard'); ?>" class="btn btn-secondary btn-sm">Back to Dashboard</a>
+        <a href="<?php echo url('user/bookings'); ?>" class="btn btn-secondary btn-sm">Back to Dashboard</a>
     </div>
     <div class="card mb-3" style="max-height: 400px; overflow-y: auto;">
         <div class="card-body">

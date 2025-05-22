@@ -154,12 +154,9 @@ CREATE TABLE messages (
 	FOREIGN KEY (sender_id) REFERENCES users(id)
 );
 
-SHOW COLUMNS FROM bookings LIKE 'status';
+
 ALTER TABLE bookings MODIFY status ENUM('pending','confirmed','completed','cancelled','accepted','declined') NOT NULL DEFAULT 'pending';
 SELECT id, name, email, account_type AS role, balance FROM users
-
-DESCRIBE guide_profiles;
-
 ALTER TABLE guide_profiles ADD COLUMN experience_years INT DEFAULT 0;
 ALTER TABLE guide_languages ADD COLUMN fluent TINYINT(1) NOT NULL DEFAULT 0;
 -- Insert sample data
