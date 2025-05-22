@@ -38,3 +38,4 @@ $routes[] = [
     'method' => 'editGuide',
     'params' => [1]
 ];
+$routes['guide/toggle-availability'] = ['GuideController', 'toggleAvailability'];

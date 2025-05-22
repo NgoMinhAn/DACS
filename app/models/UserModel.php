@@ -3,16 +3,18 @@
  * User Model
  * Handles all database operations related to users
  */
-class UserModel {
+class UserModel
+{
     private $db;
-    
+
     /**
      * Constructor
      */
-    public function __construct() {
+    public function __construct()
+    {
         $this->db = new Database();
     }
-    
+
     /**
      * Login user
      * 
@@ -20,87 +22,92 @@ class UserModel {
      * @param string $password The user's password
      * @return object|boolean The user object or false
      */
-    public function login($email, $password) {
+    public function login($email, $password)
+    {
         // Find user by email
         $this->db->query('SELECT * FROM users WHERE email = :email AND status = "active"');
         $this->db->bind(':email', $email);
-        
+
         $user = $this->db->single();
-        
+
         // If user found, verify password
         if ($user) {
             if (password_verify($password, $user->password)) {
                 return $user;
             }
         }
-        
+
         return false;
     }
-    
+
     /**
      * Find user by email
      * 
      * @param string $email The user's email
      * @return object|boolean The user object or false
      */
-    public function findUserByEmail($email) {
+    public function findUserByEmail($email)
+    {
         $this->db->query('SELECT * FROM users WHERE email = :email');
         $this->db->bind(':email', $email);
-        
+
         $row = $this->db->single();
-        
+
         return $row ? $row : false;
     }
-    
+
     /**
      * Find user by ID
      * 
      * @param int $id The user ID
      * @return object|boolean The user object or false
      */
-    public function findUserById($id) {
+    public function findUserById($id)
+    {
         $this->db->query('SELECT * FROM users WHERE id = :id');
         $this->db->bind(':id', $id);
-        
+
         $row = $this->db->single();
-        
+
         return $row ? $row : false;
     }
-    
+
     /**
      * Find user by remember token
      * 
      * @param string $token The remember token
      * @return object|boolean The user object or false
      */
-    public function findUserByRememberToken($token) {
+    public function findUserByRememberToken($token)
+    {
         $this->db->query('SELECT * FROM users WHERE reset_token = :token AND reset_token_expires > NOW()');
         $this->db->bind(':token', $token);
-        
+
         $row = $this->db->single();
-        
+
         return $row ? $row : false;
     }
-    
+
     /**
      * Register new user
      * 
      * @param array $data The user data
      * @return boolean Whether the registration was successful
      */
-    public function register($data) {
+    public function register($data)
+    {
         // Hash password
         $password = password_hash($data['password'], PASSWORD_DEFAULT);
-        
+
         // Insert new user
         $this->db->query('
             INSERT INTO users (name, email, password, user_type, status, verification_token) 
             VALUES (:name, :email, :password, :user_type, :status, :token)
         ');
-        
+
         // Generate verification token
         $token = bin2hex(random_bytes(32));
-        
+
         // Bind values
         $this->db->bind(':name', $data['name']);
         $this->db->bind(':email', $data['email']);
@@ -108,7 +115,7 @@ class UserModel {
         $this->db->bind(':user_type', $data['user_type'] ?? 'user');
         $this->db->bind(':status', $data['status'] ?? 'pending');
         $this->db->bind(':token', $token);
-        
+
         // Execute query
         if ($this->db->execute()) {
             return $this->db->lastInsertId();
@@ -116,7 +123,7 @@ class UserModel {
             return false;
         }
     }
-    
+
     /**
      * Register new guide
      * 
@@ -124,21 +131,22 @@ class UserModel {
      * @param array $guideData The guide profile data
      * @return boolean Whether the registration was successful
      */
-    public function registerGuide($userData, $guideData) {
+    public function registerGuide($userData, $guideData)
+    {
         // Start transaction
         $this->db->beginTransaction();
-        
+
         try {
             // Register the user first
             $userData['user_type'] = 'guide';
             $userData['status'] = 'pending'; // Guides need approval
-            
+
             $userId = $this->register($userData);
-            
+
             if (!$userId) {
                 throw new Exception('Failed to create user account');
             }
-            
+
             // Now create the guide profile
             $this->db->query('
                 INSERT INTO guide_profiles (
@@ -149,7 +157,7 @@ class UserModel {
                     :hourly_rate, :daily_rate, :available, :verified
                 )
             ');
-            
+
             // Bind values
             $this->db->bind(':user_id', $userId);
             $this->db->bind(':bio', $guideData['bio']);
@@ -159,14 +167,14 @@ class UserModel {
             $this->db->bind(':daily_rate', $guideData['daily_rate']);
             $this->db->bind(':available', $guideData['available'] ?? 1);
             $this->db->bind(':verified', 0); // New guides start unverified
-            
+
             // Execute query
             if (!$this->db->execute()) {
                 throw new Exception('Failed to create guide profile');
             }
-            
+
             $guideId = $this->db->lastInsertId();
-            
+
             // Add specialties if provided
             if (!empty($guideData['specialties'])) {
                 foreach ($guideData['specialties'] as $specialtyId) {
@@ -174,16 +182,16 @@ class UserModel {
                         INSERT INTO guide_specialties (guide_id, specialty_id)
                         VALUES (:guide_id, :specialty_id)
                     ');
-                    
+
                     $this->db->bind(':guide_id', $guideId);
                     $this->db->bind(':specialty_id', $specialtyId);
-                    
+
                     if (!$this->db->execute()) {
                         throw new Exception('Failed to add guide specialty');
                     }
                 }
             }
-            
+
             // Add languages if provided
             if (!empty($guideData['languages'])) {
                 foreach ($guideData['languages'] as $language) {
@@ -191,22 +199,22 @@ class UserModel {
                         INSERT INTO guide_languages (guide_id, language_id, fluency_level)
                         VALUES (:guide_id, :language_id, :fluency_level)
                     ');
-                    
+
                     $this->db->bind(':guide_id', $guideId);
                     $this->db->bind(':language_id', $language['id']);
                     $this->db->bind(':fluency_level', $language['fluency']);
-                    
+
                     if (!$this->db->execute()) {
                         throw new Exception('Failed to add guide language');
                     }
                 }
             }
-            
+
             // Commit the transaction
             $this->db->commit();
-            
+
             return $userId;
-            
+
         } catch (Exception $e) {
             // Roll back the transaction on failure
             $this->db->rollBack();
@@ -214,19 +222,20 @@ class UserModel {
             return false;
         }
     }
-    
+
     /**
      * Update user's last login time
      * 
      * @param int $userId The user ID
      * @return boolean Whether the update was successful
      */
-    public function updateLastLogin($userId) {
+    public function updateLastLogin($userId)
+    {
         $this->db->query('UPDATE users SET last_login = NOW() WHERE id = :id');
         $this->db->bind(':id', $userId);
         return $this->db->execute();
     }
-    
+
     /**
      * Set remember token for a user
      * 
@@ -235,120 +244,128 @@ class UserModel {
      * @param int $expires The expiration timestamp
      * @return boolean Whether the update was successful
      */
-    public function setRememberToken($userId, $token, $expires) {
+    public function setRememberToken($userId, $token, $expires)
+    {
         $this->db->query('
             UPDATE users 
             SET reset_token = :token, reset_token_expires = FROM_UNIXTIME(:expires) 
             WHERE id = :id
         ');
-        
+
         $this->db->bind(':id', $userId);
         $this->db->bind(':token', $token);
         $this->db->bind(':expires', $expires);
-        
+
         return $this->db->execute();
     }
-    
+
     /**
      * Clear remember token for a user
      * 
      * @param int $userId The user ID
      * @return boolean Whether the update was successful
      */
-    public function clearRememberToken($userId) {
+    public function clearRememberToken($userId)
+    {
         $this->db->query('UPDATE users SET reset_token = NULL, reset_token_expires = NULL WHERE id = :id');
         $this->db->bind(':id', $userId);
         return $this->db->execute();
     }
-    
+
     /**
      * Create password reset token
      * 
      * @param string $email The user's email
      * @return string|boolean The reset token or false
      */
-    public function createPasswordResetToken($email) {
+    public function createPasswordResetToken($email)
+    {
         // Find user by email
         $user = $this->findUserByEmail($email);
-        
+
         if (!$user) {
             return false;
         }
-        
+
         // Generate reset token
         $token = bin2hex(random_bytes(32));
         $expires = time() + (60 * 60); // 1 hour
-        
+
         // Update user with reset token
         $this->db->query('
             UPDATE users 
             SET reset_token = :token, reset_token_expires = FROM_UNIXTIME(:expires) 
             WHERE id = :id
         ');
-        
+
         $this->db->bind(':id', $user->id);
         $this->db->bind(':token', $token);
         $this->db->bind(':expires', $expires);
-        
+
         return $this->db->execute() ? $token : false;
     }
-    
+
     /**
      * Verify email
      * 
      * @param string $token The verification token
      * @return boolean Whether the verification was successful
      */
-    public function verifyEmail($token) {
+    public function verifyEmail($token)
+    {
         $this->db->query('
             UPDATE users 
             SET status = "active", verification_token = NULL 
             WHERE verification_token = :token AND status = "pending"
         ');
-        
+
         $this->db->bind(':token', $token);
-        
+
         return $this->db->execute() && $this->db->rowCount() > 0;
     }
-    
+
     /**
      * Get total user count
      * 
      * @return int The number of users
      */
-    public function getUserCount() {
+    public function getUserCount()
+    {
         $this->db->query('SELECT COUNT(*) as count FROM users WHERE user_type = "user"');
         $result = $this->db->single();
         return $result ? $result->count : 0;
     }
-    
+
     /**
      * Get total guide count
      * 
      * @return int The number of guides
      */
-    public function getGuideCount() {
+    public function getGuideCount()
+    {
         $this->db->query('SELECT COUNT(*) as count FROM users WHERE user_type = "guide"');
         $result = $this->db->single();
         return $result ? $result->count : 0;
     }
-    
+
     /**
      * Get all users (excluding guides and admins)
      * 
      * @return array The users
      */
-    public function getAllUsers() {
+    public function getAllUsers()
+    {
         $this->db->query('SELECT id, name, email, status, created_at, last_login FROM users WHERE user_type = "user" ORDER BY name');
         return $this->db->resultSet();
     }
-    
+
     /**
      * Get all guides
      * 
      * @return array The guides
      */
-    public function getAllGuides() {
+    public function getAllGuides()
+    {
         $this->db->query('
             SELECT u.id, u.name, u.email, u.status, u.created_at, u.last_login, 
                    g.verified, g.avg_rating, g.total_reviews
@@ -363,7 +380,8 @@ class UserModel {
     /**
      * Get user by ID
      */
-    public function getUserById($id) {
+    public function getUserById($id)
+    {
         $this->db->query('SELECT * FROM users WHERE id = :id');
         $this->db->bind(':id', $id);
         return $this->db->single();
@@ -372,7 +390,8 @@ class UserModel {
     /**
      * Find user by email except current user
      */
-    public function findUserByEmailExcept($email, $userId) {
+    public function findUserByEmailExcept($email, $userId)
+    {
         $this->db->query('SELECT * FROM users WHERE email = :email AND id != :id');
         $this->db->bind(':email', $email);
         $this->db->bind(':id', $userId);
@@ -382,7 +401,8 @@ class UserModel {
     /**
      * Update user profile
      */
-    public function updateProfile($data) {
+    public function updateProfile($data)
+    {
         try {
             $this->db->beginTransaction();
 
@@ -432,10 +452,11 @@ class UserModel {
     /**
      * Verify user password
      */
-    public function verifyPassword($userId, $password) {
+    public function verifyPassword($userId, $password)
+    {
         $this->db->query('SELECT password FROM users WHERE id = :id');
         $this->db->bind(':id', $userId);
-        
+
         $row = $this->db->single();
         if ($row) {
             return password_verify($password, $row->password);
@@ -446,7 +467,8 @@ class UserModel {
     /**
      * Update user password
      */
-    public function updatePassword($userId, $newPassword) {
+    public function updatePassword($userId, $newPassword)
+    {
         $this->db->query('UPDATE users SET password = :password WHERE id = :id');
         $this->db->bind(':password', password_hash($newPassword, PASSWORD_DEFAULT));
         $this->db->bind(':id', $userId);
@@ -456,7 +478,8 @@ class UserModel {
     /**
      * Delete user account
      */
-    public function deleteAccount($userId) {
+    public function deleteAccount($userId)
+    {
         // First get user info to delete profile image if exists
         $this->db->query('SELECT profile_image FROM users WHERE id = :id');
         $this->db->bind(':id', $userId);
@@ -535,7 +558,8 @@ class UserModel {
         }
     }
 
-    public function updateUser($id, $name, $email) {
+    public function updateUser($id, $name, $email)
+    {
         $this->db->query("UPDATE users SET name = :name, email = :email WHERE id = :id");
         $this->db->bind(':name', $name);
         $this->db->bind(':email', $email);
@@ -543,9 +567,17 @@ class UserModel {
         return $this->db->execute();
     }
 
-    public function deleteUser($id) {
+    public function deleteUser($id)
+    {
         $this->db->query("DELETE FROM users WHERE id = :id");
         $this->db->bind(':id', $id);
         return $this->db->execute();
     }
-} 
+    public function updateName($userId, $name)
+    {
+        $this->db->query('UPDATE users SET name = :name WHERE id = :id');
+        $this->db->bind(':name', $name);
+        $this->db->bind(':id', $userId);
+        return $this->db->execute();
+    }
+}

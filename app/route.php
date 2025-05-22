@@ -9,6 +9,16 @@ $routes = [
     ['pattern' => '#^guide/acceptBooking/(\d+)$#', 'controller' => 'GuideController', 'method' => 'acceptBooking', 'params' => [1]],
     ['pattern' => '#^guide/declineBooking/(\d+)$#', 'controller' => 'GuideController', 'method' => 'declineBooking', 'params' => [1]],
     ['pattern' => '#^guide/chat/(\d+)$#', 'controller' => 'GuideController', 'method' => 'chat', 'params' => [1]],
+    ['pattern' => '#^guide/toggle-availability$#', 'controller' => 'GuideController', 'method' => 'toggleAvailability', 'params' => []],
+    ['pattern' => '#^guide/edit-profile$#', 'controller' => 'GuideController', 'method' => 'editProfile', 'params' => []],
+    ['pattern' => '#^guide/update-rates$#', 'controller' => 'GuideController', 'method' => 'updateRates', 'params' => []],
+    ['pattern' => '#^guide/update-profile$#', 'controller' => 'GuideController', 'method' => 'updateProfile', 'params' => []],
+    ['pattern' => '#^guide/update-availability$#', 'controller' => 'GuideController', 'method' => 'updateAvailability', 'params' => []],
+    ['pattern' => '#^guide/update-specialties$#', 'controller' => 'GuideController', 'method' => 'updateSpecialties', 'params' => []],
+    ['pattern' => '#^guide/update-languages$#', 'controller' => 'GuideController', 'method' => 'updateLanguages', 'params' => []],
+    ['pattern' => '#^guide/update-bio$#', 'controller' => 'GuideController', 'method' => 'updateBio', 'params' => []],
+    ['pattern' => '#^guide/update-profile-picture$#', 'controller' => 'GuideController', 'method' => 'updateProfilePicture', 'params' => []],
+    ['pattern' => '#^guide/calendar$#', 'controller' => 'GuideController', 'method' => 'calendar', 'params' => []],
     // User routes
     ['pattern' => '#^user/chat/(\d+)$#', 'controller' => 'UserController', 'method' => 'chat', 'params' => [1]],
      [
@@ -23,6 +33,7 @@ $routes = [
     ['pattern' => '#^admin/deleteUser/(\d+)$#', 'controller' => 'AdminController', 'method' => 'deleteUser', 'params' => [1]],
     ['pattern' => '#^admin/editGuide/(\d+)$#', 'controller' => 'AdminController', 'method' => 'editGuide', 'params' => [1]]
 ];
+
 
 function handle_custom_routes($uri, $routes) {
     foreach ($routes as $route) {

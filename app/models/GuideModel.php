@@ -509,7 +509,7 @@ class GuideModel
             WHERE u.id = :user_id
         ');
         $this->db->bind(':user_id', $userId);
-        
+
         return $this->db->single();
     }
 
@@ -522,19 +522,19 @@ class GuideModel
     public function getGuideStats($guideId)
     {
         $stats = new stdClass();
-        
+
         // Total bookings
         $this->db->query('SELECT COUNT(*) as count FROM bookings WHERE guide_id = :guide_id');
         $this->db->bind(':guide_id', $guideId);
         $result = $this->db->single();
         $stats->total_bookings = $result ? $result->count : 0;
-        
+
         // Pending bookings
         $this->db->query('SELECT COUNT(*) as count FROM bookings WHERE guide_id = :guide_id AND status = "pending"');
         $this->db->bind(':guide_id', $guideId);
         $result = $this->db->single();
         $stats->pending_bookings = $result ? $result->count : 0;
-        
+
         // Monthly revenue
         $this->db->query('
             SELECT SUM(total_price) as revenue 
@@ -547,7 +547,7 @@ class GuideModel
         $this->db->bind(':guide_id', $guideId);
         $result = $this->db->single();
         $stats->monthly_revenue = $result ? $result->revenue : 0;
-        
+
         return $stats;
     }
 
@@ -570,7 +570,75 @@ class GuideModel
         ');
         $this->db->bind(':guide_id', $guideId);
         $this->db->bind(':limit', $limit, PDO::PARAM_INT);
-        
+
         return $this->db->resultSet();
+    }
+    public function setAvailability($guideId, $status)
+    {
+        $this->db->query('UPDATE guide_profiles SET available = :status WHERE id = :id');
+        $this->db->bind(':status', $status);
+        $this->db->bind(':id', $guideId);
+        return $this->db->execute();
+    }
+    public function getGuideByUserId($user_id)
+    {
+        $this->db->query('SELECT * FROM guide_profiles WHERE user_id = :user_id');
+        $this->db->bind(':user_id', $user_id);
+        return $this->db->single();
+    }
+    public function updateProfile($guideId, $data)
+    {
+        $this->db->query('UPDATE guide_profiles SET bio = :bio, hourly_rate = :hourly_rate, daily_rate = :daily_rate WHERE id = :id');
+        $this->db->bind(':bio', $data['bio']);
+        $this->db->bind(':hourly_rate', $data['hourly_rate']);
+        $this->db->bind(':daily_rate', $data['daily_rate']);
+        $this->db->bind(':id', $guideId);
+        return $this->db->execute();
+    }
+    public function updateSpecialties($guideId, $specialtiesCommaSeparated)
+    {
+        // Remove all current specialties
+        $this->db->query('DELETE FROM guide_specialties WHERE guide_id = :guide_id');
+        $this->db->bind(':guide_id', $guideId);
+        $this->db->execute();
+
+        // Add new specialties
+        $specialties = array_filter(array_map('trim', explode(',', $specialtiesCommaSeparated)));
+        foreach ($specialties as $specialtyName) {
+            // Find the specialty_id by name
+            $this->db->query('SELECT id FROM specialties WHERE name = :name LIMIT 1');
+            $this->db->bind(':name', $specialtyName);
+            $row = $this->db->single();
+            if ($row) {
+                $specialty_id = $row->id;
+                $this->db->query('INSERT INTO guide_specialties (guide_id, specialty_id) VALUES (:guide_id, :specialty_id)');
+                $this->db->bind(':guide_id', $guideId);
+                $this->db->bind(':specialty_id', $specialty_id);
+                $this->db->execute();
+            }
+        }
+    }
+    public function updateLanguages($guideId, $languagesCommaSeparated)
+    {
+        // Remove all current languages
+        $this->db->query('DELETE FROM guide_languages WHERE guide_id = :guide_id');
+        $this->db->bind(':guide_id', $guideId);
+        $this->db->execute();
+
+        // Add new languages
+        $languages = array_filter(array_map('trim', explode(',', $languagesCommaSeparated)));
+        foreach ($languages as $languageName) {
+            // Find the language_id by name
+            $this->db->query('SELECT id FROM languages WHERE name = :name LIMIT 1');
+            $this->db->bind(':name', $languageName);
+            $row = $this->db->single();
+            if ($row) {
+                $language_id = $row->id;
+                $this->db->query('INSERT INTO guide_languages (guide_id, language_id) VALUES (:guide_id, :language_id)');
+                $this->db->bind(':guide_id', $guideId);
+                $this->db->bind(':language_id', $language_id);
+                $this->db->execute();
+            }
+        }
     }
 }

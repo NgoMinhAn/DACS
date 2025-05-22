@@ -24,6 +24,7 @@ require_once APP_PATH . '/config/config.php';
 require_once APP_PATH . '/config/database.php';
 require_once HELPER_PATH . '/functions.php';
 
+
 // Register autoloader
 spl_autoload_register(function($className) {
     // Check for Controller class
@@ -68,6 +69,8 @@ error_log("Request URI: " . $_SERVER['REQUEST_URI']);
 error_log("Base path: " . $base);
 error_log("Processed URI: " . $uri);
 
+require_once APP_PATH . '/route.php';
+handle_custom_routes(trim($uri, '/'), $routes);
 // Handle guide/reviews route specifically
 if ($uri === '/guide/reviews' || $uri === 'guide/reviews') {
     require_once CONTROLLER_PATH . '/GuideController.php';
