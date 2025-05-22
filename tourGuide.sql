@@ -135,6 +135,7 @@ CREATE TABLE bookings (
     total_price DECIMAL(10, 2) NOT NULL,
     status ENUM('pending', 'confirmed', 'completed', 'cancelled') NOT NULL DEFAULT 'pending',
     payment_status ENUM('pending', 'paid', 'refunded') NOT NULL DEFAULT 'pending',
+    transaction_id VARCHAR(50) NULL,
     special_requests TEXT NULL,
     number_of_people INT NOT NULL DEFAULT 1,
     meeting_location TEXT NOT NULL,
