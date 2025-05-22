@@ -65,6 +65,14 @@ class UserController {
     ]);
 }
 
+public function bookingDetail($id) {
+    $bookingModel = new BookingModel();
+    $booking = $bookingModel->getBookingById($id);
+    if (!$booking) {
+        die('Booking not found');
+    }
+    $this->loadView('user/bookingDetail', ['booking' => $booking]);
+}
     /**
      * Load view helper
      */

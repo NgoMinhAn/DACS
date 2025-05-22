@@ -69,7 +69,7 @@
                                 <li><a class="dropdown-item" href="<?php echo url('guide/dashboard'); ?>">Guide Dashboard</a></li>
                                 <li><a class="dropdown-item" href="<?php echo url('tourGuide/profile/' . $_SESSION['user_id']); ?>">View My Public Profile</a></li>
                             <?php else: ?>
-                                <li><a class="dropdown-item" href="<?php echo url('user/dashboard'); ?>">My Dashboard</a></li>
+                                
                                 <li><a class="dropdown-item" href="<?php echo url('user/bookings'); ?>">My Bookings</a></li>
                             <?php endif; ?>
                             <li><a class="dropdown-item" href="<?php echo url('account/settings'); ?>">Account Settings</a></li>

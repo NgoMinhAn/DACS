@@ -135,6 +135,7 @@ CREATE TABLE bookings (
     total_price DECIMAL(10, 2) NOT NULL,
     status ENUM('pending', 'confirmed', 'completed', 'cancelled') NOT NULL DEFAULT 'pending',
     payment_status ENUM('pending', 'paid', 'refunded') NOT NULL DEFAULT 'pending',
+    transaction_id VARCHAR(50) NULL,
     special_requests TEXT NULL,
     number_of_people INT NOT NULL DEFAULT 1,
     meeting_location TEXT NOT NULL,
@@ -154,12 +155,9 @@ CREATE TABLE messages (
 	FOREIGN KEY (sender_id) REFERENCES users(id)
 );
 
-SHOW COLUMNS FROM bookings LIKE 'status';
+
 ALTER TABLE bookings MODIFY status ENUM('pending','confirmed','completed','cancelled','accepted','declined') NOT NULL DEFAULT 'pending';
 SELECT id, name, email, account_type AS role, balance FROM users
-
-DESCRIBE guide_profiles;
-
 ALTER TABLE guide_profiles ADD COLUMN experience_years INT DEFAULT 0;
 ALTER TABLE guide_languages ADD COLUMN fluent TINYINT(1) NOT NULL DEFAULT 0;
 -- Insert sample data

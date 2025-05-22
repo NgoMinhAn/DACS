@@ -6,6 +6,8 @@ $router->get('guide/booking/{id}', 'GuideController@bookingDetails');
 $router->get('guide/bookings', 'GuideController@bookingsList');
 $router->get('guide/dashboard', 'GuideController@dashboard');
 $router->get('guide/reviews', 'GuideController@reviewsList');
+$router->get('vnpay/createPayment', 'VNPayController@createPayment');
+$router->get('vnpay/return', 'VNPayController@return');
 $routes[] = [
     'pattern' => '#^user/dashboard$#',
     'controller' => 'UserController',
@@ -36,3 +38,4 @@ $routes[] = [
     'method' => 'editGuide',
     'params' => [1]
 ];
+$routes['guide/toggle-availability'] = ['GuideController', 'toggleAvailability'];
