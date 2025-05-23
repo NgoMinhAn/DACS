@@ -580,4 +580,11 @@ class UserModel
         $this->db->bind(':id', $userId);
         return $this->db->execute();
     }
+    public function updateProfileImage($userId, $profile_image)
+    {
+        $this->db->query('UPDATE users SET profile_image = :profile_image WHERE id = :id');
+        $this->db->bind(':profile_image', $profile_image);
+        $this->db->bind(':id', $userId);
+        return $this->db->execute();
+    }
 }

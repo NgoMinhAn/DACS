@@ -552,6 +552,88 @@ class GuideController
 
         redirect('guide/dashboard');
     }
+    public function accountSettings()
+    {
+        $userId = $_SESSION['user_id'];
+        $guide = $this->getGuideProfile($userId);
+        $this->loadView('tourGuides/accoutSettings/settings', ['guide' => $guide]);
+    }
+
+    public function profileSettings()
+    {
+        $userId = $_SESSION['user_id'];
+        $guide = $this->getGuideProfile($userId);
+        $profile_message = null;
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $name = trim($_POST['name'] ?? '');
+            $bio = trim($_POST['bio'] ?? '');
+            $location = trim($_POST['location'] ?? '');
+
+            // Update name in users table
+            $this->userModel->updateName($userId, $name);
+
+            // Handle profile image upload
+            $profile_image = $guide->profile_image;
+            if (isset($_FILES['profile_image']) && $_FILES['profile_image']['error'] === UPLOAD_ERR_OK) {
+                $ext = pathinfo($_FILES['profile_image']['name'], PATHINFO_EXTENSION);
+                $filename = 'guide_' . $userId . '_' . time() . '.' . $ext;
+                $target = __DIR__ . '/../../../assets/images/profiles/' . $filename;
+                if (move_uploaded_file($_FILES['profile_image']['tmp_name'], $target)) {
+                    $profile_image = $filename;
+                    // Update profile_image in users table
+                    $this->userModel->updateProfileImage($userId, $profile_image);
+                }
+            }
+
+            // Update guide_profiles table
+            $this->guideModel->updateProfile($guide->id, [
+                'bio' => $bio,
+                'hourly_rate' => $guide->hourly_rate,
+                'daily_rate' => $guide->daily_rate,
+                'location' => $location
+            ]);
+
+            $profile_message = "Profile updated successfully!";
+            // Reload updated guide info
+            $guide = $this->getGuideProfile($userId);
+        }
+
+        $this->loadView('tourGuides/accoutSettings/profile', [
+            'guide' => $guide,
+            'profile_message' => $profile_message
+        ]);
+    }
+
+    public function passwordSettings()
+    {
+        $userId = $_SESSION['user_id'];
+        $guide = $this->getGuideProfile($userId);
+        $password_message = null;
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $current_password = $_POST['current_password'] ?? '';
+            $new_password = $_POST['new_password'] ?? '';
+            $confirm_password = $_POST['confirm_password'] ?? '';
+
+            // Verify current password
+            if (!$this->userModel->verifyPassword($userId, $current_password)) {
+                $password_message = "Current password is incorrect.";
+            } elseif ($new_password !== $confirm_password) {
+                $password_message = "New passwords do not match.";
+            } elseif (strlen($new_password) < 6) {
+                $password_message = "New password must be at least 6 characters.";
+            } else {
+                $this->userModel->updatePassword($userId, $new_password);
+                $password_message = "Password updated successfully!";
+            }
+        }
+
+        $this->loadView('tourGuides/accoutSettings/password', [
+            'guide' => $guide,
+            'password_message' => $password_message
+        ]);
+    }
 
     /**
      * Load a view with the header and footer

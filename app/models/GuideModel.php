@@ -588,10 +588,11 @@ class GuideModel
     }
     public function updateProfile($guideId, $data)
     {
-        $this->db->query('UPDATE guide_profiles SET bio = :bio, hourly_rate = :hourly_rate, daily_rate = :daily_rate WHERE id = :id');
+        $this->db->query('UPDATE guide_profiles SET bio = :bio, hourly_rate = :hourly_rate, daily_rate = :daily_rate, location = :location WHERE id = :id');
         $this->db->bind(':bio', $data['bio']);
         $this->db->bind(':hourly_rate', $data['hourly_rate']);
         $this->db->bind(':daily_rate', $data['daily_rate']);
+        $this->db->bind(':location', $data['location']);
         $this->db->bind(':id', $guideId);
         return $this->db->execute();
     }
