@@ -19,6 +19,9 @@ $routes = [
     ['pattern' => '#^guide/update-bio$#', 'controller' => 'GuideController', 'method' => 'updateBio', 'params' => []],
     ['pattern' => '#^guide/update-profile-picture$#', 'controller' => 'GuideController', 'method' => 'updateProfilePicture', 'params' => []],
     ['pattern' => '#^guide/calendar$#', 'controller' => 'GuideController', 'method' => 'calendar', 'params' => []],
+    ['pattern' => '#^guide/account-settings$#', 'controller' => 'GuideController', 'method' => 'accountSettings', 'params' => []],
+    ['pattern' => '#^guide/profile-settings$#', 'controller' => 'GuideController', 'method' => 'profileSettings', 'params' => []],
+['pattern' => '#^guide/password-settings$#', 'controller' => 'GuideController', 'method' => 'passwordSettings', 'params' => []],
     // User routes
     ['pattern' => '#^user/chat/(\d+)$#', 'controller' => 'UserController', 'method' => 'chat', 'params' => [1]],
      [
