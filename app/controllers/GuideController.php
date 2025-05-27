@@ -92,7 +92,7 @@ class GuideController
         }
 
         // Otherwise, use a database query directly
-        $db = new Database();
+         $db = new Database();
         $db->query('
             SELECT g.*, u.name, u.email, u.profile_image, u.created_at
             FROM guide_profiles g
@@ -444,11 +444,17 @@ class GuideController
         $specialties_str = implode(', ', array_map(fn($s) => $s->name, $specialties));
         $languages_str = implode(', ', array_map(fn($l) => $l->name, $languages));
 
+        // Lấy tất cả specialties để render checkbox
+        $all_specialties = $this->guideModel->getAllSpecialties();
+        // Tạo mảng specialties đã chọn
+        $selected_specialties = array_map(fn($s) => $s->name, $specialties);
+
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Sanitize input
             $name = trim($_POST['name'] ?? '');
             $bio = trim($_POST['bio'] ?? '');
-            $specialties_input = trim($_POST['specialties'] ?? '');
+            $location = trim($_POST['location'] ?? '');
+            $specialties_input = isset($_POST['specialties']) ? $_POST['specialties'] : [];
             $languages_input = trim($_POST['languages'] ?? '');
             $hourly_rate = floatval($_POST['hourly_rate'] ?? 0);
             $daily_rate = floatval($_POST['daily_rate'] ?? 0);
@@ -460,11 +466,12 @@ class GuideController
             $this->guideModel->updateProfile($guide->id, [
                 'bio' => $bio,
                 'hourly_rate' => $hourly_rate,
-                'daily_rate' => $daily_rate
+                'daily_rate' => $daily_rate,
+                'location' => $location
             ]);
 
             // Update specialties
-            $this->guideModel->updateSpecialties($guide->id, $specialties_input);
+            $this->guideModel->updateSpecialties($guide->id, implode(',', $specialties_input));
 
             // Update languages
             $this->guideModel->updateLanguages($guide->id, $languages_input);
@@ -478,7 +485,9 @@ class GuideController
         $data = [
             'guide' => $guide,
             'specialties' => $specialties_str,
-            'languages' => $languages_str
+            'languages' => $languages_str,
+            'all_specialties' => $all_specialties,
+            'selected_specialties' => $selected_specialties
         ];
 
         $this->loadView('tourGuides/edit-profile', $data);
@@ -504,7 +513,8 @@ class GuideController
             $guideModel->updateProfile($guide->id, [
                 'bio' => $guide->bio,
                 'hourly_rate' => $hourly,
-                'daily_rate' => $daily
+                'daily_rate' => $daily,
+                'location' => $guide->location ?? ''
             ]);
             flash('guide_message', 'Rates updated successfully!', 'alert alert-success');
         }
@@ -542,10 +552,13 @@ class GuideController
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $bio = trim($_POST['bio'] ?? '');
+            // Lấy location từ form, nếu không có thì dùng location hiện tại
+            $location = isset($_POST['location']) ? trim($_POST['location']) : ($guide->location ?? '');
             $guideModel->updateProfile($guide->id, [
                 'bio' => $bio,
                 'hourly_rate' => $guide->hourly_rate,
-                'daily_rate' => $guide->daily_rate
+                'daily_rate' => $guide->daily_rate,
+                'location' => $location
             ]);
             flash('guide_message', 'Bio updated successfully!', 'alert alert-success');
         }
@@ -578,7 +591,11 @@ class GuideController
             if (isset($_FILES['profile_image']) && $_FILES['profile_image']['error'] === UPLOAD_ERR_OK) {
                 $ext = pathinfo($_FILES['profile_image']['name'], PATHINFO_EXTENSION);
                 $filename = 'guide_' . $userId . '_' . time() . '.' . $ext;
-                $target = __DIR__ . '/../../../assets/images/profiles/' . $filename;
+                $uploadDir = dirname(__DIR__, 2) . '/assets/images/profiles/';
+                if (!is_dir($uploadDir)) {
+                    mkdir($uploadDir, 0777, true);
+                }
+                $target = $uploadDir . $filename;
                 if (move_uploaded_file($_FILES['profile_image']['tmp_name'], $target)) {
                     $profile_image = $filename;
                     // Update profile_image in users table
@@ -689,5 +706,27 @@ class GuideController
         ];
 
         $this->loadView('tourGuides/bookings', $data);
+    }
+
+    /**
+     * Hiển thị danh sách contact requests gửi đến guide này
+     */
+    public function contactRequests()
+    {
+        $userId = $_SESSION['user_id'];
+        $guide = $this->getGuideProfile($userId);
+        if (!$guide) {
+            flash('guide_message', 'Guide profile not found.', 'alert alert-danger');
+            redirect('guide/dashboard');
+            return;
+        }
+        $db = new Database();
+        $db->query('SELECT * FROM contact_requests WHERE guide_id = :guide_id ORDER BY id DESC');
+        $db->bind(':guide_id', $guide->id);
+        $contact_requests = $db->resultSet();
+        $this->loadView('tourGuides/contactRequests', [
+            'guide' => $guide,
+            'contact_requests' => $contact_requests
+        ]);
     }
 }

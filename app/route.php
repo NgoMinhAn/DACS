@@ -10,6 +10,7 @@ $routes = [
     // Guide routes
     ['pattern' => '#^guide/dashboard$#', 'controller' => 'GuideController', 'method' => 'dashboard', 'params' => []],
     ['pattern' => '#^guide/reviews$#', 'controller' => 'GuideController', 'method' => 'reviewsList', 'params' => []],
+    ['pattern' => '#^guide/contacts$#', 'controller' => 'GuideController', 'method' => 'contactRequests', 'params' => []],
     ['pattern' => '#^guide/bookings$#', 'controller' => 'GuideController', 'method' => 'bookingsList', 'params' => []],
     ['pattern' => '#^guide/booking/(\d+)$#', 'controller' => 'GuideController', 'method' => 'booking', 'params' => [1]],
     ['pattern' => '#^guide/acceptBooking/(\d+)$#', 'controller' => 'GuideController', 'method' => 'acceptBooking', 'params' => [1]],
@@ -35,7 +36,9 @@ $routes = [
     ['pattern' => '#^admin/users$#', 'controller' => 'AdminController', 'method' => 'users', 'params' => []],
     ['pattern' => '#^admin/editUser/(\d+)$#', 'controller' => 'AdminController', 'method' => 'editUser', 'params' => [1]],
     ['pattern' => '#^admin/deleteUser/(\d+)$#', 'controller' => 'AdminController', 'method' => 'deleteUser', 'params' => [1]],
-    ['pattern' => '#^admin/editGuide/(\d+)$#', 'controller' => 'AdminController', 'method' => 'editGuide', 'params' => [1]]
+    ['pattern' => '#^admin/editGuide/(\d+)$#', 'controller' => 'AdminController', 'method' => 'editGuide', 'params' => [1]],
+    ['pattern' => '#^admin/guideApplications$#', 'controller' => 'AdminController', 'method' => 'guideApplications', 'params' => []],
+    ['pattern' => '#^admin/guideApplication/(\d+)$#', 'controller' => 'AdminController', 'method' => 'guideApplicationDetail', 'params' => [1]]
 ];
 
 

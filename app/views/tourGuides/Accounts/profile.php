@@ -50,6 +50,10 @@
                         <div class="badge bg-success mb-3">
                             <i class="fas fa-check-circle me-1"></i> Verified Guide
                         </div>
+                    <?php else: ?>
+                        <div class="badge bg-warning mb-3">
+                            <i class="fas fa-clock me-1"></i> Verification Pending
+                        </div>
                     <?php endif; ?>
 
                     <!-- Experience -->

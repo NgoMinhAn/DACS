@@ -175,4 +175,128 @@ class AdminController
         $guide = $guideModel->getGuideById($id);
         $this->loadView('admin/editGuide', ['guide' => $guide]);
     }
+
+    /**
+     * List all pending guide applications
+     */
+    public function guideApplications() {
+        $db = new Database();
+        $db->query('SELECT ga.*, u.name, u.email FROM guide_applications ga JOIN users u ON ga.user_id = u.id WHERE ga.status = "pending" ORDER BY ga.created_at DESC');
+        $applications = $db->resultSet();
+        $this->loadView('admin/guideApplications', ['applications' => $applications]);
+    }
+
+    /**
+     * View and process a single guide application
+     */
+    public function guideApplicationDetail($id) {
+        $db = new Database();
+        $db->query('SELECT ga.*, u.name, u.email FROM guide_applications ga JOIN users u ON ga.user_id = u.id WHERE ga.id = :id');
+        $db->bind(':id', $id);
+        $application = $db->single();
+        if (!$application) {
+            flash('admin_message', 'Application not found.', 'alert alert-danger');
+            redirect('admin/guideApplications');
+        }
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $action = $_POST['action'] ?? '';
+            if ($action === 'approve') {
+                // Cập nhật user_type, tạo guide_profiles, cập nhật application
+                $userId = $application->user_id;
+                $db->query('UPDATE users SET user_type = "guide" WHERE id = :id');
+                $db->bind(':id', $userId);
+                $db->execute();
+                // Tạo guide_profiles
+                $db->query('INSERT INTO guide_profiles (user_id, bio, location, experience_years, hourly_rate, daily_rate, available, verified, certification_info, profile_image) VALUES (:user_id, :bio, :location, :experience_years, :hourly_rate, :daily_rate, 1, 1, :certifications, :profile_image)');
+                $db->bind(':user_id', $userId);
+                $db->bind(':bio', $application->bio);
+                $db->bind(':location', $application->location);
+                $db->bind(':experience_years', 0);
+                $db->bind(':hourly_rate', $application->hourly_rate);
+                $db->bind(':daily_rate', $application->daily_rate);
+                $db->bind(':certifications', $application->certifications);
+                $db->bind(':profile_image', $application->profile_image);
+                $db->execute();
+                // Cập nhật trạng thái đơn
+                $db->query('UPDATE guide_applications SET status = "approved", reviewed_at = NOW(), reviewed_by = :admin_id WHERE id = :id');
+                $db->bind(':admin_id', $_SESSION['user_id']);
+                $db->bind(':id', $id);
+                $db->execute();
+                flash('admin_message', 'Application approved and user is now a guide.', 'alert alert-success');
+            } elseif ($action === 'reject') {
+                $db->query('UPDATE guide_applications SET status = "rejected", reviewed_at = NOW(), reviewed_by = :admin_id WHERE id = :id');
+                $db->bind(':admin_id', $_SESSION['user_id']);
+                $db->bind(':id', $id);
+                $db->execute();
+                flash('admin_message', 'Application rejected.', 'alert alert-warning');
+            }
+            redirect('admin/guideApplications');
+        } else {
+            $this->loadView('admin/guideApplicationDetail', ['application' => $application]);
+        }
+    }
+
+    public function deleteGuide($id)
+    {
+        try {
+            $guideModel = new GuideModel();
+            $guide = $guideModel->getGuideById($id);
+            
+            if (!$guide) {
+                flash('admin_message', 'Guide not found.', 'alert alert-danger');
+                redirect('admin/guides');
+            }
+
+            // Start transaction
+            $db = new Database();
+            $db->beginTransaction();
+
+            try {
+                // Delete from guide_languages
+                $db->query('DELETE FROM guide_languages WHERE guide_id = :id');
+                $db->bind(':id', $id);
+                $db->execute();
+
+                // Delete from guide_specialties
+                $db->query('DELETE FROM guide_specialties WHERE guide_id = :id');
+                $db->bind(':id', $id);
+                $db->execute();
+
+                // Delete from guide_reviews
+                $db->query('DELETE FROM guide_reviews WHERE guide_id = :id');
+                $db->bind(':id', $id);
+                $db->execute();
+
+                // Delete from bookings
+                $db->query('DELETE FROM bookings WHERE guide_id = :id');
+                $db->bind(':id', $id);
+                $db->execute();
+
+                // Delete from guide_profiles
+                $db->query('DELETE FROM guide_profiles WHERE id = :id');
+                $db->bind(':id', $id);
+                $db->execute();
+
+                // Update user type back to regular user
+                $db->query('UPDATE users SET user_type = "user" WHERE id = :user_id');
+                $db->bind(':user_id', $guide->user_id);
+                $db->execute();
+
+                // Commit transaction
+                $db->commit();
+
+                flash('admin_message', 'Guide successfully deleted.', 'alert alert-success');
+            } catch (Exception $e) {
+                // Rollback on error
+                $db->rollBack();
+                error_log("Error deleting guide: " . $e->getMessage());
+                flash('admin_message', 'Error deleting guide. Please try again.', 'alert alert-danger');
+            }
+        } catch (Exception $e) {
+            error_log("Error in deleteGuide: " . $e->getMessage());
+            flash('admin_message', 'Error deleting guide. Please try again.', 'alert alert-danger');
+        }
+
+        redirect('admin/guides');
+    }
 }

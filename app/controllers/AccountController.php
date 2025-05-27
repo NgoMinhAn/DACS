@@ -737,6 +737,7 @@ class AccountController {
     }
 
     /**
+
      * Google Login
      * Initiates Google OAuth login process
      */
@@ -838,6 +839,7 @@ class AccountController {
         } else {
             flash('login_message', 'Error authenticating with Google', 'alert alert-danger');
             redirect('account/login');
+
         }
     }
 } 

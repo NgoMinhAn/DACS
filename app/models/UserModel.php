@@ -590,6 +590,7 @@ class UserModel
     }
 
     /**
+
      * Verify reset token
      * 
      * @param string $token Reset token
@@ -683,5 +684,6 @@ class UserModel
         error_log("Password reset " . ($result ? "successful" : "failed") . " for user ID: " . $row->id);
         
         return $result;
+
     }
 }

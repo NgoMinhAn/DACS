@@ -8,6 +8,7 @@ $router->get('guide/dashboard', 'GuideController@dashboard');
 $router->get('guide/reviews', 'GuideController@reviewsList');
 $router->get('vnpay/createPayment', 'VNPayController@createPayment');
 $router->get('vnpay/return', 'VNPayController@return');
+$router->get('guide/contacts', 'GuideController@contactRequests');
 $routes[] = [
     'pattern' => '#^user/dashboard$#',
     'controller' => 'UserController',

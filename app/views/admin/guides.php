@@ -2,7 +2,7 @@
 <div class="container py-4">
     <h2>Guide Management</h2>
     <div class="mb-3">
-        <a href="<?php echo url('admin/addGuide'); ?>" class="btn btn-success">Add New Guide</a>
+        <a href="<?php echo url('admin/guideApplications'); ?>" class="btn btn-warning">Pending Guide Applications</a>
     </div>
     <?php if (!empty($guides)): ?>
         <table class="table table-bordered table-hover">

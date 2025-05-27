@@ -20,8 +20,8 @@
         <div class="mb-3">
             <label>Verified</label>
             <select name="verified" class="form-control" required>
-                <option value="1" <?php echo ($guide->verified) ? 'selected' : ''; ?>>Yes</option>
-                <option value="0" <?php echo (!$guide->verified) ? 'selected' : ''; ?>>No</option>
+                <option value="1" <?php echo ($guide->verified == 1) ? 'selected' : ''; ?>>Yes</option>
+                <option value="0" <?php echo ($guide->verified == 0) ? 'selected' : ''; ?>>No</option>
             </select>
         </div>
         <div class="mb-3">

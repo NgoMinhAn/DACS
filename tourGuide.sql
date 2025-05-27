@@ -13,6 +13,8 @@ DROP TABLE IF EXISTS user_preferences;
 DROP TABLE IF EXISTS languages;
 DROP TABLE IF EXISTS specialties;
 DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS guide_applications;
+DROP TABLE IF EXISTS contact_requests;
 
 -- Users table (both regular users and guides)
 CREATE TABLE users (
@@ -31,6 +33,26 @@ CREATE TABLE users (
     reset_token_expires TIMESTAMP NULL,
     phone VARCHAR(20) NULL,
     address TEXT NULL
+);
+
+-- Guide applications table (for admin approval process)
+CREATE TABLE guide_applications (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    specialty VARCHAR(255) NOT NULL,
+    bio TEXT NOT NULL,
+    experience TEXT,
+    status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    reviewed_at DATETIME,
+    reviewed_by INT,
+    location VARCHAR(100),
+    phone VARCHAR(20),
+    certifications TEXT,
+    profile_image VARCHAR(255),
+    hourly_rate DECIMAL(10,2),
+    daily_rate DECIMAL(10,2),
+    FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
 -- Account recovery questions for enhanced security
@@ -70,6 +92,7 @@ CREATE TABLE guide_profiles (
     verified BOOLEAN NOT NULL DEFAULT FALSE,
     certification_info TEXT NULL,
     payment_info TEXT NULL,
+    profile_image VARCHAR(255) DEFAULT NULL,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
@@ -155,6 +178,16 @@ CREATE TABLE messages (
 	FOREIGN KEY (sender_id) REFERENCES users(id)
 );
 
+-- Contact requests from users to guides
+CREATE TABLE contact_requests (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    guide_id INT NOT NULL,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    message TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (guide_id) REFERENCES guide_profiles(id) ON DELETE CASCADE
+);
 
 ALTER TABLE bookings MODIFY status ENUM('pending','confirmed','completed','cancelled','accepted','declined') NOT NULL DEFAULT 'pending';
 SELECT id, name, email, account_type AS role, balance FROM users
