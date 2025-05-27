@@ -213,7 +213,8 @@ class TourGuideController {
             'two_star_count' => $two_star_count,
             'one_star_count' => $one_star_count,
             'pagination' => $pagination,
-            'approved_review_count' => $approvedReviewCount
+            'approved_review_count' => $approvedReviewCount,
+            'requires_auth' => !isLoggedIn()
         ];
         
         // Load view - use the new profile view
@@ -398,21 +399,32 @@ class TourGuideController {
      * @param int $id The guide ID
      */
     public function contact($id = null) {
+        // Check if user is logged in
+        if (!isLoggedIn()) {
+            // Store the intended destination in session
+            $_SESSION['redirect_after_login'] = 'tourGuide/contact/' . $id;
+            flash('login_message', 'Please login to contact the guide.', 'alert alert-info');
+            redirect('account/login');
+        }
+
         if ($id === null) {
             redirect('tourGuide/browse');
         }
-        // Lấy guide thực tế từ database
+        
+        // Get guide details from database
         $guide = $this->guideModel->getGuideById($id);
         if (!$guide) {
             flash('contact_message', 'Guide not found.', 'alert alert-danger');
             redirect('tourGuide/browse');
         }
-        // Nếu form được submit
+        
+        // If form is submitted
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $name = trim($_POST['name'] ?? '');
             $email = trim($_POST['email'] ?? '');
             $message = trim($_POST['message'] ?? '');
-            // Lưu vào bảng contact_requests
+            
+            // Save to contact_requests table
             $db = new Database();
             $db->query('INSERT INTO contact_requests (guide_id, name, email, message) VALUES (:guide_id, :name, :email, :message)');
             $db->bind(':guide_id', $guide->guide_id);
@@ -420,9 +432,11 @@ class TourGuideController {
             $db->bind(':email', $email);
             $db->bind(':message', $message);
             $db->execute();
+            
             flash('contact_message', 'Your message has been sent to the guide.');
             redirect('tourGuide/profile/' . $id);
         }
+        
         // Data to be passed to the view
         $data = [
             'title' => 'Contact ' . $guide->name,
@@ -432,6 +446,7 @@ class TourGuideController {
                 'email' => $guide->email
             ]
         ];
+        
         $this->loadView('tourGuides/contact', $data);
     }
 

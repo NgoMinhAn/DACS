@@ -43,7 +43,7 @@
                         </p>
                         <?php if ($user->user_type === 'user'): ?>
                             <p class="text-muted mb-2">Interested in sharing your knowledge and guiding others?</p>
-                            <a href="<?php echo URL_ROOT; ?>/account/becomeguide" class="btn btn-success">
+                            <a href="<?php echo URL_ROOT; ?>/account/becomeguide?step=1" class="btn btn-success">
                                 <i class="fas fa-chalkboard-teacher me-2"></i>
                                 Become a Guide
                             </a>
