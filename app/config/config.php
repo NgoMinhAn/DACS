@@ -13,7 +13,7 @@ define('DB_PASS', '');
 define('DB_NAME', 'TourGuide'); // Updated from tour_guide_db to TourGuide
 
 // URL Root
-define('URL_ROOT', 'http://localhost/DACS');
+define('URL_ROOT', 'http://localhost:80/DACS');
 
 // Site Name
 define('SITE_NAME', 'Tour Guide Connect');

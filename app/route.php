@@ -1,6 +1,10 @@
 <?php
 
 $routes = [
+    // Account routes
+    ['pattern' => '#^account/google-login$#', 'controller' => 'AccountController', 'method' => 'googleLogin', 'params' => []],
+    ['pattern' => '#^account/google-callback$#', 'controller' => 'AccountController', 'method' => 'googleCallback', 'params' => []],
+    
     // Guide routes
     ['pattern' => '#^guide/dashboard$#', 'controller' => 'GuideController', 'method' => 'dashboard', 'params' => []],
     ['pattern' => '#^guide/reviews$#', 'controller' => 'GuideController', 'method' => 'reviewsList', 'params' => []],
@@ -21,15 +25,10 @@ $routes = [
     ['pattern' => '#^guide/calendar$#', 'controller' => 'GuideController', 'method' => 'calendar', 'params' => []],
     ['pattern' => '#^guide/account-settings$#', 'controller' => 'GuideController', 'method' => 'accountSettings', 'params' => []],
     ['pattern' => '#^guide/profile-settings$#', 'controller' => 'GuideController', 'method' => 'profileSettings', 'params' => []],
-['pattern' => '#^guide/password-settings$#', 'controller' => 'GuideController', 'method' => 'passwordSettings', 'params' => []],
+    ['pattern' => '#^guide/password-settings$#', 'controller' => 'GuideController', 'method' => 'passwordSettings', 'params' => []],
     // User routes
     ['pattern' => '#^user/chat/(\d+)$#', 'controller' => 'UserController', 'method' => 'chat', 'params' => [1]],
-     [
-    'pattern' => '#^user/booking/(\d+)$#',
-    'controller' => 'UserController',
-    'method' => 'bookingDetail',
-    'params' => [1]
-     ],
+    ['pattern' => '#^user/booking/(\d+)$#', 'controller' => 'UserController', 'method' => 'bookingDetail', 'params' => [1]],
     // Admin routes
     ['pattern' => '#^admin/users$#', 'controller' => 'AdminController', 'method' => 'users', 'params' => []],
     ['pattern' => '#^admin/editUser/(\d+)$#', 'controller' => 'AdminController', 'method' => 'editUser', 'params' => [1]],
