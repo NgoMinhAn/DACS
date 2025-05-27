@@ -629,4 +629,103 @@ class AccountController {
             redirect('account/settings');
         }
     }
+
+    /**
+     * Become a Guide (user application)
+     */
+    public function becomeGuide() {
+        if (!isLoggedIn()) {
+            redirect('account/login');
+        }
+
+        $user = $this->userModel->getUserById($_SESSION['user_id']);
+        $application = $this->userModel->getGuideApplicationByUserId($user->id);
+        if ($application && $application->status == 'pending') {
+            flash('settings_message', 'Your application is pending admin approval.');
+            redirect('account/settings');
+        }
+        if ($application && $application->status == 'approved') {
+            flash('settings_message', 'You are already a guide.');
+            redirect('account/settings');
+        }
+
+        require_once dirname(__DIR__) . '/models/GuideModel.php';
+        $guideModel = new GuideModel();
+        $specialties = $guideModel->getAllSpecialties();
+        $languages = $guideModel->getAllLanguages();
+
+        $step = isset($_GET['step']) ? $_GET['step'] : '1';
+
+        if ($step === '1') {
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                // Handle avatar upload
+                $profile_image = null;
+                if (!empty($_FILES['profile_image']['name'])) {
+                    $uploadDir = dirname(dirname(__DIR__)) . '/public/uploads/avatars/';
+                    if (!is_dir($uploadDir)) {
+                        mkdir($uploadDir, 0777, true);
+                    }
+                    $fileExtension = strtolower(pathinfo($_FILES['profile_image']['name'], PATHINFO_EXTENSION));
+                    $allowedTypes = ['jpg', 'jpeg', 'png'];
+                    if (in_array($fileExtension, $allowedTypes) && $_FILES['profile_image']['size'] <= 5000000) {
+                        $fileName = uniqid('guide_') . '.' . $fileExtension;
+                        $targetPath = $uploadDir . $fileName;
+                        if (move_uploaded_file($_FILES['profile_image']['tmp_name'], $targetPath)) {
+                            $profile_image = $fileName;
+                        }
+                    }
+                }
+                // Lưu tạm vào session
+                $_SESSION['become_guide'] = [
+                    'location' => trim($_POST['location']),
+                    'phone' => trim($_POST['phone']),
+                    'certifications' => trim($_POST['certifications']),
+                    'profile_image' => $profile_image,
+                    'bio' => trim($_POST['bio']),
+                    'experience' => trim($_POST['experience'])
+                ];
+                // Chuyển sang bước 2
+                redirect('account/becomeguide?step=2');
+            } else {
+                $data = [
+                    'user' => $user
+                ];
+                $this->loadView('user/accountsetting/become-guide-step1', $data);
+            }
+        } else if ($step === '2') {
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                $hourly_rate = floatval($_POST['hourly_rate']);
+                $daily_rate = floatval($_POST['daily_rate']);
+                $specialties_selected = isset($_POST['specialties']) ? implode(',', $_POST['specialties']) : '';
+                $languages_selected = isset($_POST['languages']) ? implode(',', $_POST['languages']) : '';
+                $languages_fluency = isset($_POST['languages_fluency']) ? implode(',', $_POST['languages_fluency']) : '';
+                // Lấy dữ liệu từ session
+                $info = $_SESSION['become_guide'] ?? [];
+                $this->userModel->createGuideApplication(
+                    $user->id,
+                    $specialties_selected,
+                    $info['bio'] ?? '',
+                    $info['experience'] ?? '',
+                    $info['location'] ?? '',
+                    $info['phone'] ?? '',
+                    $info['certifications'] ?? '',
+                    $info['profile_image'] ?? null,
+                    $hourly_rate,
+                    $daily_rate,
+                    $languages_selected,
+                    $languages_fluency
+                );
+                unset($_SESSION['become_guide']);
+                flash('settings_message', 'Your application has been submitted and is pending admin approval.');
+                redirect('account/settings');
+            } else {
+                $data = [
+                    'user' => $user,
+                    'specialties' => $specialties,
+                    'languages' => $languages
+                ];
+                $this->loadView('user/accountsetting/become-guide-step2', $data);
+            }
+        }
+    }
 } 

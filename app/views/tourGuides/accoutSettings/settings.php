@@ -13,6 +13,15 @@
                         General Settings
                     </h3>
 
+                    <!-- Contact Requests Button -->
+                    <?php if ($_SESSION['user_type'] === 'guide'): ?>
+                        <a href="<?php echo url('guide/contacts'); ?>" class="btn btn-outline-primary btn-lg w-100 d-flex align-items-center justify-content-center gap-2 mb-3">
+                            <i class="fa fa-envelope-open-text"></i>
+                            <span>View contact requests from users</span>
+                        </a>
+                        <p class="text-muted mb-4" style="font-size: 0.95rem;">See all messages sent to you by users who want to contact you as a guide.</p>
+                    <?php endif; ?>
+
                     <!-- Email -->
                     <div class="mb-4 p-3 bg-light rounded">
                         <div class="d-flex align-items-center mb-2">
@@ -81,7 +90,7 @@
                     <i class="fas fa-exclamation-circle me-2"></i>
                     This action cannot be undone. All your data will be permanently deleted.
                 </div>
-                <form action="<?php echo url('guide/delete-account'); ?>" method="POST" id="deleteAccountForm">
+                <form action="<?php echo url('tourGuide/delete-account'); ?>" method="POST" id="deleteAccountForm">
                     <div class="mb-3">
                         <label for="delete_password" class="form-label">Please enter your password to confirm:</label>
                         <div class="input-group">

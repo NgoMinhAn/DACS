@@ -7,12 +7,27 @@
             <input type="text" name="name" id="name" class="form-control" value="<?php echo htmlspecialchars($guide->name ?? ''); ?>" required>
         </div>
         <div class="mb-3">
+            <label for="location" class="form-label">Location</label>
+            <input type="text" name="location" id="location" class="form-control" value="<?php echo htmlspecialchars($guide->location ?? ''); ?>" required>
+        </div>
+        <div class="mb-3">
             <label for="bio" class="form-label">Bio</label>
             <textarea name="bio" id="bio" class="form-control" rows="4" required><?php echo htmlspecialchars($guide->bio ?? ''); ?></textarea>
         </div>
         <div class="mb-3">
-            <label for="specialties" class="form-label">Specialties (comma separated)</label>
-            <input type="text" name="specialties" id="specialties" class="form-control" value="<?php echo htmlspecialchars($guide->specialties ?? ''); ?>" placeholder="e.g. History, Food, Nature">
+            <label class="form-label">Specialties</label>
+            <div class="row">
+                <?php foreach ($all_specialties as $specialty): ?>
+                    <div class="col-md-4">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="specialties[]" value="<?php echo htmlspecialchars($specialty->name); ?>" id="specialty_<?php echo $specialty->id; ?>" <?php echo in_array($specialty->name, $selected_specialties) ? 'checked' : ''; ?>>
+                            <label class="form-check-label" for="specialty_<?php echo $specialty->id; ?>">
+                                <?php echo htmlspecialchars($specialty->name); ?>
+                            </label>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
         </div>
         <div class="mb-3">
             <label for="languages" class="form-label">Languages (comma separated)</label>

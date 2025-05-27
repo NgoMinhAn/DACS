@@ -385,112 +385,231 @@ class GuideModel
     }
     public function getGuideById($id)
     {
+        // First try to get the guide by guide_profiles.id
         $this->db->query('
-        SELECT g.id AS guide_id, u.id AS user_id, u.name, u.email, u.status, 
-               g.verified, g.avg_rating, g.total_reviews, g.hourly_rate, g.daily_rate, 
-               g.available, g.experience_years
-        FROM users u
-        JOIN guide_profiles g ON u.id = g.user_id
-        WHERE g.id = :id
-    ');
+            SELECT 
+                g.id as guide_id, 
+                g.*, 
+                u.id AS user_id, 
+                u.name, 
+                u.email, 
+                u.status,
+                u.profile_image,
+                g.verified, 
+                g.avg_rating, 
+                g.total_reviews, 
+                g.hourly_rate, 
+                g.daily_rate, 
+                g.available, 
+                g.experience_years,
+                g.bio,
+                g.location
+            FROM guide_profiles g
+            JOIN users u ON u.id = g.user_id
+            WHERE g.id = :id
+        ');
         $this->db->bind(':id', $id);
         $guide = $this->db->single();
 
+        // If not found, try to get by user_id
+        if (!$guide) {
+            $this->db->query('
+                SELECT 
+                    g.id as guide_id,
+                    g.*, 
+                    u.id AS user_id, 
+                    u.name, 
+                    u.email, 
+                    u.status,
+                    u.profile_image,
+                    g.verified, 
+                    g.avg_rating, 
+                    g.total_reviews, 
+                    g.hourly_rate, 
+                    g.daily_rate, 
+                    g.available, 
+                    g.experience_years,
+                    g.bio,
+                    g.location
+                FROM guide_profiles g
+                JOIN users u ON u.id = g.user_id
+                WHERE g.user_id = :user_id
+            ');
+            $this->db->bind(':user_id', $id);
+            $guide = $this->db->single();
+        }
+
+        // If still no guide found, return false
+        if (!$guide) {
+            return false;
+        }
+
+        // Initialize default values for nullable fields
+        $guide->avg_rating = $guide->avg_rating ?? 0;
+        $guide->total_reviews = $guide->total_reviews ?? 0;
+        $guide->hourly_rate = $guide->hourly_rate ?? 0;
+        $guide->daily_rate = $guide->daily_rate ?? 0;
+        $guide->experience_years = $guide->experience_years ?? 0;
+        $guide->verified = $guide->verified ?? 0;
+        $guide->available = $guide->available ?? 0;
+        $guide->status = $guide->status ?? 'inactive';
+        $guide->bio = $guide->bio ?? '';
+        $guide->location = $guide->location ?? '';
+
+        // Ensure guide_id is set
+        if (!isset($guide->guide_id)) {
+            $guide->guide_id = $guide->id;
+        }
+
         // Fetch specialties
         $this->db->query('
-        SELECT s.name 
-        FROM guide_specialties gs
-        JOIN specialties s ON gs.specialty_id = s.id
-        WHERE gs.guide_id = :id
-    ');
-        $this->db->bind(':id', $id);
+            SELECT s.name 
+            FROM guide_specialties gs
+            JOIN specialties s ON gs.specialty_id = s.id
+            WHERE gs.guide_id = :id
+        ');
+        $this->db->bind(':id', $guide->guide_id);
         $specialties = $this->db->resultSet();
-        $guide->specialties = implode(', ', array_map(fn($s) => $s->name, $specialties));
+        $guide->specialties = !empty($specialties) ? implode(', ', array_map(fn($s) => $s->name, $specialties)) : '';
 
         // Fetch all languages
         $this->db->query('
-        SELECT l.name 
-        FROM guide_languages gl
-        JOIN languages l ON gl.language_id = l.id
-        WHERE gl.guide_id = :id
-    ');
-        $this->db->bind(':id', $id);
+            SELECT l.name, gl.fluent
+            FROM guide_languages gl
+            JOIN languages l ON gl.language_id = l.id
+            WHERE gl.guide_id = :id
+        ');
+        $this->db->bind(':id', $guide->guide_id);
         $languages = $this->db->resultSet();
-        $guide->languages = implode(', ', array_map(fn($l) => $l->name, $languages));
-
-        // Fetch fluent languages
-        $this->db->query('
-        SELECT l.name 
-        FROM guide_languages gl
-        JOIN languages l ON gl.language_id = l.id
-        WHERE gl.guide_id = :id AND gl.fluent = 1
-    ');
-        $this->db->bind(':id', $id);
-        $fluentLangs = $this->db->resultSet();
-        $guide->fluent_languages = implode(', ', array_map(fn($l) => $l->name, $fluentLangs));
+        
+        // Separate regular and fluent languages
+        $allLanguages = [];
+        $fluentLanguages = [];
+        foreach ($languages as $lang) {
+            $allLanguages[] = $lang->name;
+            if ($lang->fluent) {
+                $fluentLanguages[] = $lang->name;
+            }
+        }
+        
+        $guide->languages = implode(', ', $allLanguages);
+        $guide->fluent_languages = implode(', ', $fluentLanguages);
 
         return $guide;
     }
 
     public function updateGuide($id, $data)
     {
-        // Update guide_profiles as before (without specialties/languages)
-        $this->db->query('UPDATE guide_profiles 
-    SET verified = :verified, avg_rating = :avg_rating, total_reviews = :total_reviews, 
-        hourly_rate = :hourly_rate, daily_rate = :daily_rate, available = :available, 
-        experience_years = :experience_years
-    WHERE id = :id');
-        $this->db->bind(':verified', $data['verified']);
-        $this->db->bind(':avg_rating', $data['avg_rating']);
-        $this->db->bind(':total_reviews', $data['total_reviews']);
-        $this->db->bind(':hourly_rate', $data['hourly_rate']);
-        $this->db->bind(':daily_rate', $data['daily_rate']);
-        $this->db->bind(':available', $data['available']);
-        $this->db->bind(':experience_years', $data['experience_years'] ?? 0);
-        $this->db->bind(':id', $id);
-        $this->db->execute();
-
-        // Update specialties
-        $this->db->query('DELETE FROM guide_specialties WHERE guide_id = :id');
-        $this->db->bind(':id', $id);
-        $this->db->execute();
-        $specialties = array_filter(array_map('trim', explode(',', $data['specialties'] ?? '')));
-        foreach ($specialties as $specialty) {
-            // Find the specialty_id by name
-            $this->db->query('SELECT id FROM specialties WHERE name = :name LIMIT 1');
-            $this->db->bind(':name', $specialty);
-            $specialtyRow = $this->db->single();
-            if ($specialtyRow) {
-                $specialty_id = $specialtyRow->id;
-                $this->db->query('INSERT INTO guide_specialties (guide_id, specialty_id) VALUES (:id, :specialty_id)');
-                $this->db->bind(':id', $id);
-                $this->db->bind(':specialty_id', $specialty_id);
-                $this->db->execute();
+        try {
+            // First get the guide to get the user_id
+            $this->db->query('SELECT user_id FROM guide_profiles WHERE id = :id');
+            $this->db->bind(':id', $id);
+            $guide = $this->db->single();
+            
+            if (!$guide) {
+                error_log("Guide not found with ID: " . $id);
+                return false;
             }
-        }
 
-        // After deleting old guide_languages:
-        $this->db->query('DELETE FROM guide_languages WHERE guide_id = :id');
-        $this->db->bind(':id', $id);
-        $this->db->execute();
+            // Convert verified to integer and ensure it's either 0 or 1
+            $verified = isset($data['verified']) ? (int)$data['verified'] : 0;
+            $verified = $verified ? 1 : 0;
 
-        $languages = array_filter(array_map('trim', explode(',', $data['languages'] ?? '')));
-        $fluent_languages = array_map('strtolower', array_filter(array_map('trim', explode(',', $data['fluent_languages'] ?? ''))));
-
-        foreach ($languages as $language) {
-            // Find the language_id by name
-            $this->db->query('SELECT id FROM languages WHERE name = :name LIMIT 1');
-            $this->db->bind(':name', $language);
-            $languageRow = $this->db->single();
-            if ($languageRow) {
-                $language_id = $languageRow->id;
-                $is_fluent = in_array(strtolower($language), $fluent_languages) ? 1 : 0;
-                $this->db->query('INSERT INTO guide_languages (guide_id, language_id, fluent) VALUES (:id, :language_id, :fluent)');
-                $this->db->bind(':id', $id);
-                $this->db->bind(':language_id', $language_id);
-                $this->db->bind(':fluent', $is_fluent);
-                $this->db->execute();
+            // Update guide_profiles with all fields
+            $this->db->query('UPDATE guide_profiles 
+                SET verified = :verified, 
+                    avg_rating = :avg_rating, 
+                    total_reviews = :total_reviews, 
+                    hourly_rate = :hourly_rate, 
+                    daily_rate = :daily_rate, 
+                    available = :available, 
+                    experience_years = :experience_years,
+                    bio = :bio,
+                    location = :location
+                WHERE id = :id');
+            
+            $this->db->bind(':verified', $verified);
+            $this->db->bind(':avg_rating', floatval($data['avg_rating'] ?? 0));
+            $this->db->bind(':total_reviews', intval($data['total_reviews'] ?? 0));
+            $this->db->bind(':hourly_rate', floatval($data['hourly_rate'] ?? 0));
+            $this->db->bind(':daily_rate', floatval($data['daily_rate'] ?? 0));
+            $this->db->bind(':available', isset($data['available']) ? (int)$data['available'] : 0);
+            $this->db->bind(':experience_years', intval($data['experience_years'] ?? 0));
+            $this->db->bind(':bio', $data['bio'] ?? '');
+            $this->db->bind(':location', $data['location'] ?? '');
+            $this->db->bind(':id', $id);
+            
+            if (!$this->db->execute()) {
+                error_log("Failed to update guide_profiles for ID: " . $id);
+                return false;
             }
+
+            // Update user information
+            $this->db->query('UPDATE users 
+                SET status = :status,
+                    name = :name,
+                    email = :email
+                WHERE id = :user_id');
+            
+            $this->db->bind(':status', $verified ? 'active' : 'inactive');
+            $this->db->bind(':name', $data['name']);
+            $this->db->bind(':email', $data['email']);
+            $this->db->bind(':user_id', $guide->user_id);
+            
+            if (!$this->db->execute()) {
+                error_log("Failed to update user information for user_id: " . $guide->user_id);
+                return false;
+            }
+
+            // Update specialties
+            $this->db->query('DELETE FROM guide_specialties WHERE guide_id = :id');
+            $this->db->bind(':id', $id);
+            $this->db->execute();
+            
+            if (!empty($data['specialties'])) {
+                $specialties = array_filter(array_map('trim', explode(',', $data['specialties'])));
+                foreach ($specialties as $specialty) {
+                    $this->db->query('SELECT id FROM specialties WHERE name = :name LIMIT 1');
+                    $this->db->bind(':name', $specialty);
+                    $specialtyRow = $this->db->single();
+                    if ($specialtyRow) {
+                        $this->db->query('INSERT INTO guide_specialties (guide_id, specialty_id) VALUES (:id, :specialty_id)');
+                        $this->db->bind(':id', $id);
+                        $this->db->bind(':specialty_id', $specialtyRow->id);
+                        $this->db->execute();
+                    }
+                }
+            }
+
+            // Update languages
+            $this->db->query('DELETE FROM guide_languages WHERE guide_id = :id');
+            $this->db->bind(':id', $id);
+            $this->db->execute();
+
+            if (!empty($data['languages'])) {
+                $languages = array_filter(array_map('trim', explode(',', $data['languages'])));
+                $fluent_languages = !empty($data['fluent_languages']) ? 
+                    array_map('strtolower', array_filter(array_map('trim', explode(',', $data['fluent_languages'])))) : [];
+
+                foreach ($languages as $language) {
+                    $this->db->query('SELECT id FROM languages WHERE name = :name LIMIT 1');
+                    $this->db->bind(':name', $language);
+                    $row = $this->db->single();
+                    if ($row) {
+                        $is_fluent = in_array(strtolower($language), $fluent_languages) ? 1 : 0;
+                        $this->db->query('INSERT INTO guide_languages (guide_id, language_id, fluent) VALUES (:id, :language_id, :fluent)');
+                        $this->db->bind(':id', $id);
+                        $this->db->bind(':language_id', $row->id);
+                        $this->db->bind(':fluent', $is_fluent);
+                        $this->db->execute();
+                    }
+                }
+            }
+
+            return true;
+        } catch (Exception $e) {
+            error_log("Error updating guide: " . $e->getMessage());
+            return false;
         }
     }
 
@@ -612,8 +731,8 @@ class GuideModel
             $row = $this->db->single();
             if ($row) {
                 $specialty_id = $row->id;
-                $this->db->query('INSERT INTO guide_specialties (guide_id, specialty_id) VALUES (:guide_id, :specialty_id)');
-                $this->db->bind(':guide_id', $guideId);
+                $this->db->query('INSERT INTO guide_specialties (guide_id, specialty_id) VALUES (:id, :specialty_id)');
+                $this->db->bind(':id', $guideId);
                 $this->db->bind(':specialty_id', $specialty_id);
                 $this->db->execute();
             }

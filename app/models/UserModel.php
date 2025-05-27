@@ -587,4 +587,34 @@ class UserModel
         $this->db->bind(':id', $userId);
         return $this->db->execute();
     }
+
+    /**
+     * Create a guide application (extended fields)
+     */
+    public function createGuideApplication($user_id, $specialty, $bio, $experience, $location = null, $phone = null, $certifications = null, $profile_image = null, $hourly_rate = null, $daily_rate = null, $languages = null, $languages_fluency = null)
+    {
+        $this->db->query('INSERT INTO guide_applications (user_id, specialty, bio, experience, location, phone, certifications, profile_image, hourly_rate, daily_rate, status) VALUES (:user_id, :specialty, :bio, :experience, :location, :phone, :certifications, :profile_image, :hourly_rate, :daily_rate, "pending")');
+        $this->db->bind(':user_id', $user_id);
+        $this->db->bind(':specialty', $specialty);
+        $this->db->bind(':bio', $bio);
+        $this->db->bind(':experience', $experience);
+        $this->db->bind(':location', $location);
+        $this->db->bind(':phone', $phone);
+        $this->db->bind(':certifications', $certifications);
+        $this->db->bind(':profile_image', $profile_image);
+        $this->db->bind(':hourly_rate', $hourly_rate);
+        $this->db->bind(':daily_rate', $daily_rate);
+        // Nếu muốn lưu languages và fluency, có thể thêm cột vào DB và bind ở đây
+        return $this->db->execute();
+    }
+
+    /**
+     * Get the latest guide application by user id
+     */
+    public function getGuideApplicationByUserId($user_id)
+    {
+        $this->db->query('SELECT * FROM guide_applications WHERE user_id = :user_id ORDER BY created_at DESC LIMIT 1');
+        $this->db->bind(':user_id', $user_id);
+        return $this->db->single();
+    }
 }

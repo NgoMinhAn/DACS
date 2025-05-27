@@ -401,31 +401,37 @@ class TourGuideController {
         if ($id === null) {
             redirect('tourGuide/browse');
         }
-        
-        // Get guide details (to be implemented with actual model)
-        // $guide = $this->guideModel->getGuideById($id);
-        
-        // For now, use dummy data
-        $guide = [
-            'id' => $id,
-            'name' => 'Sample Guide',
-            'email' => 'guide' . $id . '@example.com'
-        ];
-        
-        // If form is submitted
+        // Lấy guide thực tế từ database
+        $guide = $this->guideModel->getGuideById($id);
+        if (!$guide) {
+            flash('contact_message', 'Guide not found.', 'alert alert-danger');
+            redirect('tourGuide/browse');
+        }
+        // Nếu form được submit
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // Process form data (to be implemented)
+            $name = trim($_POST['name'] ?? '');
+            $email = trim($_POST['email'] ?? '');
+            $message = trim($_POST['message'] ?? '');
+            // Lưu vào bảng contact_requests
+            $db = new Database();
+            $db->query('INSERT INTO contact_requests (guide_id, name, email, message) VALUES (:guide_id, :name, :email, :message)');
+            $db->bind(':guide_id', $guide->guide_id);
+            $db->bind(':name', $name);
+            $db->bind(':email', $email);
+            $db->bind(':message', $message);
+            $db->execute();
             flash('contact_message', 'Your message has been sent to the guide.');
             redirect('tourGuide/profile/' . $id);
         }
-        
         // Data to be passed to the view
         $data = [
-            'title' => 'Contact ' . $guide['name'],
-            'guide' => $guide
+            'title' => 'Contact ' . $guide->name,
+            'guide' => [
+                'id' => $guide->guide_id,
+                'name' => $guide->name,
+                'email' => $guide->email
+            ]
         ];
-        
-        // Load view
         $this->loadView('tourGuides/contact', $data);
     }
 
@@ -700,5 +706,115 @@ class TourGuideController {
         } else {
             die('Something went wrong');
         }
+    }
+
+    public function deleteAccount()
+    {
+        if (!isLoggedIn() || $_SESSION['user_type'] !== 'guide') {
+            redirect('account/login');
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $password = $_POST['password'] ?? '';
+            $userModel = new UserModel();
+            $user = $userModel->getUserById($_SESSION['user_id']);
+
+            // Verify password
+            if (!password_verify($password, $user->password)) {
+                flash('guide_message', 'Invalid password.', 'alert alert-danger');
+                redirect('tourGuide/settings');
+                return;
+            }
+
+            try {
+                $guideModel = new GuideModel();
+                $guide = $guideModel->getGuideByUserId($_SESSION['user_id']);
+                
+                if (!$guide) {
+                    flash('guide_message', 'Guide profile not found.', 'alert alert-danger');
+                    redirect('tourGuide/settings');
+                    return;
+                }
+
+                // Start transaction
+                $db = new Database();
+                $db->beginTransaction();
+
+                try {
+                    // Delete from guide_languages
+                    $db->query('DELETE FROM guide_languages WHERE guide_id = :id');
+                    $db->bind(':id', $guide->id);
+                    $db->execute();
+
+                    // Delete from guide_specialties
+                    $db->query('DELETE FROM guide_specialties WHERE guide_id = :id');
+                    $db->bind(':id', $guide->id);
+                    $db->execute();
+
+                    // Delete from guide_reviews
+                    $db->query('DELETE FROM guide_reviews WHERE guide_id = :id');
+                    $db->bind(':id', $guide->id);
+                    $db->execute();
+
+                    // Delete from bookings
+                    $db->query('DELETE FROM bookings WHERE guide_id = :id');
+                    $db->bind(':id', $guide->id);
+                    $db->execute();
+
+                    // Delete from guide_profiles
+                    $db->query('DELETE FROM guide_profiles WHERE id = :id');
+                    $db->bind(':id', $guide->id);
+                    $db->execute();
+
+                    // Update user type back to regular user
+                    $db->query('UPDATE users SET user_type = "user" WHERE id = :user_id');
+                    $db->bind(':user_id', $_SESSION['user_id']);
+                    $db->execute();
+
+                    // Commit transaction
+                    $db->commit();
+
+                    // Update session
+                    $_SESSION['user_type'] = 'user';
+
+                    flash('user_message', 'Your guide account has been successfully deleted.', 'alert alert-success');
+                    redirect('account/settings');
+                } catch (Exception $e) {
+                    // Rollback on error
+                    $db->rollBack();
+                    error_log("Error deleting guide account: " . $e->getMessage());
+                    flash('guide_message', 'Error deleting account. Please try again.', 'alert alert-danger');
+                    redirect('tourGuide/settings');
+                }
+            } catch (Exception $e) {
+                error_log("Error in deleteAccount: " . $e->getMessage());
+                flash('guide_message', 'Error deleting account. Please try again.', 'alert alert-danger');
+                redirect('tourGuide/settings');
+            }
+        } else {
+            redirect('tourGuide/settings');
+        }
+    }
+
+    public function settings()
+    {
+        // Check if user is logged in and is a guide
+        if (!isLoggedIn() || $_SESSION['user_type'] !== 'guide') {
+            redirect('account/login');
+        }
+
+        // Get guide profile
+        $guide = $this->guideModel->getGuideByUserId($_SESSION['user_id']);
+        
+        if (!$guide) {
+            flash('guide_message', 'Guide profile not found.', 'alert alert-danger');
+            redirect('account/settings');
+        }
+
+        $data = [
+            'guide' => $guide
+        ];
+
+        $this->loadView('tourGuides/accoutSettings/settings', $data);
     }
 } 
