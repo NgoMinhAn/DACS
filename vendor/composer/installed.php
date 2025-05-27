@@ -3,7 +3,7 @@
         'name' => 'dacs/tour-guide-system',
         'pretty_version' => 'dev-master',
         'version' => 'dev-master',
-        'reference' => 'ce315047ed910b5f3033e61c8c111c169a513a3e',
+        'reference' => '65969fe282110aa740b139b1d1edcb7bcb961816',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -13,7 +13,7 @@
         'dacs/tour-guide-system' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
-            'reference' => 'ce315047ed910b5f3033e61c8c111c169a513a3e',
+            'reference' => '65969fe282110aa740b139b1d1edcb7bcb961816',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
