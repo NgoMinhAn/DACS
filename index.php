@@ -4,7 +4,11 @@
  * Focusing on connecting users directly with tour guides
  */
 
+// Load Composer's autoloader
+require_once __DIR__ . '/vendor/autoload.php';
 
+// Load PHP configuration
+require_once __DIR__ . '/app/config/php-config.php';
 
 // Enable error reporting
 ini_set('display_errors', 1);
@@ -22,6 +26,7 @@ define('HELPER_PATH', APP_PATH . '/helpers');
 // Include necessary files first
 require_once APP_PATH . '/config/config.php';
 require_once APP_PATH . '/config/database.php';
+require_once APP_PATH . '/config/google.php';
 require_once HELPER_PATH . '/functions.php';
 
 

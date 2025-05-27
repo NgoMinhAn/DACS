@@ -3,6 +3,10 @@
  * Account Controller
  * Handles user authentication and account management
  */
+
+use Google\Client as GoogleClient;
+use Google\Service\Oauth2;
+
 class AccountController {
     private $userModel;
     
@@ -340,6 +344,13 @@ class AccountController {
         // Update last login time
         $this->userModel->updateLastLogin($user->id);
         
+        // Send login notification email
+        require_once HELPER_PATH . '/Mailer.php';
+        $mailer = new Mailer();
+        $loginTime = date('Y-m-d H:i:s');
+        $ipAddress = $_SERVER['REMOTE_ADDR'];
+        $mailer->sendLoginNotification($user->email, $user->name, $loginTime, $ipAddress);
+        
         // Set remember-me cookie if requested
         if ($remember) {
             $token = bin2hex(random_bytes(32));
@@ -627,6 +638,111 @@ class AccountController {
             }
         } else {
             redirect('account/settings');
+        }
+    }
+
+    /**
+     * Google Login
+     * Initiates Google OAuth login process
+     */
+    public function googleLogin() {
+        // Google OAuth Configuration
+        $clientID = GOOGLE_CLIENT_ID;
+        $clientSecret = GOOGLE_CLIENT_SECRET;
+        $redirectUri = GOOGLE_REDIRECT_URI;
+
+        // Create Google Client
+        $client = new GoogleClient();
+        $client->setClientId($clientID);
+        $client->setClientSecret($clientSecret);
+        $client->setRedirectUri($redirectUri);
+        $client->addScope("email");
+        $client->addScope("profile");
+
+        // Get auth URL
+        $authUrl = $client->createAuthUrl();
+
+        // Redirect to Google
+        header('Location: ' . $authUrl);
+        exit;
+    }
+
+    /**
+     * Google Callback
+     * Handles the OAuth callback from Google
+     */
+    public function googleCallback() {
+        // Google OAuth Configuration
+        $clientID = GOOGLE_CLIENT_ID;
+        $clientSecret = GOOGLE_CLIENT_SECRET;
+        $redirectUri = GOOGLE_REDIRECT_URI;
+
+        // Create Google Client
+        $client = new GoogleClient();
+        $client->setClientId($clientID);
+        $client->setClientSecret($clientSecret);
+        $client->setRedirectUri($redirectUri);
+
+        // Disable SSL verification in development environment
+        if (ENVIRONMENT === 'development') {
+            $client->setHttpClient(new \GuzzleHttp\Client([
+                'verify' => false
+            ]));
+        }
+
+        // Get token
+        if (isset($_GET['code'])) {
+            $token = $client->fetchAccessTokenWithAuthCode($_GET['code']);
+            $client->setAccessToken($token);
+
+            // Get user info
+            $google_oauth = new Oauth2($client);
+            $google_account_info = $google_oauth->userinfo->get();
+
+            // Check if user exists
+            $user = $this->userModel->findUserByEmail($google_account_info->email);
+
+            if ($user) {
+                // User exists - log them in
+                $this->createUserSession($user);
+                
+                // Redirect based on user type
+                switch ($user->user_type) {
+                    case 'admin':
+                        redirect('admin/dashboard');
+                        break;
+                    case 'guide':
+                        redirect('guide/dashboard');
+                        break;
+                    default:
+                        redirect('');
+                        break;
+                }
+            } else {
+                // Create new user
+                $userData = [
+                    'name' => $google_account_info->name,
+                    'email' => $google_account_info->email,
+                    'password' => bin2hex(random_bytes(16)), // Random password
+                    'user_type' => 'user',
+                    'status' => 'active',
+                    'google_id' => $google_account_info->id
+                ];
+
+                $userId = $this->userModel->register($userData);
+
+                if ($userId) {
+                    $user = $this->userModel->findUserById($userId);
+                    $this->createUserSession($user);
+                    redirect('');
+                } else {
+                    flash('login_message', 'Error creating account', 'alert alert-danger');
+                    redirect('account/login');
+                }
+            }
+        } else {
+            flash('login_message', 'Error authenticating with Google', 'alert alert-danger');
+            redirect('account/login');
         }
     }
 } 

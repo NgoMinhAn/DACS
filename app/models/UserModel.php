@@ -101,8 +101,8 @@ class UserModel
 
         // Insert new user
         $this->db->query('
-            INSERT INTO users (name, email, password, user_type, status, verification_token) 
-            VALUES (:name, :email, :password, :user_type, :status, :token)
+            INSERT INTO users (name, email, password, user_type, status, verification_token, google_id) 
+            VALUES (:name, :email, :password, :user_type, :status, :token, :google_id)
         ');
 
         // Generate verification token
@@ -115,6 +115,7 @@ class UserModel
         $this->db->bind(':user_type', $data['user_type'] ?? 'user');
         $this->db->bind(':status', $data['status'] ?? 'pending');
         $this->db->bind(':token', $token);
+        $this->db->bind(':google_id', $data['google_id'] ?? null);
 
         // Execute query
         if ($this->db->execute()) {
