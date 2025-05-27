@@ -588,4 +588,100 @@ class UserModel
         $this->db->bind(':id', $userId);
         return $this->db->execute();
     }
+
+    /**
+     * Verify reset token
+     * 
+     * @param string $token Reset token
+     * @return bool
+     */
+    public function verifyResetToken($token) {
+        // Log the token being verified
+        error_log("Verifying token: " . $token);
+        
+        $this->db->query('SELECT id, reset_token, reset_token_expires FROM users WHERE reset_token = :token AND reset_token_expires > NOW()');
+        $this->db->bind(':token', $token);
+        
+        $row = $this->db->single();
+        
+        // Log the result
+        if ($row) {
+            error_log("Token found - ID: " . $row->id . ", Expires: " . $row->reset_token_expires);
+        } else {
+            error_log("Token not found or expired");
+        }
+        
+        return $row ? true : false;
+    }
+    
+    /**
+     * Save password reset token
+     * 
+     * @param int $userId User ID
+     * @param string $token Reset token
+     * @param string $expires Expiration date
+     * @return bool
+     */
+    public function savePasswordResetToken($userId, $token, $expires) {
+        // Log the token being saved
+        error_log("Saving token for user $userId: $token, expires: $expires");
+        
+        $this->db->query('UPDATE users SET reset_token = :token, reset_token_expires = :expires WHERE id = :id');
+        
+        // Bind values
+        $this->db->bind(':token', $token);
+        $this->db->bind(':expires', $expires);
+        $this->db->bind(':id', $userId);
+        
+        // Execute
+        $result = $this->db->execute();
+        
+        // Log the result
+        error_log("Token save result: " . ($result ? "success" : "failed"));
+        
+        return $result;
+    }
+    
+    /**
+     * Reset password
+     * 
+     * @param string $token Reset token
+     * @param string $password New password
+     * @return bool
+     */
+    public function resetPassword($token, $password) {
+        // Log the reset attempt
+        error_log("Attempting to reset password with token: " . $token);
+        
+        // Get user ID from token
+        $this->db->query('SELECT id, reset_token, reset_token_expires FROM users WHERE reset_token = :token AND reset_token_expires > NOW() AND reset_token IS NOT NULL');
+        $this->db->bind(':token', $token);
+        
+        $row = $this->db->single();
+        
+        if (!$row) {
+            error_log("No valid user found for token: " . $token);
+            return false;
+        }
+        
+        error_log("Found user ID: " . $row->id . " for token: " . $token);
+        
+        // Hash password
+        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+        
+        // Update password and clear reset token
+        $this->db->query('UPDATE users SET password = :password, reset_token = NULL, reset_token_expires = NULL WHERE id = :id');
+        
+        // Bind values
+        $this->db->bind(':password', $hashedPassword);
+        $this->db->bind(':id', $row->id);
+        
+        // Execute
+        $result = $this->db->execute();
+        
+        // Log the result
+        error_log("Password reset " . ($result ? "successful" : "failed") . " for user ID: " . $row->id);
+        
+        return $result;
+    }
 }

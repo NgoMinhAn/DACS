@@ -1,51 +1,37 @@
-<?php
-/**
- * Forgot Password View
- * Allows users to request a password reset link
- */
-?>
+<?php require_once VIEW_PATH . '/shares/header.php'; ?>
 
-<div class="container my-5">
+<div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-6">
-            <div class="card shadow">
-                <div class="card-header bg-primary text-white">
-                    <h4 class="m-0"><?php echo $title; ?></h4>
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0">Quên mật khẩu</h4>
                 </div>
                 <div class="card-body">
-                    <p class="mb-4">Enter your email address below and we'll send you a link to reset your password.</p>
+                    <p class="text-muted">Nhập địa chỉ email của bạn và chúng tôi sẽ gửi cho bạn một liên kết để đặt lại mật khẩu.</p>
                     
                     <!-- Display Flash Messages -->
                     <?php flash('forgot_message'); ?>
                     
-                    <!-- Forgot Password Form -->
-                    <form action="<?php echo url('account/forgot-password'); ?>" method="POST">
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Email Address</label>
-                            <div class="input-group">
-                                <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-                                <input type="email" class="form-control <?php echo isset($errors['email']) ? 'is-invalid' : ''; ?>" 
-                                       id="email" name="email" value="<?php echo $email ?? ''; ?>" required>
-                                <?php if (isset($errors['email'])): ?>
-                                    <div class="invalid-feedback">
-                                        <?php echo $errors['email']; ?>
-                                    </div>
-                                <?php endif; ?>
-                            </div>
-                            <div class="form-text">
-                                We'll send a password reset link to this email address if it's registered in our system.
-                            </div>
+                    <form action="<?php echo URL_ROOT; ?>/account/forgot-password" method="post">
+                        <div class="form-group mb-3">
+                            <label for="email">Email</label>
+                            <input type="email" name="email" id="email" class="form-control <?php echo (!empty($errors['email'])) ? 'is-invalid' : ''; ?>" value="<?php echo $email; ?>">
+                            <span class="invalid-feedback"><?php echo $errors['email'] ?? ''; ?></span>
                         </div>
                         
-                        <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-primary">Send Reset Link</button>
-                            <a href="<?php echo url('account/login'); ?>" class="btn btn-outline-secondary">
-                                <i class="fas fa-arrow-left"></i> Back to Login
-                            </a>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary">Gửi liên kết đặt lại mật khẩu</button>
                         </div>
                     </form>
+                    
+                    <div class="mt-3">
+                        <a href="<?php echo URL_ROOT; ?>/account/login">Quay lại đăng nhập</a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div> 
+</div>
+
+<?php require_once VIEW_PATH . '/shares/footer.php'; ?> 
