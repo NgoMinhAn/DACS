@@ -302,29 +302,124 @@ class AccountController {
             // Validate email
             if (empty($email)) {
                 $data = [
-                    'title' => 'Forgot Password',
+                    'title' => 'Quên mật khẩu',
                     'email' => '',
-                    'errors' => ['email' => 'Please enter your email address']
+                    'errors' => ['email' => 'Vui lòng nhập địa chỉ email của bạn']
                 ];
                 $this->loadView('tourGuides/Accounts/forgot-password', $data);
                 return;
             }
             
-            // Check if email exists and create token
-            $token = $this->userModel->createPasswordResetToken($email);
+            // Check if email exists
+            $user = $this->userModel->findUserByEmail($email);
             
-            // Always show success message even if email doesn't exist (security)
-            flash('login_message', 'If the email exists in our system, a password reset link has been sent.', 'alert alert-success');
+            if ($user) {
+                // Generate reset token
+                $resetToken = bin2hex(random_bytes(32));
+                // Extend expiration time to 24 hours
+                $expires = date('Y-m-d H:i:s', strtotime('+24 hours'));
+                
+                // Save reset token
+                if ($this->userModel->savePasswordResetToken($user->id, $resetToken, $expires)) {
+                    // Send reset email
+                    require_once HELPER_PATH . '/Mailer.php';
+                    $mailer = new Mailer();
+                    if ($mailer->sendPasswordReset($user->email, $user->name, $resetToken)) {
+                        flash('login_message', 'Một liên kết đặt lại mật khẩu đã được gửi đến email của bạn. Liên kết có hiệu lực trong 24 giờ.', 'alert alert-success');
+                    } else {
+                        flash('login_message', 'Có lỗi xảy ra khi gửi email. Vui lòng thử lại sau.', 'alert alert-danger');
+                    }
+                } else {
+                    flash('login_message', 'Có lỗi xảy ra. Vui lòng thử lại sau.', 'alert alert-danger');
+                }
+            } else {
+                // Always show success message even if email doesn't exist (security)
+                flash('login_message', 'Nếu email tồn tại trong hệ thống, một liên kết đặt lại mật khẩu đã được gửi.', 'alert alert-success');
+            }
             redirect('account/login');
         } else {
             // Display forgot password form
             $data = [
-                'title' => 'Forgot Password',
+                'title' => 'Quên mật khẩu',
                 'email' => '',
                 'errors' => []
             ];
             
             $this->loadView('tourGuides/Accounts/forgot-password', $data);
+        }
+    }
+    
+    /**
+     * Reset password method
+     */
+    public function resetPassword($token = null) {
+        // Check if user is already logged in
+        if (isLoggedIn()) {
+            redirect('');
+        }
+        
+        // Check if token is provided
+        if (!$token) {
+            flash('login_message', 'Liên kết đặt lại mật khẩu không hợp lệ.', 'alert alert-danger');
+            redirect('account/login');
+        }
+        
+        // Check if form is submitted
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // Sanitize POST data
+            $_POST = $this->sanitizeInputArray($_POST);
+            
+            // Process form
+            $data = [
+                'password' => trim($_POST['password']),
+                'confirm_password' => trim($_POST['confirm_password']),
+                'errors' => []
+            ];
+            
+            // Validate password
+            if (empty($data['password'])) {
+                $data['errors']['password'] = 'Vui lòng nhập mật khẩu mới';
+            } elseif (strlen($data['password']) < 6) {
+                $data['errors']['password'] = 'Mật khẩu phải có ít nhất 6 ký tự';
+            }
+            
+            // Validate confirm password
+            if (empty($data['confirm_password'])) {
+                $data['errors']['confirm_password'] = 'Vui lòng xác nhận mật khẩu';
+            } elseif ($data['password'] !== $data['confirm_password']) {
+                $data['errors']['confirm_password'] = 'Mật khẩu không khớp';
+            }
+            
+            if (empty($data['errors'])) {
+                // Verify token and update password
+                if ($this->userModel->resetPassword($token, $data['password'])) {
+                    flash('login_message', 'Mật khẩu đã được đặt lại thành công. Bạn có thể đăng nhập ngay bây giờ.', 'alert alert-success');
+                    redirect('account/login');
+                } else {
+                    flash('login_message', 'Liên kết đặt lại mật khẩu không hợp lệ hoặc đã hết hạn.', 'alert alert-danger');
+                    redirect('account/login');
+                }
+            } else {
+                // Load view with errors
+                $data['title'] = 'Đặt lại mật khẩu';
+                $data['token'] = $token;
+                $this->loadView('tourGuides/Accounts/reset-password', $data);
+            }
+        } else {
+            // Verify token
+            if ($this->userModel->verifyResetToken($token)) {
+                // Display reset password form
+                $data = [
+                    'title' => 'Đặt lại mật khẩu',
+                    'token' => $token,
+                    'errors' => []
+                ];
+                
+                $this->loadView('tourGuides/Accounts/reset-password', $data);
+            } else {
+                flash('login_message', 'Liên kết đặt lại mật khẩu không hợp lệ hoặc đã hết hạn.', 'alert alert-danger');
+                redirect('account/login');
+            }
         }
     }
     
