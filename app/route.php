@@ -1,6 +1,12 @@
 <?php
 
 $routes = [
+    // Account routes
+    ['pattern' => '#^account/google-login$#', 'controller' => 'AccountController', 'method' => 'googleLogin', 'params' => []],
+    ['pattern' => '#^account/google-callback$#', 'controller' => 'AccountController', 'method' => 'googleCallback', 'params' => []],
+    ['pattern' => '#^account/forgot-password$#', 'controller' => 'AccountController', 'method' => 'forgotPassword', 'params' => []],
+    ['pattern' => '#^account/reset-password/([a-zA-Z0-9]+)$#', 'controller' => 'AccountController', 'method' => 'resetPassword', 'params' => [1]],
+    
     // Guide routes
     ['pattern' => '#^guide/dashboard$#', 'controller' => 'GuideController', 'method' => 'dashboard', 'params' => []],
     ['pattern' => '#^guide/reviews$#', 'controller' => 'GuideController', 'method' => 'reviewsList', 'params' => []],

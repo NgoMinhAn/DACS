@@ -65,6 +65,13 @@
                         
                         <button type="submit" class="btn btn-primary w-100">Sign In</button>
                     </form>
+
+                    <div class="mt-4 text-center">
+                        <p class="text-muted">Or sign in with</p>
+                        <a href="<?php echo url('account/google-login'); ?>" class="btn btn-outline-danger">
+                            <i class="fab fa-google"></i> Sign in with Google
+                        </a>
+                    </div>
                 </div>
                 <div class="card-footer text-center">
                     <p class="mb-0">Don't have an account?</p>

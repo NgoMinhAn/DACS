@@ -3,6 +3,10 @@
  * Account Controller
  * Handles user authentication and account management
  */
+
+use Google\Client as GoogleClient;
+use Google\Service\Oauth2;
+
 class AccountController {
     private $userModel;
     
@@ -298,29 +302,124 @@ class AccountController {
             // Validate email
             if (empty($email)) {
                 $data = [
-                    'title' => 'Forgot Password',
+                    'title' => 'Quên mật khẩu',
                     'email' => '',
-                    'errors' => ['email' => 'Please enter your email address']
+                    'errors' => ['email' => 'Vui lòng nhập địa chỉ email của bạn']
                 ];
                 $this->loadView('tourGuides/Accounts/forgot-password', $data);
                 return;
             }
             
-            // Check if email exists and create token
-            $token = $this->userModel->createPasswordResetToken($email);
+            // Check if email exists
+            $user = $this->userModel->findUserByEmail($email);
             
-            // Always show success message even if email doesn't exist (security)
-            flash('login_message', 'If the email exists in our system, a password reset link has been sent.', 'alert alert-success');
+            if ($user) {
+                // Generate reset token
+                $resetToken = bin2hex(random_bytes(32));
+                // Extend expiration time to 24 hours
+                $expires = date('Y-m-d H:i:s', strtotime('+24 hours'));
+                
+                // Save reset token
+                if ($this->userModel->savePasswordResetToken($user->id, $resetToken, $expires)) {
+                    // Send reset email
+                    require_once HELPER_PATH . '/Mailer.php';
+                    $mailer = new Mailer();
+                    if ($mailer->sendPasswordReset($user->email, $user->name, $resetToken)) {
+                        flash('login_message', 'Một liên kết đặt lại mật khẩu đã được gửi đến email của bạn. Liên kết có hiệu lực trong 24 giờ.', 'alert alert-success');
+                    } else {
+                        flash('login_message', 'Có lỗi xảy ra khi gửi email. Vui lòng thử lại sau.', 'alert alert-danger');
+                    }
+                } else {
+                    flash('login_message', 'Có lỗi xảy ra. Vui lòng thử lại sau.', 'alert alert-danger');
+                }
+            } else {
+                // Always show success message even if email doesn't exist (security)
+                flash('login_message', 'Nếu email tồn tại trong hệ thống, một liên kết đặt lại mật khẩu đã được gửi.', 'alert alert-success');
+            }
             redirect('account/login');
         } else {
             // Display forgot password form
             $data = [
-                'title' => 'Forgot Password',
+                'title' => 'Quên mật khẩu',
                 'email' => '',
                 'errors' => []
             ];
             
             $this->loadView('tourGuides/Accounts/forgot-password', $data);
+        }
+    }
+    
+    /**
+     * Reset password method
+     */
+    public function resetPassword($token = null) {
+        // Check if user is already logged in
+        if (isLoggedIn()) {
+            redirect('');
+        }
+        
+        // Check if token is provided
+        if (!$token) {
+            flash('login_message', 'Liên kết đặt lại mật khẩu không hợp lệ.', 'alert alert-danger');
+            redirect('account/login');
+        }
+        
+        // Check if form is submitted
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // Sanitize POST data
+            $_POST = $this->sanitizeInputArray($_POST);
+            
+            // Process form
+            $data = [
+                'password' => trim($_POST['password']),
+                'confirm_password' => trim($_POST['confirm_password']),
+                'errors' => []
+            ];
+            
+            // Validate password
+            if (empty($data['password'])) {
+                $data['errors']['password'] = 'Vui lòng nhập mật khẩu mới';
+            } elseif (strlen($data['password']) < 6) {
+                $data['errors']['password'] = 'Mật khẩu phải có ít nhất 6 ký tự';
+            }
+            
+            // Validate confirm password
+            if (empty($data['confirm_password'])) {
+                $data['errors']['confirm_password'] = 'Vui lòng xác nhận mật khẩu';
+            } elseif ($data['password'] !== $data['confirm_password']) {
+                $data['errors']['confirm_password'] = 'Mật khẩu không khớp';
+            }
+            
+            if (empty($data['errors'])) {
+                // Verify token and update password
+                if ($this->userModel->resetPassword($token, $data['password'])) {
+                    flash('login_message', 'Mật khẩu đã được đặt lại thành công. Bạn có thể đăng nhập ngay bây giờ.', 'alert alert-success');
+                    redirect('account/login');
+                } else {
+                    flash('login_message', 'Liên kết đặt lại mật khẩu không hợp lệ hoặc đã hết hạn.', 'alert alert-danger');
+                    redirect('account/login');
+                }
+            } else {
+                // Load view with errors
+                $data['title'] = 'Đặt lại mật khẩu';
+                $data['token'] = $token;
+                $this->loadView('tourGuides/Accounts/reset-password', $data);
+            }
+        } else {
+            // Verify token
+            if ($this->userModel->verifyResetToken($token)) {
+                // Display reset password form
+                $data = [
+                    'title' => 'Đặt lại mật khẩu',
+                    'token' => $token,
+                    'errors' => []
+                ];
+                
+                $this->loadView('tourGuides/Accounts/reset-password', $data);
+            } else {
+                flash('login_message', 'Liên kết đặt lại mật khẩu không hợp lệ hoặc đã hết hạn.', 'alert alert-danger');
+                redirect('account/login');
+            }
         }
     }
     
@@ -339,6 +438,13 @@ class AccountController {
         
         // Update last login time
         $this->userModel->updateLastLogin($user->id);
+        
+        // Send login notification email
+        require_once HELPER_PATH . '/Mailer.php';
+        $mailer = new Mailer();
+        $loginTime = date('Y-m-d H:i:s');
+        $ipAddress = $_SERVER['REMOTE_ADDR'];
+        $mailer->sendLoginNotification($user->email, $user->name, $loginTime, $ipAddress);
         
         // Set remember-me cookie if requested
         if ($remember) {
@@ -631,101 +737,109 @@ class AccountController {
     }
 
     /**
-     * Become a Guide (user application)
+
+     * Google Login
+     * Initiates Google OAuth login process
      */
-    public function becomeGuide() {
-        if (!isLoggedIn()) {
-            redirect('account/login');
+    public function googleLogin() {
+        // Google OAuth Configuration
+        $clientID = GOOGLE_CLIENT_ID;
+        $clientSecret = GOOGLE_CLIENT_SECRET;
+        $redirectUri = GOOGLE_REDIRECT_URI;
+
+        // Create Google Client
+        $client = new GoogleClient();
+        $client->setClientId($clientID);
+        $client->setClientSecret($clientSecret);
+        $client->setRedirectUri($redirectUri);
+        $client->addScope("email");
+        $client->addScope("profile");
+
+        // Get auth URL
+        $authUrl = $client->createAuthUrl();
+
+        // Redirect to Google
+        header('Location: ' . $authUrl);
+        exit;
+    }
+
+    /**
+     * Google Callback
+     * Handles the OAuth callback from Google
+     */
+    public function googleCallback() {
+        // Google OAuth Configuration
+        $clientID = GOOGLE_CLIENT_ID;
+        $clientSecret = GOOGLE_CLIENT_SECRET;
+        $redirectUri = GOOGLE_REDIRECT_URI;
+
+        // Create Google Client
+        $client = new GoogleClient();
+        $client->setClientId($clientID);
+        $client->setClientSecret($clientSecret);
+        $client->setRedirectUri($redirectUri);
+
+        // Disable SSL verification in development environment
+        if (ENVIRONMENT === 'development') {
+            $client->setHttpClient(new \GuzzleHttp\Client([
+                'verify' => false
+            ]));
         }
 
-        $user = $this->userModel->getUserById($_SESSION['user_id']);
-        $application = $this->userModel->getGuideApplicationByUserId($user->id);
-        if ($application && $application->status == 'pending') {
-            flash('settings_message', 'Your application is pending admin approval.');
-            redirect('account/settings');
-        }
-        if ($application && $application->status == 'approved') {
-            flash('settings_message', 'You are already a guide.');
-            redirect('account/settings');
-        }
+        // Get token
+        if (isset($_GET['code'])) {
+            $token = $client->fetchAccessTokenWithAuthCode($_GET['code']);
+            $client->setAccessToken($token);
 
-        require_once dirname(__DIR__) . '/models/GuideModel.php';
-        $guideModel = new GuideModel();
-        $specialties = $guideModel->getAllSpecialties();
-        $languages = $guideModel->getAllLanguages();
+            // Get user info
+            $google_oauth = new Oauth2($client);
+            $google_account_info = $google_oauth->userinfo->get();
 
-        $step = isset($_GET['step']) ? $_GET['step'] : '1';
+            // Check if user exists
+            $user = $this->userModel->findUserByEmail($google_account_info->email);
 
-        if ($step === '1') {
-            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                // Handle avatar upload
-                $profile_image = null;
-                if (!empty($_FILES['profile_image']['name'])) {
-                    $uploadDir = dirname(dirname(__DIR__)) . '/public/uploads/avatars/';
-                    if (!is_dir($uploadDir)) {
-                        mkdir($uploadDir, 0777, true);
-                    }
-                    $fileExtension = strtolower(pathinfo($_FILES['profile_image']['name'], PATHINFO_EXTENSION));
-                    $allowedTypes = ['jpg', 'jpeg', 'png'];
-                    if (in_array($fileExtension, $allowedTypes) && $_FILES['profile_image']['size'] <= 5000000) {
-                        $fileName = uniqid('guide_') . '.' . $fileExtension;
-                        $targetPath = $uploadDir . $fileName;
-                        if (move_uploaded_file($_FILES['profile_image']['tmp_name'], $targetPath)) {
-                            $profile_image = $fileName;
-                        }
-                    }
+            if ($user) {
+                // User exists - log them in
+                $this->createUserSession($user);
+                
+                // Redirect based on user type
+                switch ($user->user_type) {
+                    case 'admin':
+                        redirect('admin/dashboard');
+                        break;
+                    case 'guide':
+                        redirect('guide/dashboard');
+                        break;
+                    default:
+                        redirect('');
+                        break;
                 }
-                // Lưu tạm vào session
-                $_SESSION['become_guide'] = [
-                    'location' => trim($_POST['location']),
-                    'phone' => trim($_POST['phone']),
-                    'certifications' => trim($_POST['certifications']),
-                    'profile_image' => $profile_image,
-                    'bio' => trim($_POST['bio']),
-                    'experience' => trim($_POST['experience'])
-                ];
-                // Chuyển sang bước 2
-                redirect('account/becomeguide?step=2');
             } else {
-                $data = [
-                    'user' => $user
+                // Create new user
+                $userData = [
+                    'name' => $google_account_info->name,
+                    'email' => $google_account_info->email,
+                    'password' => bin2hex(random_bytes(16)), // Random password
+                    'user_type' => 'user',
+                    'status' => 'active',
+                    'google_id' => $google_account_info->id
                 ];
-                $this->loadView('user/accountsetting/become-guide-step1', $data);
+
+                $userId = $this->userModel->register($userData);
+
+                if ($userId) {
+                    $user = $this->userModel->findUserById($userId);
+                    $this->createUserSession($user);
+                    redirect('');
+                } else {
+                    flash('login_message', 'Error creating account', 'alert alert-danger');
+                    redirect('account/login');
+                }
             }
-        } else if ($step === '2') {
-            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                $hourly_rate = floatval($_POST['hourly_rate']);
-                $daily_rate = floatval($_POST['daily_rate']);
-                $specialties_selected = isset($_POST['specialties']) ? implode(',', $_POST['specialties']) : '';
-                $languages_selected = isset($_POST['languages']) ? implode(',', $_POST['languages']) : '';
-                $languages_fluency = isset($_POST['languages_fluency']) ? implode(',', $_POST['languages_fluency']) : '';
-                // Lấy dữ liệu từ session
-                $info = $_SESSION['become_guide'] ?? [];
-                $this->userModel->createGuideApplication(
-                    $user->id,
-                    $specialties_selected,
-                    $info['bio'] ?? '',
-                    $info['experience'] ?? '',
-                    $info['location'] ?? '',
-                    $info['phone'] ?? '',
-                    $info['certifications'] ?? '',
-                    $info['profile_image'] ?? null,
-                    $hourly_rate,
-                    $daily_rate,
-                    $languages_selected,
-                    $languages_fluency
-                );
-                unset($_SESSION['become_guide']);
-                flash('settings_message', 'Your application has been submitted and is pending admin approval.');
-                redirect('account/settings');
-            } else {
-                $data = [
-                    'user' => $user,
-                    'specialties' => $specialties,
-                    'languages' => $languages
-                ];
-                $this->loadView('user/accountsetting/become-guide-step2', $data);
-            }
+        } else {
+            flash('login_message', 'Error authenticating with Google', 'alert alert-danger');
+            redirect('account/login');
+
         }
     }
 } 
