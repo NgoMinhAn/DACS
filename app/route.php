@@ -6,6 +6,7 @@ $routes = [
     ['pattern' => '#^account/google-callback$#', 'controller' => 'AccountController', 'method' => 'googleCallback', 'params' => []],
     ['pattern' => '#^account/forgot-password$#', 'controller' => 'AccountController', 'method' => 'forgotPassword', 'params' => []],
     ['pattern' => '#^account/reset-password/([a-zA-Z0-9]+)$#', 'controller' => 'AccountController', 'method' => 'resetPassword', 'params' => [1]],
+    ['pattern' => '#^account/becomeguide$#', 'controller' => 'AccountController', 'method' => 'becomeguide', 'params' => []],
     
     // Guide routes
     ['pattern' => '#^guide/dashboard$#', 'controller' => 'GuideController', 'method' => 'dashboard', 'params' => []],

@@ -1,20 +1,20 @@
 <!-- Hero Section -->
-<div class="bg-primary text-white py-5 mb-5">
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-lg-6">
-                <h1 class="display-4 fw-bold"><?php echo $title; ?></h1>
-                <p class="lead"><?php echo $subtitle; ?></p>
+<div class="hero-banner position-relative" style="background: url('<?php echo url('public/img/saigon-cathedral.jpeg'); ?>') center center/cover no-repeat; min-height: 400px;">
+    <div class="position-absolute top-0 start-0 w-100 h-100" style="background:rgba(0,0,0,0.35);"></div>
+    <div class="container h-100 position-relative" style="z-index:2; min-height: 400px;">
+        <div class="row align-items-center h-100">
+            <div class="col-lg-7 mx-auto text-center text-white">
+                <h1 class="display-4 fw-bold mb-3" style="text-shadow:0 2px 8px rgba(0,0,0,0.4)"><?php echo $title; ?></h1>
+                <p class="lead mb-4" style="text-shadow:0 2px 8px rgba(0,0,0,0.3)"><?php echo $subtitle; ?></p>
                 <form action="<?php echo url('tourGuide/search'); ?>" method="GET" class="mt-4 mb-3">
                     <div class="input-group input-group-lg">
                         <input type="text" class="form-control" name="q" placeholder="What kind of guide are you looking for?">
-                        <button class="btn btn-success" type="submit">Find a Guide</button>
+                        <button class="btn btn-success d-flex align-items-center px-2" type="submit" style="font-weight: 600; letter-spacing: 1px;">
+                            <i class="fas fa-search me-2"></i> Find a Guide
+                        </button>
                     </div>
                 </form>
-                <p class="small text-white-50">Popular searches: City tours, Food experiences, Historical guides, Adventure guides</p>
-            </div>
-            <div class="col-lg-6 d-none d-lg-block">
-                <img src="<?php echo url('public/img/hero-image.jpg'); ?>" alt="Find a tour guide" class="img-fluid rounded-3 shadow-lg">
+                <p class="small text-white">Popular searches: City tours, Food experiences, Historical guides, Adventure guides</p>
             </div>
         </div>
     </div>
@@ -277,4 +277,14 @@
             </div>
         </div>
     </div>
-</section> 
+</section>
+
+<style>
+    .input-group .form-control::placeholder {
+        color: #888 !important;
+        opacity: 1;
+    }
+    .btn-success:hover, .btn-success:focus {
+        background: #218838 !important;
+    }
+</style> 

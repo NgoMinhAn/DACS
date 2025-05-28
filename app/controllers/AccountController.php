@@ -34,58 +34,66 @@ class AccountController {
             redirect('');
         }
         
-        // Check if form is submitted
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // Sanitize POST data - replacing deprecated FILTER_SANITIZE_STRING
-            $_POST = $this->sanitizeInputArray($_POST);
-            
+        // Check for POST
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             // Process form
+            // Sanitize POST data
+            $_POST = filter_input_array(INPUT_POST, FILTER_DEFAULT);
+            
+            // Init data
             $data = [
-                'title' => 'Log In',
+                'title' => 'Login',
                 'email' => trim($_POST['email']),
                 'password' => trim($_POST['password']),
-                'remember_me' => isset($_POST['remember_me']) ? 1 : 0,
-                'errors' => []
+                'email_err' => '',
+                'password_err' => ''
             ];
             
-            // Validate email
+            // Validate Email
             if (empty($data['email'])) {
-                $data['errors']['email'] = 'Please enter your email address';
-            } elseif (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
-                $data['errors']['email'] = 'Please enter a valid email address';
+                $data['email_err'] = 'Please enter email';
             }
             
-            // Validate password
+            // Validate Password
             if (empty($data['password'])) {
-                $data['errors']['password'] = 'Please enter your password';
+                $data['password_err'] = 'Please enter password';
             }
             
-            // If validation passes, attempt login
-            if (empty($data['errors'])) {
-                // Check if user exists and password is correct
+            // Check for user/email
+            if ($this->userModel->findUserByEmail($data['email'])) {
+                // User found
+            } else {
+                // User not found
+                $data['email_err'] = 'No user found';
+            }
+            
+            // Make sure errors are empty
+            if (empty($data['email_err']) && empty($data['password_err'])) {
+                // Validated
+                // Check and set logged in user
                 $loggedInUser = $this->userModel->login($data['email'], $data['password']);
                 
                 if ($loggedInUser) {
-                    // Create session
-                    $this->createUserSession($loggedInUser, $data['remember_me']);
+                    // Create Session
+                    $this->createUserSession($loggedInUser);
                     
-                    // Redirect based on user type
-                    switch ($loggedInUser->user_type) {
-                        case 'admin':
-                            redirect('admin/dashboard');
-                            break;
-                        case 'guide':
+                    // Check if there's a redirect URL stored in session
+                    if (isset($_SESSION['redirect_after_login'])) {
+                        $redirect = $_SESSION['redirect_after_login'];
+                        unset($_SESSION['redirect_after_login']); // Clear the stored URL
+                        redirect($redirect);
+                    } else {
+                        // Default redirect based on user type
+                        if ($loggedInUser->user_type === 'guide') {
                             redirect('guide/dashboard');
-                            break;
-                        default:
+                        } else if ($loggedInUser->user_type === 'admin') {
+                            redirect('admin/dashboard');
+                        } else {
                             redirect('');
-                            break;
+                        }
                     }
                 } else {
-                    // Login failed
-                    $data['errors']['email'] = 'Invalid email or password';
-                    
-                    // Load view with errors
+                    $data['password_err'] = 'Password incorrect';
                     $this->loadView('tourGuides/Accounts/login', $data);
                 }
             } else {
@@ -93,15 +101,16 @@ class AccountController {
                 $this->loadView('tourGuides/Accounts/login', $data);
             }
         } else {
-            // Display login form
+            // Init data
             $data = [
-                'title' => 'Log In',
+                'title' => 'Login',
                 'email' => '',
                 'password' => '',
-                'remember_me' => 0,
-                'errors' => []
+                'email_err' => '',
+                'password_err' => ''
             ];
             
+            // Load view
             $this->loadView('tourGuides/Accounts/login', $data);
         }
     }
@@ -737,7 +746,6 @@ class AccountController {
     }
 
     /**
-
      * Google Login
      * Initiates Google OAuth login process
      */
@@ -839,7 +847,57 @@ class AccountController {
         } else {
             flash('login_message', 'Error authenticating with Google', 'alert alert-danger');
             redirect('account/login');
+        }
+    }
 
+    public function becomeguide() {
+        $step = isset($_GET['step']) ? intval($_GET['step']) : 1;
+
+        if ($step === 1) {
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                $_SESSION['become_guide_step1'] = $_POST;
+                redirect('account/becomeguide?step=2');
+            }
+            $this->loadView('user/accountsetting/become-guide-step1');
+        } elseif ($step === 2) {
+            $specialties = $this->userModel->getAllSpecialties();
+            $languages = $this->userModel->getAllLanguages();
+
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                // Lấy dữ liệu từ session bước 1 và POST bước 2
+                $step1 = isset($_SESSION['become_guide_step1']) ? $_SESSION['become_guide_step1'] : [];
+                $step2 = $_POST;
+                $userId = $_SESSION['user_id'];
+
+                // Xử lý specialties và languages (lưu dạng chuỗi, có thể tùy chỉnh)
+                $specialtiesStr = isset($step2['specialties']) ? implode(',', $step2['specialties']) : '';
+                $languagesStr = isset($step2['languages']) ? implode(',', $step2['languages']) : '';
+
+                // Lưu vào bảng guide_applications
+                $db = new Database();
+                $db->query('INSERT INTO guide_applications (user_id, specialty, bio, experience, status, location, phone, certifications, profile_image, hourly_rate, daily_rate, created_at) VALUES (:user_id, :specialty, :bio, :experience, :status, :location, :phone, :certifications, :profile_image, :hourly_rate, :daily_rate, NOW())');
+                $db->bind(':user_id', $userId);
+                $db->bind(':specialty', $specialtiesStr);
+                $db->bind(':bio', $step1['bio'] ?? '');
+                $db->bind(':experience', $step1['experience'] ?? '');
+                $db->bind(':status', 'pending');
+                $db->bind(':location', $step1['location'] ?? '');
+                $db->bind(':phone', $step1['phone'] ?? '');
+                $db->bind(':certifications', $step1['certifications'] ?? '');
+                $db->bind(':profile_image', isset($step1['profile_image']) ? $step1['profile_image'] : null);
+                $db->bind(':hourly_rate', $step2['hourly_rate'] ?? 0);
+                $db->bind(':daily_rate', $step2['daily_rate'] ?? 0);
+                $db->execute();
+
+                unset($_SESSION['become_guide_step1']);
+                unset($_SESSION['become_guide_step2']);
+                flash('settings_message', 'Your application has been submitted and is pending admin approval!', 'alert alert-success');
+                redirect('account/settings');
+            }
+            $this->loadView('user/accountsetting/become-guide-step2', [
+                'specialties' => $specialties,
+                'languages' => $languages
+            ]);
         }
     }
 } 

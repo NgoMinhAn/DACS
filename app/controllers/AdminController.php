@@ -201,22 +201,62 @@ class AdminController
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $action = $_POST['action'] ?? '';
             if ($action === 'approve') {
-                // Cập nhật user_type, tạo guide_profiles, cập nhật application
+                // Cập nhật user_type, tạo guide_profiles nếu chưa có, cập nhật application
                 $userId = $application->user_id;
                 $db->query('UPDATE users SET user_type = "guide" WHERE id = :id');
                 $db->bind(':id', $userId);
                 $db->execute();
-                // Tạo guide_profiles
-                $db->query('INSERT INTO guide_profiles (user_id, bio, location, experience_years, hourly_rate, daily_rate, available, verified, certification_info, profile_image) VALUES (:user_id, :bio, :location, :experience_years, :hourly_rate, :daily_rate, 1, 1, :certifications, :profile_image)');
+                // Kiểm tra user đã có guide_profiles chưa
+                $db->query('SELECT id FROM guide_profiles WHERE user_id = :user_id');
                 $db->bind(':user_id', $userId);
-                $db->bind(':bio', $application->bio);
-                $db->bind(':location', $application->location);
-                $db->bind(':experience_years', 0);
-                $db->bind(':hourly_rate', $application->hourly_rate);
-                $db->bind(':daily_rate', $application->daily_rate);
-                $db->bind(':certifications', $application->certifications);
-                $db->bind(':profile_image', $application->profile_image);
-                $db->execute();
+                $existingProfile = $db->single();
+                if ($existingProfile) {
+                    // Đã có profile, chỉ lấy guideProfileId để insert specialties/languages
+                    $guideProfileId = $existingProfile->id;
+                    // (Có thể update lại thông tin profile nếu muốn)
+                } else {
+                    // Chưa có profile, insert mới
+                    $db->query('INSERT INTO guide_profiles (user_id, bio, location, experience_years, hourly_rate, daily_rate, available, verified, certification_info, profile_image) VALUES (:user_id, :bio, :location, :experience_years, :hourly_rate, :daily_rate, 1, 1, :certifications, :profile_image)');
+                    $db->bind(':user_id', $userId);
+                    $db->bind(':bio', $application->bio);
+                    $db->bind(':location', $application->location);
+                    $db->bind(':experience_years', 0);
+                    $db->bind(':hourly_rate', $application->hourly_rate);
+                    $db->bind(':daily_rate', $application->daily_rate);
+                    $db->bind(':certifications', $application->certifications);
+                    $db->bind(':profile_image', $application->profile_image);
+                    $db->execute();
+                    $guideProfileId = $db->lastInsertId();
+                }
+                // Copy specialties
+                $specialties = explode(',', $application->specialty);
+                foreach ($specialties as $specialtyName) {
+                    $db->query('SELECT id FROM specialties WHERE name = :name');
+                    $db->bind(':name', trim($specialtyName));
+                    $specialty = $db->single();
+                    if ($specialty) {
+                        $db->query('INSERT INTO guide_specialties (guide_id, specialty_id) VALUES (:guide_id, :specialty_id)');
+                        $db->bind(':guide_id', $guideProfileId);
+                        $db->bind(':specialty_id', $specialty->id);
+                        $db->execute();
+                    }
+                }
+                // Copy languages nếu có trường languages trong application
+                if (property_exists($application, 'languages') && !empty($application->languages)) {
+                    $languages = explode(',', $application->languages);
+                    foreach ($languages as $languageName) {
+                        $db->query('SELECT id FROM languages WHERE name = :name');
+                        $db->bind(':name', trim($languageName));
+                        $language = $db->single();
+                        if ($language) {
+                            $db->query('INSERT INTO guide_languages (guide_id, language_id, fluency_level) VALUES (:guide_id, :language_id, :fluency)');
+                            $db->bind(':guide_id', $guideProfileId);
+                            $db->bind(':language_id', $language->id);
+                            $db->bind(':fluency', 'fluent'); // hoặc lấy đúng fluency nếu có
+                            $db->execute();
+                        }
+                    }
+                }
                 // Cập nhật trạng thái đơn
                 $db->query('UPDATE guide_applications SET status = "approved", reviewed_at = NOW(), reviewed_by = :admin_id WHERE id = :id');
                 $db->bind(':admin_id', $_SESSION['user_id']);

@@ -80,21 +80,31 @@
                         </div>
                     </div>
 
-                    <!-- Book Now Button -->
-                    <?php if($guide->available): ?>
-                        <a href="#book-tour" class="btn btn-primary btn-lg w-100 mb-3">
-                            <i class="fas fa-calendar-check me-2"></i> Book Now
-                    </a>
-                    <?php else: ?>
-                        <button disabled class="btn btn-secondary btn-lg w-100 mb-3">
-                            <i class="fas fa-calendar-times me-2"></i> Currently Unavailable
-                        </button>
-                    <?php endif; ?>
-
-                    <!-- Contact Button (if different from booking) -->
-                      <a href="<?php echo url('tourGuide/contact/' . $guide->id); ?>" class="btn btn-outline-primary w-100">
+                    <?php
+                    $isUser = isLoggedIn() && $_SESSION['user_type'] === 'user';
+                    ?>
+                    <?php if ($isUser): ?>
+                        <?php if($guide->available): ?>
+                            <a href="#book-tour" class="btn btn-primary btn-lg w-100 mb-3">
+                                <i class="fas fa-calendar-check me-2"></i> Book Now
+                            </a>
+                        <?php else: ?>
+                            <button disabled class="btn btn-secondary btn-lg w-100 mb-3">
+                                <i class="fas fa-calendar-times me-2"></i> Currently Unavailable
+                            </button>
+                        <?php endif; ?>
+                        <!-- Contact Button with authentication check -->
+                        <?php if (isset($requires_auth) && $requires_auth): ?>
+                            <a href="<?php echo url('account/login'); ?>" class="btn btn-outline-primary w-100">
+                                <i class="fas fa-sign-in-alt me-2"></i> Login to Contact Guide
+                            </a>
+                            <small class="text-muted mt-2 d-block">You need to be logged in to contact guides</small>
+                        <?php else: ?>
+                            <a href="<?php echo url('tourGuide/contact/' . $guide->id); ?>" class="btn btn-outline-primary w-100">
                                 <i class="fas fa-envelope me-2"></i> Contact Guide
-                         </a>
+                            </a>
+                        <?php endif; ?>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
@@ -326,6 +336,7 @@
             </div>
             
             <!-- Booking Section -->
+            <?php if ($isUser): ?>
             <div class="card">
                 <div class="card-header bg-white">
                     <h4 class="mb-0" id="book-tour">Book a Tour with <?php echo htmlspecialchars($guide->name); ?></h4>
@@ -496,6 +507,7 @@
                     <?php endif; ?>
                 </div>
             </div>
+            <?php endif; ?>
         </div>
     </div>
 </div>

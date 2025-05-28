@@ -686,4 +686,14 @@ class UserModel
         return $result;
 
     }
+
+    public function getAllSpecialties() {
+        $this->db->query('SELECT * FROM specialties');
+        return $this->db->resultSet();
+    }
+
+    public function getAllLanguages() {
+        $this->db->query('SELECT * FROM languages');
+        return $this->db->resultSet();
+    }
 }

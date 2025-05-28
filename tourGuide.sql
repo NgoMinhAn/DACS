@@ -21,6 +21,7 @@ CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     email VARCHAR(100) NOT NULL UNIQUE,
+    google_id VARCHAR(255) NULL,
     password VARCHAR(255) NOT NULL,
     user_type ENUM('user', 'guide', 'admin') NOT NULL DEFAULT 'user',
     profile_image VARCHAR(255) DEFAULT 'default.jpg',
@@ -32,7 +33,8 @@ CREATE TABLE users (
     reset_token VARCHAR(100) NULL,
     reset_token_expires TIMESTAMP NULL,
     phone VARCHAR(20) NULL,
-    address TEXT NULL
+    address TEXT NULL,
+    UNIQUE INDEX google_id_idx (google_id)
 );
 
 -- Guide applications table (for admin approval process)
@@ -40,6 +42,7 @@ CREATE TABLE guide_applications (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     specialty VARCHAR(255) NOT NULL,
+    languages TEXT,
     bio TEXT NOT NULL,
     experience TEXT,
     status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
