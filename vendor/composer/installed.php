@@ -1,11 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => 'dacs/tour-guide-system',
-
-        'pretty_version' => 'dev-main',
-        'version' => 'dev-main',
-
-        'reference' => '65969fe282110aa740b139b1d1edcb7bcb961816',
+        'pretty_version' => 'dev-master',
+        'version' => 'dev-master',
+        'reference' => '6b4698c6a16490a10427c31626ce839ea1184cfa',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -13,11 +11,9 @@
     ),
     'versions' => array(
         'dacs/tour-guide-system' => array(
-
-            'pretty_version' => 'dev-main',
-            'version' => 'dev-main',
-
-            'reference' => '65969fe282110aa740b139b1d1edcb7bcb961816',
+            'pretty_version' => 'dev-master',
+            'version' => 'dev-master',
+            'reference' => '6b4698c6a16490a10427c31626ce839ea1184cfa',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
