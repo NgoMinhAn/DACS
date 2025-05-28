@@ -1,8 +1,10 @@
 <?php return array(
     'root' => array(
         'name' => 'dacs/tour-guide-system',
+
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
+
         'reference' => '65969fe282110aa740b139b1d1edcb7bcb961816',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
@@ -11,8 +13,10 @@
     ),
     'versions' => array(
         'dacs/tour-guide-system' => array(
+
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
+
             'reference' => '65969fe282110aa740b139b1d1edcb7bcb961816',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
