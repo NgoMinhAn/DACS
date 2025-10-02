@@ -34,6 +34,7 @@ CREATE TABLE users (
     reset_token_expires TIMESTAMP NULL,
     phone VARCHAR(20) NULL,
     address TEXT NULL,
+    hobbies TEXT NULL,
     UNIQUE INDEX google_id_idx (google_id)
 );
 

@@ -88,15 +88,44 @@ class TourGuideController {
         $languages = $this->guideModel->getAllLanguages();
         $specialties = $this->guideModel->getAllSpecialties();
         
+        // AI Recommendation logic with Gemini
+        $recommendations = null;
+        $ai_debug = '';
+        if (isset($_SESSION['user_id'])) {
+            require_once APP_PATH . '/helpers/gemini_helper.php';
+            require_once MODEL_PATH . '/UserModel.php';
+            $userModel = new UserModel();
+            $user = $userModel->findUserById($_SESSION['user_id']);
+            $userHobbies = [];
+            if (!empty($user->hobbies)) {
+                $userHobbies = explode(',', $user->hobbies);
+            }
+            $pastGuides = [];
+            // Debug: check API key
+            if (!defined('GEMINI_API_KEY') || !GEMINI_API_KEY) {
+                $ai_debug = 'AI: Gemini API key is missing.';
+            } elseif (empty($userHobbies)) {
+                $ai_debug = 'AI: No hobbies set in your profile. Add hobbies in your account settings for recommendations.';
+            } else {
+                $recommendations = getGeminiRecommendations($userHobbies, $pastGuides, GEMINI_API_KEY);
+                if (empty($recommendations)) {
+                    $ai_debug = 'AI: No recommendations returned. There may be a problem with the Gemini API or your network connection.';
+                }
+            }
+        } else {
+            $ai_debug = 'AI: You must be logged in to see recommendations.';
+        }
+
         // Data to be passed to the view
         $data = [
             'title' => 'Browse All Guides',
             'guides' => $guides,
             'languages' => $languages,
             'specialties' => $specialties,
-            'current_filters' => $filters
+            'current_filters' => $filters,
+            'ai_recommendations' => $recommendations,
+            'ai_debug' => $ai_debug
         ];
-        
         // Load view
         $this->loadView('tourGuides/browse', $data);
     }

@@ -4,9 +4,7 @@
 
 namespace Composer\Autoload;
 
-
-class ComposerStaticInitf4d2cc252e5d97eb79061c56cd2544ab
-
+class ComposerStaticInit153b5fa50abc8e5d0e34e82f7518a326
 {
     public static $files = array (
         '7b11c4dc42b3b3023073cb14e519683c' => __DIR__ . '/..' . '/ralouphie/getallheaders/src/getallheaders.php',
@@ -35,6 +33,10 @@ class ComposerStaticInitf4d2cc252e5d97eb79061c56cd2544ab
         array (
             'Monolog\\' => 8,
         ),
+        'H' => 
+        array (
+            'Http\\Discovery\\' => 15,
+        ),
         'G' => 
         array (
             'GuzzleHttp\\Psr7\\' => 16,
@@ -43,6 +45,7 @@ class ComposerStaticInitf4d2cc252e5d97eb79061c56cd2544ab
             'Google\\Service\\' => 15,
             'Google\\Auth\\' => 12,
             'Google\\' => 7,
+            'GeminiAPI\\' => 10,
         ),
         'F' => 
         array (
@@ -65,8 +68,8 @@ class ComposerStaticInitf4d2cc252e5d97eb79061c56cd2544ab
         ),
         'Psr\\Http\\Message\\' => 
         array (
-            0 => __DIR__ . '/..' . '/psr/http-message/src',
-            1 => __DIR__ . '/..' . '/psr/http-factory/src',
+            0 => __DIR__ . '/..' . '/psr/http-factory/src',
+            1 => __DIR__ . '/..' . '/psr/http-message/src',
         ),
         'Psr\\Http\\Client\\' => 
         array (
@@ -87,6 +90,10 @@ class ComposerStaticInitf4d2cc252e5d97eb79061c56cd2544ab
         'Monolog\\' => 
         array (
             0 => __DIR__ . '/..' . '/monolog/monolog/src/Monolog',
+        ),
+        'Http\\Discovery\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/php-http/discovery/src',
         ),
         'GuzzleHttp\\Psr7\\' => 
         array (
@@ -111,6 +118,10 @@ class ComposerStaticInitf4d2cc252e5d97eb79061c56cd2544ab
         'Google\\' => 
         array (
             0 => __DIR__ . '/..' . '/google/apiclient/src',
+        ),
+        'GeminiAPI\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/gemini-api-php/client/src',
         ),
         'Firebase\\JWT\\' => 
         array (
@@ -149,11 +160,9 @@ class ComposerStaticInitf4d2cc252e5d97eb79061c56cd2544ab
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-
-            $loader->prefixLengthsPsr4 = ComposerStaticInitf4d2cc252e5d97eb79061c56cd2544ab::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInitf4d2cc252e5d97eb79061c56cd2544ab::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInitf4d2cc252e5d97eb79061c56cd2544ab::$classMap;
-
+            $loader->prefixLengthsPsr4 = ComposerStaticInit153b5fa50abc8e5d0e34e82f7518a326::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit153b5fa50abc8e5d0e34e82f7518a326::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit153b5fa50abc8e5d0e34e82f7518a326::$classMap;
 
         }, null, ClassLoader::class);
     }

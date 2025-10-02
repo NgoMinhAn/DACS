@@ -13,13 +13,17 @@ define('DB_PASS', '');
 define('DB_NAME', 'TourGuide'); // Updated from tour_guide_db to TourGuide
 
 // URL Root
-define('URL_ROOT', 'http://localhost:80/DACS');
+define('URL_ROOT', 'http://localhost:80');
 
 // Site Name
 define('SITE_NAME', 'Tour Guide Connect');
 
 // App Version
 define('APP_VERSION', '1.0.0');
+
+
+// Gemini API Key (set your Gemini API key here)
+define('GEMINI_API_KEY', 'AIzaSyCxIxv7AHMwBiyE1wnt_orOgJyiSFfWaFo');
 
 // Site configuration
 $config = [
@@ -47,4 +51,4 @@ $config = [
         'instagram' => 'https://instagram.com/tourguideconnect',
         'twitter' => 'https://twitter.com/tourguideconnect'
     ]
-]; 
+];

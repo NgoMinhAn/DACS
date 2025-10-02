@@ -1,8 +1,14 @@
+
 Options -MultiViews
 RewriteEngine On
 
-# Set the base path - adjust this if your site is in a subdirectory
-RewriteBase /DACS/
+# Dynamically set RewriteBase if in a subfolder
+RewriteCond %{REQUEST_URI} ^/(.+?)/
+RewriteRule ^ - [E=BASE:%1]
+RewriteBase /
+
+# If you deploy in a subfolder, uncomment and set the line below:
+# RewriteBase /DACS/
 
 # Redirect to index.php if the file or directory doesn't exist
 RewriteCond %{REQUEST_FILENAME} !-d

@@ -1,3 +1,56 @@
+<!-- AI Chatbot for Tour Recommendations -->
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white">
+                    <i class="fas fa-robot me-2"></i>Ask the AI for Tour Recommendations
+                </div>
+                <div class="card-body">
+                    <div id="chatbot-messages" style="height: 250px; overflow-y: auto; background: #f8f9fa; border-radius: 6px; padding: 10px; margin-bottom: 1rem;"></div>
+                    <form id="chatbot-form" class="d-flex">
+                        <input type="text" id="chatbot-input" class="form-control me-2" placeholder="Ask for tour recommendations..." autocomplete="off" required />
+                        <button type="submit" class="btn btn-primary">Send</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+const chatForm = document.getElementById('chatbot-form');
+const chatInput = document.getElementById('chatbot-input');
+const chatMessages = document.getElementById('chatbot-messages');
+
+function appendMessage(sender, text) {
+    const msgDiv = document.createElement('div');
+    msgDiv.innerHTML = `<strong>${sender}:</strong> ${text}`;
+    msgDiv.style.marginBottom = '8px';
+    chatMessages.appendChild(msgDiv);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+chatForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const userMsg = chatInput.value.trim();
+    if (!userMsg) return;
+    appendMessage('You', userMsg);
+    chatInput.value = '';
+    appendMessage('AI', '<em>Thinking...</em>');
+    fetch('/chatbot.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: userMsg })
+    })
+    .then(res => res.json())
+    .then(data => {
+        chatMessages.lastChild.innerHTML = `<strong>AI:</strong> ${data.reply}`;
+    })
+    .catch(() => {
+        chatMessages.lastChild.innerHTML = `<strong>AI:</strong> <span class='text-danger'>Error contacting AI.</span>`;
+    });
+});
+</script>
 <?php
 /**
  * Browse Tour Guides View

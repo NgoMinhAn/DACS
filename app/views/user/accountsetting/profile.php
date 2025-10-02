@@ -108,6 +108,19 @@
                             </div>
                         </div>
 
+                        <!-- Hobbies & Tourism Interests -->
+                        <div class="mb-4 p-3 bg-light rounded">
+                            <h5 class="d-flex align-items-center mb-3">
+                                <i class="fas fa-heart text-primary me-2"></i>
+                                Hobbies & Tourism Interests
+                            </h5>
+                            <div class="mb-3">
+                                <label for="hobbies" class="form-label">Your hobbies and interests related to tourism</label>
+                                <textarea class="form-control" id="hobbies" name="hobbies" rows="3" placeholder="e.g. Hiking, Food tours, Museums, Adventure sports, Local culture, Nature walks, Photography, etc."><?php echo htmlspecialchars($user->hobbies ?? '', ENT_QUOTES, 'UTF-8'); ?></textarea>
+                                <div class="form-text">List your hobbies and interests to get better tour guide recommendations.</div>
+                            </div>
+                        </div>
+
                         <?php if ($user->user_type === 'guide'): ?>
                         <!-- Guide Information -->
                         <div class="mb-4 p-3 bg-light rounded">
