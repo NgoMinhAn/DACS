@@ -515,6 +515,7 @@ class AccountController {
             redirect('account/login');
         }
 
+
         // Get user data
         $userId = $_SESSION['user_id'];
         $user = $this->userModel->getUserById($userId);
@@ -538,6 +539,7 @@ class AccountController {
                         'email' => trim($_POST['email']),
                         'phone' => trim($_POST['phone']),
                         'address' => trim($_POST['address']),
+                        'hobbies' => trim($_POST['hobbies'] ?? ''),
                         'errors' => []
                     ];
 
@@ -595,9 +597,9 @@ class AccountController {
                             'name' => $data['name'],
                             'email' => $data['email'],
                             'phone' => $data['phone'] ?? '',
-                            'address' => $data['address'] ?? ''
+                            'address' => $data['address'] ?? '',
+                            'hobbies' => $data['hobbies'] ?? ''
                         ];
-                        
                         // Add profile image if uploaded
                         if (isset($data['profile_image'])) {
                             $updateData['avatar'] = $data['profile_image'];
@@ -619,6 +621,7 @@ class AccountController {
                         redirect('account/settings/profile');
                     } else {
                         // Load view with errors
+                        $user->hobbies = $data['hobbies'];
                         $data['user'] = $user;
                         $data['title'] = 'Profile Settings';
                         $data['section'] = 'profile';

@@ -1,11 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => 'dacs/tour-guide-system',
-
-        'pretty_version' => 'dev-main',
-        'version' => 'dev-main',
-
-        'reference' => '65969fe282110aa740b139b1d1edcb7bcb961816',
+        'pretty_version' => 'dev-master',
+        'version' => 'dev-master',
+        'reference' => 'df6d12466b7c2adee9a379204342c6c8e7a88941',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -13,11 +11,9 @@
     ),
     'versions' => array(
         'dacs/tour-guide-system' => array(
-
-            'pretty_version' => 'dev-main',
-            'version' => 'dev-main',
-
-            'reference' => '65969fe282110aa740b139b1d1edcb7bcb961816',
+            'pretty_version' => 'dev-master',
+            'version' => 'dev-master',
+            'reference' => 'df6d12466b7c2adee9a379204342c6c8e7a88941',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
@@ -32,55 +28,64 @@
             'aliases' => array(),
             'dev_requirement' => false,
         ),
+        'gemini-api-php/client' => array(
+            'pretty_version' => 'v1.7.2',
+            'version' => '1.7.2.0',
+            'reference' => 'a48e61285d82b24117a5c8928dd1e504818f908b',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../gemini-api-php/client',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
         'google/apiclient' => array(
-            'pretty_version' => 'v2.18.3',
-            'version' => '2.18.3.0',
-            'reference' => '4eee42d201eff054428a4836ec132944d271f051',
+            'pretty_version' => 'v2.18.4',
+            'version' => '2.18.4.0',
+            'reference' => '5b51fdb2cbd2a96088e3dfc6f565bdf6fb0af94b',
             'type' => 'library',
             'install_path' => __DIR__ . '/../google/apiclient',
             'aliases' => array(),
             'dev_requirement' => false,
         ),
         'google/apiclient-services' => array(
-            'pretty_version' => 'v0.396.0',
-            'version' => '0.396.0.0',
-            'reference' => 'ceb2e432e4326c6775d24f62d554395a1a9ad3dd',
+            'pretty_version' => 'v0.414.0',
+            'version' => '0.414.0.0',
+            'reference' => '5bd542b6d9639b89b95270ae85ed3062b4ca9b8e',
             'type' => 'library',
             'install_path' => __DIR__ . '/../google/apiclient-services',
             'aliases' => array(),
             'dev_requirement' => false,
         ),
         'google/auth' => array(
-            'pretty_version' => 'v1.47.0',
-            'version' => '1.47.0.0',
-            'reference' => 'd6389aae7c009daceaa8da9b7942d8df6969f6d9',
+            'pretty_version' => 'v1.48.1',
+            'version' => '1.48.1.0',
+            'reference' => '023f41a2c80fb98a493dfb9dffcab643481a7ab0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../google/auth',
             'aliases' => array(),
             'dev_requirement' => false,
         ),
         'guzzlehttp/guzzle' => array(
-            'pretty_version' => '7.9.3',
-            'version' => '7.9.3.0',
-            'reference' => '7b2f29fe81dc4da0ca0ea7d42107a0845946ea77',
+            'pretty_version' => '7.10.0',
+            'version' => '7.10.0.0',
+            'reference' => 'b51ac707cfa420b7bfd4e4d5e510ba8008e822b4',
             'type' => 'library',
             'install_path' => __DIR__ . '/../guzzlehttp/guzzle',
             'aliases' => array(),
             'dev_requirement' => false,
         ),
         'guzzlehttp/promises' => array(
-            'pretty_version' => '2.2.0',
-            'version' => '2.2.0.0',
-            'reference' => '7c69f28996b0a6920945dd20b3857e499d9ca96c',
+            'pretty_version' => '2.3.0',
+            'version' => '2.3.0.0',
+            'reference' => '481557b130ef3790cf82b713667b43030dc9c957',
             'type' => 'library',
             'install_path' => __DIR__ . '/../guzzlehttp/promises',
             'aliases' => array(),
             'dev_requirement' => false,
         ),
         'guzzlehttp/psr7' => array(
-            'pretty_version' => '2.7.1',
-            'version' => '2.7.1.0',
-            'reference' => 'c2270caaabe631b3b44c85f99e5a04bbb8060d16',
+            'pretty_version' => '2.8.0',
+            'version' => '2.8.0.0',
+            'reference' => '21dc724a0583619cd1652f673303492272778051',
             'type' => 'library',
             'install_path' => __DIR__ . '/../guzzlehttp/psr7',
             'aliases' => array(),
@@ -96,9 +101,9 @@
             'dev_requirement' => false,
         ),
         'paragonie/constant_time_encoding' => array(
-            'pretty_version' => 'v3.0.0',
-            'version' => '3.0.0.0',
-            'reference' => 'df1e7fde177501eee2037dd159cf04f5f301a512',
+            'pretty_version' => 'v3.1.3',
+            'version' => '3.1.3.0',
+            'reference' => 'd5b01a39b3415c2cd581d3bd3a3575c1ebbd8e77',
             'type' => 'library',
             'install_path' => __DIR__ . '/../paragonie/constant_time_encoding',
             'aliases' => array(),
@@ -113,19 +118,40 @@
             'aliases' => array(),
             'dev_requirement' => false,
         ),
+        'php-http/async-client-implementation' => array(
+            'dev_requirement' => false,
+            'provided' => array(
+                0 => '*',
+            ),
+        ),
+        'php-http/client-implementation' => array(
+            'dev_requirement' => false,
+            'provided' => array(
+                0 => '*',
+            ),
+        ),
+        'php-http/discovery' => array(
+            'pretty_version' => '1.20.0',
+            'version' => '1.20.0.0',
+            'reference' => '82fe4c73ef3363caed49ff8dd1539ba06044910d',
+            'type' => 'composer-plugin',
+            'install_path' => __DIR__ . '/../php-http/discovery',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
         'phpmailer/phpmailer' => array(
-            'pretty_version' => 'v6.10.0',
-            'version' => '6.10.0.0',
-            'reference' => 'bf74d75a1fde6beaa34a0ddae2ec5fce0f72a144',
+            'pretty_version' => 'v6.11.1',
+            'version' => '6.11.1.0',
+            'reference' => 'd9e3b36b47f04b497a0164c5a20f92acb4593284',
             'type' => 'library',
             'install_path' => __DIR__ . '/../phpmailer/phpmailer',
             'aliases' => array(),
             'dev_requirement' => false,
         ),
         'phpseclib/phpseclib' => array(
-            'pretty_version' => '3.0.43',
-            'version' => '3.0.43.0',
-            'reference' => '709ec107af3cb2f385b9617be72af8cf62441d02',
+            'pretty_version' => '3.0.46',
+            'version' => '3.0.46.0',
+            'reference' => '56483a7de62a6c2a6635e42e93b8a9e25d4f0ec6',
             'type' => 'library',
             'install_path' => __DIR__ . '/../phpseclib/phpseclib',
             'aliases' => array(),
@@ -152,7 +178,8 @@
         'psr/http-client-implementation' => array(
             'dev_requirement' => false,
             'provided' => array(
-                0 => '1.0',
+                0 => '*',
+                1 => '1.0',
             ),
         ),
         'psr/http-factory' => array(
@@ -167,7 +194,8 @@
         'psr/http-factory-implementation' => array(
             'dev_requirement' => false,
             'provided' => array(
-                0 => '1.0',
+                0 => '*',
+                1 => '1.0',
             ),
         ),
         'psr/http-message' => array(
@@ -182,7 +210,8 @@
         'psr/http-message-implementation' => array(
             'dev_requirement' => false,
             'provided' => array(
-                0 => '1.0',
+                0 => '*',
+                1 => '1.0',
             ),
         ),
         'psr/log' => array(

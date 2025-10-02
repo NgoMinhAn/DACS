@@ -101,8 +101,8 @@ class UserModel
 
         // Insert new user
         $this->db->query('
-            INSERT INTO users (name, email, password, user_type, status, verification_token, google_id) 
-            VALUES (:name, :email, :password, :user_type, :status, :token, :google_id)
+            INSERT INTO users (name, email, password, user_type, status, verification_token, google_id, hobbies)
+            VALUES (:name, :email, :password, :user_type, :status, :token, :google_id, :hobbies)
         ');
 
         // Generate verification token
@@ -116,6 +116,7 @@ class UserModel
         $this->db->bind(':status', $data['status'] ?? 'pending');
         $this->db->bind(':token', $token);
         $this->db->bind(':google_id', $data['google_id'] ?? null);
+        $this->db->bind(':hobbies', $data['hobbies'] ?? null);
 
         // Execute query
         if ($this->db->execute()) {
@@ -414,6 +415,11 @@ class UserModel
                     phone = :phone, 
                     address = :address';
 
+            // Add hobbies field if provided
+            if (isset($data['hobbies'])) {
+                $sql .= ', hobbies = :hobbies';
+            }
+
             // Add avatar field if it exists
             if (isset($data['avatar'])) {
                 $sql .= ', profile_image = :avatar';
@@ -429,6 +435,11 @@ class UserModel
             $this->db->bind(':phone', $data['phone']);
             $this->db->bind(':address', $data['address']);
             $this->db->bind(':id', $data['user_id']);
+
+            // Bind hobbies if provided
+            if (isset($data['hobbies'])) {
+                $this->db->bind(':hobbies', $data['hobbies']);
+            }
 
             // Bind avatar parameter if it exists
             if (isset($data['avatar'])) {
@@ -448,6 +459,17 @@ class UserModel
             error_log('Error updating profile: ' . $e->getMessage());
             return false;
         }
+    }
+
+    /**
+     * Get user hobbies
+     */
+    public function getUserHobbies($userId)
+    {
+        $this->db->query('SELECT hobbies FROM users WHERE id = :id');
+        $this->db->bind(':id', $userId);
+        $row = $this->db->single();
+        return $row ? $row->hobbies : '';
     }
 
     /**
