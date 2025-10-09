@@ -240,6 +240,87 @@ class GuideModel
     }
 
     /**
+     * Get recommended guides for a user based on their booking history (specialties) and past searches.
+     * Falls back to top rated guides when there's no data.
+     *
+     * @param int|null $userId
+     * @param int $limit
+     * @return array
+     */
+    public function getRecommendedGuidesForUser($userId = null, $limit = 6)
+    {
+        // If no user provided, return top rated guides
+        if (!$userId) {
+            return $this->getTopRatedGuides($limit);
+        }
+
+        // 1) Try to find specialties from the user's past bookings
+        $this->db->query('SELECT DISTINCT s.name as specialty
+                          FROM bookings b
+                          JOIN guide_specialties gs ON b.guide_id = gs.guide_id
+                          JOIN specialties s ON gs.specialty_id = s.id
+                          WHERE b.user_id = :user_id
+                          ORDER BY COUNT(b.id) DESC
+                          LIMIT 5');
+        $this->db->bind(':user_id', $userId);
+        $rows = $this->db->resultSet();
+
+        $specialties = [];
+        foreach ($rows as $r) {
+            if (!empty($r->specialty)) $specialties[] = $r->specialty;
+        }
+
+        // 2) If we have specialties, get guides matching those specialties ordered by rating
+        if (!empty($specialties)) {
+            // Build parameterized OR conditions for specialties
+            $sql = "SELECT * FROM guide_listings WHERE (";
+            $binds = [];
+            $parts = [];
+            foreach ($specialties as $idx => $spec) {
+                $parts[] = "specialties LIKE :spec{$idx}";
+                $binds[":spec{$idx}"] = '%' . $spec . '%';
+            }
+            $sql .= implode(' OR ', $parts) . ") AND verified = 1 ORDER BY avg_rating DESC, total_reviews DESC LIMIT :limit";
+
+            $this->db->query($sql);
+            foreach ($binds as $k => $v) {
+                $this->db->bind($k, $v);
+            }
+            $this->db->bind(':limit', $limit, PDO::PARAM_INT);
+            $result = $this->db->resultSet();
+
+            if (!empty($result)) {
+                return $result;
+            }
+        }
+
+        // 3) No booking-based specialties found - look for user's past searches if a table exists
+        $this->db->query('SELECT query FROM user_searches WHERE user_id = :user_id ORDER BY created_at DESC LIMIT 5');
+        $this->db->bind(':user_id', $userId);
+        $searchRows = [];
+        try {
+            $searchRows = $this->db->resultSet();
+        } catch (Exception $e) {
+            // Table might not exist; ignore and fall back
+            $searchRows = [];
+        }
+
+        $queries = [];
+        foreach ($searchRows as $sr) {
+            if (!empty($sr->query)) $queries[] = $sr->query;
+        }
+
+        if (!empty($queries)) {
+            // Use the most recent query to search guides
+            $q = $queries[0];
+            return $this->searchGuides($q);
+        }
+
+        // 4) Last resort - return global top rated guides
+        return $this->getTopRatedGuides($limit);
+    }
+
+    /**
      * Get guides by specialty or category
      * 
      * @param string $specialty The specialty or category name
