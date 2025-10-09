@@ -124,6 +124,46 @@ chatForm.addEventListener('submit', function(e) {
 
         <!-- Guide Cards -->
         <div class="col-md-9">
+            <!-- Recommended Section -->
+            <?php if (!empty($recommended_guides)): ?>
+                <div class="mb-4">
+                    <h4>Recommended for you</h4>
+                    <div class="row row-cols-1 row-cols-md-3 g-4">
+                        <?php foreach ($recommended_guides as $rguide): ?>
+                            <div class="col">
+                                <div class="card h-100">
+                                    <img src="<?php echo url('assets/images/profiles/' . ($rguide->profile_image ?? 'default.jpg')); ?>" 
+                                         class="card-img-top" alt="<?php echo htmlspecialchars($rguide->name ?? $rguide->name); ?>"
+                                         style="height: 150px; object-fit: cover;">
+                                    <div class="card-body">
+                                        <h5 class="card-title"><?php echo htmlspecialchars($rguide->name ?? ($rguide->name ?? 'Guide')); ?></h5>
+                                        <div class="mb-2">
+                                            <span class="text-warning">
+                                                <?php for($i = 1; $i <= 5; $i++): ?>
+                                                    <?php if($i <= round($rguide->avg_rating ?? 0)): ?>
+                                                        <i class="fas fa-star"></i>
+                                                    <?php else: ?>
+                                                        <i class="far fa-star"></i>
+                                                    <?php endif; ?>
+                                                <?php endfor; ?>
+                                            </span>
+                                            <small class="text-muted">(<?php echo $rguide->total_reviews ?? 0; ?> reviews)</small>
+                                        </div>
+                                        <p class="card-text"><?php echo htmlspecialchars(substr($rguide->bio ?? 'Expert local guide', 0, 80)) . '...'; ?></p>
+                                    </div>
+                                    <div class="card-footer bg-transparent border-top-0">
+                                        <a href="<?php echo url('tourGuide/profile/' . ($rguide->guide_id ?? $rguide->id ?? '')); ?>" class="btn btn-outline-primary w-100">View Profile</a>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+                <!-- Separator between recommendations and full browse list -->
+                <div class="my-4">
+                    <hr class="my-0" />
+                </div>
+            <?php endif; ?>
             <div class="row row-cols-1 row-cols-md-3 g-4">
                 <?php if (!empty($guides)): ?>
                     <?php foreach ($guides as $guide): ?>

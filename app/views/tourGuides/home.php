@@ -279,6 +279,63 @@
     </div>
 </section>
 
+<!-- Dynamic Top Rated Guides Section -->
+<?php
+require_once __DIR__ . '/../../config/config.php';
+try {
+    $dsn = 'mysql:host=' . DB_HOST . ';dbname=' . DB_NAME . ';charset=utf8mb4';
+    $pdo = new PDO($dsn, DB_USER, DB_PASS, [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+    ]);
+    $stmt = $pdo->query('SELECT * FROM guide_listings ORDER BY avg_rating DESC LIMIT 5');
+    $topGuides = $stmt->fetchAll();
+} catch (Exception $e) {
+    error_log('Error fetching top rated guides: ' . $e->getMessage());
+    $topGuides = [];
+}
+?>
+<section id="top-rated-guides" class="mb-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center mb-4">
+                <h2 class="fw-bold">Top Rated Guides</h2>
+                <p class="text-muted">Connect with our highest-rated local experts for an unforgettable experience</p>
+            </div>
+        </div>
+        
+        <div class="row">
+            <?php foreach ($topGuides as $guide): ?>
+                <div class="col-md-6 col-lg-3 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <img src="<?php echo url('assets/images/profiles/' . ($guide['profile_image'] ?? 'default.jpg')); ?>" 
+                             class="card-img-top" alt="<?php echo htmlspecialchars($guide['name']); ?>" 
+                             style="height: 200px; object-fit: cover;">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <h5 class="card-title mb-0"><?php echo htmlspecialchars($guide['name']); ?></h5>
+                                <span class="badge bg-warning text-dark">
+                                    <i class="fas fa-star"></i> <?php echo number_format($guide['avg_rating'], 1); ?>
+                                </span>
+                            </div>
+                            <p class="card-text text-muted small mb-2">
+                                <i class="fas fa-map-marker-alt"></i> <?php echo htmlspecialchars($guide['location']); ?>
+                            </p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="text-primary fw-bold">$<?php echo number_format($guide['hourly_rate'], 2); ?>/hour</span>
+                                <a href="<?php echo url('tourGuide/profile/' . $guide['guide_id']); ?>" class="btn btn-sm btn-outline-primary">View Profile</a>
+                            </div>
+                        </div>
+                        <div class="card-footer bg-white">
+                            <small class="text-muted"><?php echo $guide['specialties'] ?? 'Various specialties'; ?></small>
+                        </div>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
+</section>
+
 <style>
     .input-group .form-control::placeholder {
         color: #888 !important;
@@ -287,4 +344,4 @@
     .btn-success:hover, .btn-success:focus {
         background: #218838 !important;
     }
-</style> 
+</style>

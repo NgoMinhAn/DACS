@@ -88,32 +88,144 @@ class TourGuideController {
         $languages = $this->guideModel->getAllLanguages();
         $specialties = $this->guideModel->getAllSpecialties();
         
-        // AI Recommendation logic with Gemini
-        $recommendations = null;
+        // Recommendation logic: prefer local booking/search history based recommendations
+        $recommended_guides = [];
         $ai_debug = '';
-        if (isset($_SESSION['user_id'])) {
-            require_once APP_PATH . '/helpers/gemini_helper.php';
-            require_once MODEL_PATH . '/UserModel.php';
-            $userModel = new UserModel();
-            $user = $userModel->findUserById($_SESSION['user_id']);
-            $userHobbies = [];
-            if (!empty($user->hobbies)) {
-                $userHobbies = explode(',', $user->hobbies);
-            }
-            $pastGuides = [];
-            // Debug: check API key
-            if (!defined('GEMINI_API_KEY') || !GEMINI_API_KEY) {
-                $ai_debug = 'AI: Gemini API key is missing.';
-            } elseif (empty($userHobbies)) {
-                $ai_debug = 'AI: No hobbies set in your profile. Add hobbies in your account settings for recommendations.';
-            } else {
-                $recommendations = getGeminiRecommendations($userHobbies, $pastGuides, GEMINI_API_KEY);
-                if (empty($recommendations)) {
-                    $ai_debug = 'AI: No recommendations returned. There may be a problem with the Gemini API or your network connection.';
+        try {
+            // If the user is logged in, try to build personalized recommendations
+            if (isset($_SESSION['user_id'])) {
+                // Load booking model to examine past bookings
+                require_once MODEL_PATH . '/BookingModel.php';
+                $bookingModel = new BookingModel();
+
+                // Get user's past bookings and use GuideModel to recommend
+                $userBookings = $bookingModel->getUserBookings($_SESSION['user_id']);
+
+                // Use GuideModel helper (new) to fetch recommendations
+                $recommended_guides = $this->guideModel->getRecommendedGuidesForUser($_SESSION['user_id'], 6);
+
+                // Normalize and update each recommended guide with accurate review counts and default ratings
+                if (!empty($recommended_guides)) {
+                    foreach ($recommended_guides as $rg) {
+                        // Ensure avg_rating field exists
+                        if (!isset($rg->avg_rating)) $rg->avg_rating = 0;
+
+                        // Try to resolve guide_profiles.id reliably
+                        $gid = null;
+                        if (!empty($rg->guide_id)) {
+                            $gid = $rg->guide_id;
+                        } elseif (!empty($rg->id)) {
+                            $gid = $rg->id;
+                        } elseif (!empty($rg->user_id)) {
+                            // Map from users.id to guide_profiles.id if necessary
+                            $guideRow = $this->guideModel->getGuideByUserId($rg->user_id);
+                            if ($guideRow && !empty($guideRow->id)) {
+                                $gid = $guideRow->id;
+                            }
+                        }
+
+                        if ($gid) {
+                            // Fetch accurate approved review count
+                            $rg->total_reviews = $this->guideModel->getApprovedReviewCount($gid);
+                        } else {
+                            // Fall back to any total_reviews value present or zero
+                            $rg->total_reviews = $rg->total_reviews ?? 0;
+                        }
+                    }
                 }
+
+                // If no personalized results, fall back to top rated
+                if (empty($recommended_guides)) {
+                    $recommended_guides = $this->guideModel->getTopRatedGuides(6);
+                    $ai_debug = 'No personalized data found; showing top-rated guides.';
+                }
+            } else {
+                // Not logged in: show top-rated guides
+                $recommended_guides = $this->guideModel->getTopRatedGuides(6);
+                $ai_debug = 'You are not logged in; showing top-rated guides.';
             }
-        } else {
-            $ai_debug = 'AI: You must be logged in to see recommendations.';
+        } catch (Exception $e) {
+            // On any error, fall back to top-rated guides
+            $recommended_guides = $this->guideModel->getTopRatedGuides(6);
+            $ai_debug = 'Recommendation error: ' . $e->getMessage();
+        }
+
+        // Ensure recommended guides always show accurate review counts and ratings
+        if (!empty($recommended_guides)) {
+            // Resolve guide profile ids for all recommended items
+            $resolved = [];
+            foreach ($recommended_guides as $idx => $rg) {
+                if (!isset($rg->avg_rating)) $rg->avg_rating = 0;
+
+                $gid = null;
+                if (!empty($rg->guide_id)) {
+                    $gid = $rg->guide_id;
+                } elseif (!empty($rg->id)) {
+                    $gid = $rg->id;
+                } elseif (!empty($rg->user_id)) {
+                    $guideRow = $this->guideModel->getGuideByUserId($rg->user_id);
+                    if ($guideRow && !empty($guideRow->id)) {
+                        $gid = $guideRow->id;
+                    }
+                }
+
+                $resolved[$idx] = $gid;
+            }
+
+            // Bulk fetch counts for resolved gids
+            $gids = array_filter(array_values($resolved));
+            if (!empty($gids)) {
+                // Build placeholder list
+                $placeholders = implode(',', array_map(fn($i) => ':g' . $i, array_keys($gids)));
+                $db = new Database();
+                $sql = 'SELECT guide_id, COUNT(*) AS cnt FROM guide_reviews WHERE status = "approved" AND guide_id IN (' . $placeholders . ') GROUP BY guide_id';
+                $db->query($sql);
+                // Bind gids to placeholders
+                $i = 0;
+                foreach ($gids as $g) {
+                    $db->bind(':g' . $i, $g);
+                    $i++;
+                }
+
+                // Debug: log resolved gids
+                error_log("[DEBUG][Recommendations] Resolved gids for recommended items: " . implode(',', $gids));
+
+                $rows = [];
+                try {
+                    $rows = $db->resultSet();
+                } catch (Exception $e) {
+                    $rows = [];
+                }
+
+                // Debug: log raw grouped rows returned from guide_reviews
+                $debugRows = [];
+                foreach ($rows as $r) {
+                    $debugRows[] = json_encode(['guide_id' => $r->guide_id, 'cnt' => $r->cnt]);
+                }
+                error_log("[DEBUG][Recommendations] guide_reviews grouped rows: " . implode(';', $debugRows));
+
+                $counts = [];
+                foreach ($rows as $r) {
+                    $counts[$r->guide_id] = $r->cnt;
+                }
+
+                // Assign counts back to recommended_guides and log mapping
+                foreach ($recommended_guides as $idx => $rg) {
+                    $gid = $resolved[$idx] ?? null;
+                    if ($gid && isset($counts[$gid])) {
+                        $rg->total_reviews = $counts[$gid];
+                    } else {
+                        $rg->total_reviews = $rg->total_reviews ?? 0;
+                    }
+                    error_log("[DEBUG][Recommendations] recommended_idx={$idx} guide_profile_id=" . ($gid ?? 'NULL') . " mapped_count=" . ($rg->total_reviews ?? '0') . " title=" . ($rg->name ?? ($rg->title ?? 'unknown')));
+                }
+            } else {
+                // No gids resolved - leave defaults
+                foreach ($recommended_guides as $rg) {
+                    $rg->total_reviews = $rg->total_reviews ?? 0;
+                }
+                error_log("[DEBUG][Recommendations] No gids resolved for recommended items.");
+            }
         }
 
         // Data to be passed to the view
@@ -123,7 +235,7 @@ class TourGuideController {
             'languages' => $languages,
             'specialties' => $specialties,
             'current_filters' => $filters,
-            'ai_recommendations' => $recommendations,
+            'recommended_guides' => $recommended_guides,
             'ai_debug' => $ai_debug
         ];
         // Load view

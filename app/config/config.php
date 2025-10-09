@@ -13,7 +13,8 @@ define('DB_PASS', '');
 define('DB_NAME', 'TourGuide'); // Updated from tour_guide_db to TourGuide
 
 // URL Root
-define('URL_ROOT', 'http://localhost:80');
+// Use port 8081 for local Laragon setup
+define('URL_ROOT', 'http://localhost:8081');
 
 // Site Name
 define('SITE_NAME', 'Tour Guide Connect');
