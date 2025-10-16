@@ -14,7 +14,8 @@ define('DB_NAME', 'TourGuide'); // Updated from tour_guide_db to TourGuide
 
 // URL Root
 // Use port 8081 for local Laragon setup
-define('URL_ROOT', 'http://localhost:8081');
+define('URL_ROOT', 'http://localhost:80');
+//Just change your laragon port to 8081
 
 // Site Name
 define('SITE_NAME', 'Tour Guide Connect');
@@ -25,6 +26,7 @@ define('APP_VERSION', '1.0.0');
 
 // Gemini API Key (set your Gemini API key here)
 define('GEMINI_API_KEY', 'AIzaSyCxIxv7AHMwBiyE1wnt_orOgJyiSFfWaFo');
+//Remember to encode the key
 
 // Site configuration
 $config = [

@@ -70,8 +70,46 @@ class TourGuideController {
             }
         }
         
-        // Get guides from database with filters
-        $guides = $this->guideModel->getAllGuides($filters);
+        // Get all languages and specialties for filter options and to normalize incoming filter values
+        $languages = $this->guideModel->getAllLanguages();
+        $specialties = $this->guideModel->getAllSpecialties();
+
+        // Normalize filters: the view sends language codes and specialty IDs, but guide_listings stores names
+        $normalizedFilters = $filters; // copy original for sending back to view
+
+        // If a language code was provided, map it to the language name used in guide_listings
+        if (!empty($filters['language'])) {
+            $langName = null;
+            foreach ($languages as $lang) {
+                if (isset($lang->code) && $lang->code === $filters['language']) {
+                    $langName = $lang->name;
+                    break;
+                }
+            }
+            // If we found a name, use it for SQL LIKE matching; otherwise keep original value (safe fallback)
+            if ($langName) $normalizedFilters['language'] = $langName;
+        }
+
+        // If a specialty id was provided, map it to the specialty name used in guide_listings
+        if (!empty($filters['specialty'])) {
+            $specName = null;
+            // filters['specialty'] may be an id or a name; if numeric, try to map
+            if (is_numeric($filters['specialty'])) {
+                foreach ($specialties as $s) {
+                    if (isset($s->id) && (string)$s->id === (string)$filters['specialty']) {
+                        $specName = $s->name;
+                        break;
+                    }
+                }
+            } else {
+                // non-numeric, perhaps the UI already sent a name
+                $specName = $filters['specialty'];
+            }
+            if ($specName) $normalizedFilters['specialty'] = $specName;
+        }
+
+        // Get guides from database with normalized filters
+        $guides = $this->guideModel->getAllGuides($normalizedFilters);
         
         // Update each guide with accurate review count
         if (!empty($guides)) {
