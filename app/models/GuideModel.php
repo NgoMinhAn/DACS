@@ -26,6 +26,9 @@ class GuideModel
         // Start with base query using the guide_listings view
         $sql = "SELECT * FROM guide_listings WHERE 1=1";
 
+        // Debug incoming filters
+        error_log('[DEBUG][GuideModel::getAllGuides] incoming filters: ' . json_encode($filters));
+
         // Apply filters if provided
         if (!empty($filters)) {
             // Filter by language
@@ -66,13 +69,20 @@ class GuideModel
         // Bind filter values if provided
         if (!empty($filters)) {
             if (!empty($filters['language'])) {
-                $this->db->bind(':language', '%' . $filters['language'] . '%');
+                $langBind = '%' . $filters['language'] . '%';
+                error_log('[DEBUG][GuideModel::getAllGuides] binding :language => ' . $langBind);
+                $this->db->bind(':language', $langBind);
             }
 
             if (!empty($filters['specialty'])) {
-                $this->db->bind(':specialty', '%' . $filters['specialty'] . '%');
+                $specBind = '%' . $filters['specialty'] . '%';
+                error_log('[DEBUG][GuideModel::getAllGuides] binding :specialty => ' . $specBind);
+                $this->db->bind(':specialty', $specBind);
             }
         }
+
+        // Log final SQL for debugging
+        error_log('[DEBUG][GuideModel::getAllGuides] final SQL: ' . $sql);
 
         // Execute and return results
         return $this->db->resultSet();
