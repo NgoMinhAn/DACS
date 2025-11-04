@@ -2,7 +2,7 @@
 <div class="bg-primary text-white py-4 mb-5">
     <div class="container">
         <div class="row">
-            <div class="col-12 text-center">
+            <div class="col-12 text-center scroll-animate fade-up">
                 <h1 class="fw-bold">Tour Guide Categories</h1>
                 <p class="lead">Browse our guides by their areas of expertise</p>
             </div>
@@ -16,14 +16,21 @@
         <div class="row g-4">
             <!-- Guide Categories from Database -->
             <?php if(!empty($guide_categories)): ?>
-                <?php foreach($guide_categories as $category): ?>
-                    <div class="col-md-6 col-lg-3 mb-4">
+                <?php foreach($guide_categories as $index => $category): ?>
+                    <div class="col-md-6 col-lg-3 mb-4 scroll-animate fade-up <?php echo 'delay-' . min(($index % 5) + 1, 5); ?>">
                         <a href="<?php echo url('tourGuide/category/' . strtolower(str_replace(' & ', '-', str_replace(' ', '-', $category->name)))); ?>" class="text-decoration-none">
                             <div class="card h-100 shadow-sm category-card">
-                                <!-- Always use category-default.jpg as the fallback image -->
-                                <img src="<?php echo url('public/img/category-default.jpg'); ?>" 
-                                     class="card-img-top" alt="<?php echo htmlspecialchars($category->name); ?> Tours"
-                                     style="height: 200px; object-fit: cover;">
+                                <!-- Use category image if available, otherwise use default -->
+                                <?php if (!empty($category->image)): ?>
+                                    <img src="<?php echo url('public/img/categories/' . htmlspecialchars($category->image)); ?>" 
+                                         class="card-img-top" alt="<?php echo htmlspecialchars($category->name); ?> Tours"
+                                         style="height: 200px; object-fit: cover;"
+                                         onerror="this.src='<?php echo url('public/img/category-default.jpg'); ?>'">
+                                <?php else: ?>
+                                    <img src="<?php echo url('public/img/category-default.jpg'); ?>" 
+                                         class="card-img-top" alt="<?php echo htmlspecialchars($category->name); ?> Tours"
+                                         style="height: 200px; object-fit: cover;">
+                                <?php endif; ?>
                                 <div class="card-body text-center">
                                     <h5 class="card-title"><?php echo htmlspecialchars($category->name); ?></h5>
                                     <p class="card-text text-muted"><?php echo htmlspecialchars($category->description ?? 'Explore with our experienced guides'); ?></p>
@@ -34,6 +41,11 @@
                     </div>
                 <?php endforeach; ?>
             <?php else: ?>
+                <div class="col-12">
+                    <div class="alert alert-info text-center">
+                        <i class="fas fa-info-circle me-2"></i>No categories available at the moment. Please check back later.
+                    </div>
+                </div>
                 <!-- Fallback Categories if None in Database -->
                 <div class="col-md-6 col-lg-3 mb-4">
                     <a href="<?php echo url('tourGuide/category/city'); ?>" class="text-decoration-none">
@@ -95,7 +107,7 @@
 <section class="mb-5">
     <div class="container">
         <div class="row">
-            <div class="col-12">
+            <div class="col-12 scroll-animate scale-in">
                 <div class="bg-light p-4 rounded-3 text-center">
                     <h3 class="fw-bold">Not finding what you're looking for?</h3>
                     <p class="mb-3">Try our advanced search to find guides with specific expertise</p>

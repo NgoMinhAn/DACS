@@ -97,7 +97,7 @@ aiForm.addEventListener('submit', function(e) {
 <div class="container my-5">
     <!-- Page Header -->
     <div class="row mb-4">
-        <div class="col-12">
+        <div class="col-12 scroll-animate fade-up">
             <h1 class="display-4"><?php echo $title; ?></h1>
             <p class="lead">Find your perfect guide for an unforgettable experience</p>
         </div>
@@ -105,7 +105,7 @@ aiForm.addEventListener('submit', function(e) {
 
     <!-- Filters Section -->
     <div class="row mb-4">
-        <div class="col-md-3">
+        <div class="col-md-3 scroll-animate fade-left">
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">Filters</h5>
@@ -162,7 +162,7 @@ aiForm.addEventListener('submit', function(e) {
         <div class="col-md-9">
             <!-- Recommended Section (highlighted) -->
             <?php if (!empty($recommended_guides)): ?>
-                <div class="mb-4 recommend-highlight p-3 rounded-3">
+                <div class="mb-4 recommend-highlight p-3 rounded-3 scroll-animate fade-up">
                     <div class="d-flex align-items-center justify-content-between mb-3">
                         <div>
                             <h4 class="mb-0">Recommended for you</h4>
@@ -211,49 +211,53 @@ aiForm.addEventListener('submit', function(e) {
             <?php endif; ?>
             <div class="row row-cols-1 row-cols-md-3 g-4">
                 <?php if (!empty($guides)): ?>
-                    <?php foreach ($guides as $guide): ?>
-                        <div class="col">
-                            <div class="card h-100">
-                                <img src="<?php echo url('assets/images/profiles/' . ($guide->profile_image ?? 'default.jpg')); ?>" 
-                                     class="card-img-top" alt="<?php echo htmlspecialchars($guide->name); ?>"
-                                     style="height: 200px; object-fit: cover;">
-                                <div class="card-body">
-                                    <h5 class="card-title"><?php echo htmlspecialchars($guide->name); ?></h5>
-                                    <div class="mb-2">
-                                        <span class="text-warning">
-                                            <?php for($i = 1; $i <= 5; $i++): ?>
-                                                <?php if($i <= round($guide->avg_rating)): ?>
-                                                    <i class="fas fa-star"></i>
-                                                <?php else: ?>
-                                                    <i class="far fa-star"></i>
-                                                <?php endif; ?>
-                                            <?php endfor; ?>
-                                        </span>
-                                        <small class="text-muted">(<?php echo $guide->total_reviews; ?> <?php echo $guide->total_reviews == 1 ? 'review' : 'reviews'; ?>)</small>
+                    <?php foreach ($guides as $index => $guide): ?>
+                        <div class="col scroll-animate fade-up <?php echo 'delay-' . min(($index % 5) + 1, 5); ?>">
+                            <a href="<?php echo url('tourGuide/profile/' . $guide->guide_id); ?>" class="text-decoration-none">
+                                <div class="card h-100 shadow-sm guide-card">
+                                    <div class="card-img-wrapper position-relative overflow-hidden">
+                                        <img src="<?php echo url('assets/images/profiles/' . ($guide->profile_image ?? 'default.jpg')); ?>" 
+                                             class="card-img-top guide-card-img" alt="<?php echo htmlspecialchars($guide->name); ?>"
+                                             style="height: 200px; object-fit: cover;">
                                     </div>
-                                    <p class="card-text"><?php echo htmlspecialchars(substr($guide->bio ?? 'Expert local guide', 0, 100)) . '...'; ?></p>
-                                    <p class="card-text">
-                                        <small class="text-muted">
-                                            <i class="fas fa-map-marker-alt me-1"></i> <?php echo htmlspecialchars($guide->location ?? 'Local area'); ?>
-                                        </small>
-                                    </p>
-                                    <p class="card-text">
-                                        <small class="text-muted">
-                                            <i class="fas fa-tag me-1"></i> $<?php echo number_format($guide->hourly_rate ?? 0, 2); ?>/hour
-                                        </small>
-                                    </p>
-                                    <?php if (!empty($guide->specialties)): ?>
+                                    <div class="card-body">
+                                        <h5 class="card-title text-dark"><?php echo htmlspecialchars($guide->name); ?></h5>
+                                        <div class="mb-2">
+                                            <span class="text-warning">
+                                                <?php for($i = 1; $i <= 5; $i++): ?>
+                                                    <?php if($i <= round($guide->avg_rating)): ?>
+                                                        <i class="fas fa-star"></i>
+                                                    <?php else: ?>
+                                                        <i class="far fa-star"></i>
+                                                    <?php endif; ?>
+                                                <?php endfor; ?>
+                                            </span>
+                                            <small class="text-muted">(<?php echo $guide->total_reviews; ?> <?php echo $guide->total_reviews == 1 ? 'review' : 'reviews'; ?>)</small>
+                                        </div>
+                                        <p class="card-text text-dark"><?php echo htmlspecialchars(substr($guide->bio ?? 'Expert local guide', 0, 100)) . '...'; ?></p>
                                         <p class="card-text">
                                             <small class="text-muted">
-                                                <i class="fas fa-certificate me-1"></i> <?php echo htmlspecialchars($guide->specialties); ?>
+                                                <i class="fas fa-map-marker-alt me-1"></i> <?php echo htmlspecialchars($guide->location ?? 'Local area'); ?>
                                             </small>
                                         </p>
-                                    <?php endif; ?>
+                                        <p class="card-text">
+                                            <small class="text-muted">
+                                                <i class="fas fa-tag me-1"></i> $<?php echo number_format($guide->hourly_rate ?? 0, 2); ?>/hour
+                                            </small>
+                                        </p>
+                                        <?php if (!empty($guide->specialties)): ?>
+                                            <p class="card-text">
+                                                <small class="text-muted">
+                                                    <i class="fas fa-certificate me-1"></i> <?php echo htmlspecialchars($guide->specialties); ?>
+                                                </small>
+                                            </p>
+                                        <?php endif; ?>
+                                    </div>
+                                    <div class="card-footer bg-transparent border-top-0">
+                                        <span class="btn btn-outline-primary w-100">View Profile</span>
+                                    </div>
                                 </div>
-                                <div class="card-footer bg-transparent border-top-0">
-                                    <a href="<?php echo url('tourGuide/profile/' . $guide->guide_id); ?>" class="btn btn-outline-primary w-100">View Profile</a>
-                                </div>
-                            </div>
+                            </a>
                         </div>
                     <?php endforeach; ?>
                 <?php else: ?>

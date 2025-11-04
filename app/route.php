@@ -56,6 +56,12 @@ $routes = [
     ['pattern' => '#^admin/editGuide/(\d+)$#', 'controller' => 'AdminController', 'method' => 'editGuide', 'params' => [1]],
     ['pattern' => '#^admin/guideApplications$#', 'controller' => 'AdminController', 'method' => 'guideApplications', 'params' => []],
     ['pattern' => '#^admin/guideApplication/(\d+)$#', 'controller' => 'AdminController', 'method' => 'guideApplicationDetail', 'params' => [1]],
+    ['pattern' => '#^admin/guides$#', 'controller' => 'AdminController', 'method' => 'guides', 'params' => []],
+    ['pattern' => '#^admin/deleteGuide/(\d+)$#', 'controller' => 'AdminController', 'method' => 'deleteGuide', 'params' => [1]],
+    ['pattern' => '#^admin/categories$#', 'controller' => 'AdminController', 'method' => 'categories', 'params' => []],
+    ['pattern' => '#^admin/addCategory$#', 'controller' => 'AdminController', 'method' => 'addCategory', 'params' => []],
+    ['pattern' => '#^admin/editCategory/(\d+)$#', 'controller' => 'AdminController', 'method' => 'editCategory', 'params' => [1]],
+    ['pattern' => '#^admin/deleteCategory/(\d+)$#', 'controller' => 'AdminController', 'method' => 'deleteCategory', 'params' => [1]],
 
     // Account routes
     ['pattern' => '#^account/login$#', 'controller' => 'AccountController', 'method' => 'login', 'params' => []],
