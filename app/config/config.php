@@ -14,7 +14,7 @@ define('DB_NAME', 'TourGuide'); // Updated from tour_guide_db to TourGuide
 
 // URL Root
 // Use port 8081 for local Laragon setup
-define('URL_ROOT', 'http://localhost:80');
+define('URL_ROOT', 'http://localhost:8081');
 //Just change your laragon port to 8081
 
 // Site Name
