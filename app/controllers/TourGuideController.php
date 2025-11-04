@@ -415,23 +415,40 @@ class TourGuideController {
         $categoryGuides = [];
         $title = '';
         
+        // Get category info from database
+        $categoryModel = new CategoryModel();
+        $categoryInfo = null;
+        
         // Handle different category types
         switch ($type) {
             case 'city':
                 $categoryGuides = $this->guideModel->getGuidesBySpecialty('City');
                 $title = 'City Tour Guides';
+                $categoryInfo = $categoryModel->getCategoryByName('City');
+                if (!$categoryInfo) {
+                    $categoryInfo = $categoryModel->getCategoryByName('City Tours');
+                }
                 break;
             case 'adventure':
                 $categoryGuides = $this->guideModel->getGuidesBySpecialty('Adventure');
                 $title = 'Adventure Tour Guides';
+                $categoryInfo = $categoryModel->getCategoryByName('Adventure');
                 break;
             case 'cultural':
                 $categoryGuides = $this->guideModel->getGuidesBySpecialty('Cultural');
                 $title = 'Cultural Tour Guides';
+                $categoryInfo = $categoryModel->getCategoryByName('Cultural');
+                if (!$categoryInfo) {
+                    $categoryInfo = $categoryModel->getCategoryByName('Cultural Immersion');
+                }
                 break;
             case 'food':
                 $categoryGuides = $this->guideModel->getGuidesBySpecialty('Food');
                 $title = 'Food & Cuisine Guides';
+                $categoryInfo = $categoryModel->getCategoryByName('Food');
+                if (!$categoryInfo) {
+                    $categoryInfo = $categoryModel->getCategoryByName('Food & Cuisine');
+                }
                 break;
             case 'historical':
             case 'history':
@@ -439,19 +456,9 @@ class TourGuideController {
                 redirect('tourGuide/browse');
                 break;
             case 'categories':
-                // Get all categories
-                $guideCategories = $this->guideModel->getAllSpecialties();
-                // Additional filtering directly in controller to ensure removal
-                if (!empty($guideCategories)) {
-                    $filteredCategories = [];
-                    foreach ($guideCategories as $category) {
-                        // Skip any historical or off-beaten path categories
-                        if (!in_array(strtolower($category->name), ['historical', 'history', 'historical tours', 'off-beaten path', 'off the beaten path'])) {
-                            $filteredCategories[] = $category;
-                        }
-                    }
-                    $guideCategories = $filteredCategories;
-                }
+                // Get all categories using CategoryModel to get all without filters
+                $categoryModel = new CategoryModel();
+                $guideCategories = $categoryModel->getAllCategories();
                 $data = [
                     'title' => 'Tour Guide Categories',
                     'guide_categories' => $guideCategories
@@ -537,6 +544,15 @@ class TourGuideController {
                 $displayTitle = isset($specialtyMap[$type]) ? $specialtyMap[$type] : ucwords(str_replace('-', ' ', $type));
                 $title = $displayTitle . ' Tour Guides';
                 error_log("Found guides for category: " . $type . ", title: " . $title);
+                
+                // Try to get category info from database
+                if (!empty($displayTitle)) {
+                    $categoryInfo = $categoryModel->getCategoryByName($displayTitle);
+                    // Try alternative names if not found
+                    if (!$categoryInfo && isset($specialtyMap[$type])) {
+                        $categoryInfo = $categoryModel->getCategoryByName($specialtyMap[$type]);
+                    }
+                }
                 break;
         }
         
@@ -557,7 +573,8 @@ class TourGuideController {
         // Data to be passed to the view
         $data = [
             'title' => $title,
-            'category_guides' => $categoryGuides
+            'category_guides' => $categoryGuides,
+            'category_info' => $categoryInfo
         ];
         
         // Try to load type-specific view first, fall back to generic if not found
@@ -742,27 +759,72 @@ class TourGuideController {
     /**
      * Search for tour guides based on query
      */
-    public function search() {
-        // Get the search query from GET parameter
-        $query = isset($_GET['q']) ? sanitize($_GET['q']) : '';
+    /**
+     * Get display name for location code
+     */
+    private function getLocationDisplayName($locationCode)
+    {
+        $locationNames = [
+            'hanoi' => 'Hà Nội',
+            'hochiminh' => 'Hồ Chí Minh',
+            'danang' => 'Đà Nẵng',
+            'hue' => 'Huế',
+            'halong' => 'Hạ Long',
+            'sapa' => 'Sapa',
+            'nhatrang' => 'Nha Trang',
+            'dalat' => 'Đà Lạt'
+        ];
         
-        // If no query provided, redirect to browse page
-        if (empty($query)) {
+        return isset($locationNames[$locationCode]) ? $locationNames[$locationCode] : $locationCode;
+    }
+    
+    public function search() {
+        // Get the search query and location from GET parameters
+        $query = isset($_GET['q']) ? trim(sanitize($_GET['q'])) : '';
+        $location = isset($_GET['location']) ? trim(sanitize($_GET['location'])) : '';
+        
+        // If no query and no location provided, redirect to browse page
+        if (empty($query) && empty($location)) {
             redirect('tourGuide/browse');
         }
         
         // Call model to search for guides
-        $guides = $this->guideModel->searchGuides($query);
+        $guides = $this->guideModel->searchGuides($query, $location);
+        
+        // Update guides with accurate review counts
+        if (!empty($guides)) {
+            foreach ($guides as $guide) {
+                $guideId = $guide->guide_id ?? $guide->id ?? 0;
+                if ($guideId > 0) {
+                    $approvedReviewCount = $this->guideModel->getApprovedReviewCount($guideId);
+                    $guide->total_reviews = $approvedReviewCount;
+                }
+            }
+        }
+        
+        // Build search message with proper location display name
+        $searchMessage = '';
+        if (!empty($query)) {
+            $searchMessage = htmlspecialchars($query);
+        }
+        if (!empty($location)) {
+            $locationDisplay = $this->getLocationDisplayName($location);
+            $searchMessage .= ($searchMessage ? ' tại ' : '') . $locationDisplay;
+        }
         
         // If no guides found, show message
         if (empty($guides)) {
-            flash('search_message', 'No guides found matching "' . htmlspecialchars($query) . '". Try a different search term.', 'alert alert-info');
+            $message = !empty($searchMessage) 
+                ? 'Không tìm thấy hướng dẫn viên nào phù hợp với "' . $searchMessage . '". Vui lòng thử từ khóa khác.' 
+                : 'Không tìm thấy hướng dẫn viên nào. Vui lòng thử lại.';
+            flash('search_message', $message, 'alert alert-info');
         }
         
         // Data to be passed to the view
         $data = [
-            'title' => 'Search Results for "' . htmlspecialchars($query) . '"',
+            'title' => 'Kết quả tìm kiếm' . (!empty($searchMessage) ? ' cho "' . $searchMessage . '"' : ''),
             'query' => $query,
+            'location' => $location,
             'guides' => $guides,
             'result_count' => count($guides)
         ];

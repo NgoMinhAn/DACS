@@ -40,32 +40,36 @@
             <?php if(!empty($category_guides)): ?>
                 <?php foreach($category_guides as $guide): ?>
                     <div class="col-md-6 col-lg-4 mb-4">
-                        <div class="card h-100 shadow-sm">
-                            <img src="<?php echo url('assets/images/profiles/' . ($guide->profile_image ?? 'default.jpg')); ?>" 
-                                 class="card-img-top" alt="<?php echo htmlspecialchars($guide->name); ?>" 
-                                 style="height: 200px; object-fit: cover;">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <h5 class="card-title mb-0"><?php echo htmlspecialchars($guide->name); ?></h5>
-                                    <span class="badge bg-warning text-dark">
-                                        <i class="fas fa-star"></i> <?php echo number_format($guide->avg_rating, 1); ?>
-                                    </span>
+                        <a href="<?php echo url('tourGuide/profile/' . $guide->guide_id); ?>" class="text-decoration-none">
+                            <div class="card h-100 shadow-sm guide-card">
+                                <div class="card-img-wrapper position-relative overflow-hidden">
+                                    <img src="<?php echo url('assets/images/profiles/' . ($guide->profile_image ?? 'default.jpg')); ?>" 
+                                         class="card-img-top guide-card-img" alt="<?php echo htmlspecialchars($guide->name); ?>" 
+                                         style="height: 200px; object-fit: cover;">
                                 </div>
-                                <p class="card-text text-muted small mb-2">
-                                    <i class="fas fa-map-marker-alt"></i> <?php echo htmlspecialchars($guide->location); ?>
-                                </p>
-                                <p class="card-text"><?php echo htmlspecialchars(substr($guide->bio ?? 'Adventure specialist offering thrilling experiences', 0, 100)) . '...'; ?></p>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <span class="text-primary fw-bold">$<?php echo number_format($guide->hourly_rate, 2); ?>/hour</span>
-                                    <a href="<?php echo url('tourGuide/profile/' . $guide->guide_id); ?>" class="btn btn-sm btn-outline-primary">View Profile</a>
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <h5 class="card-title mb-0 text-dark"><?php echo htmlspecialchars($guide->name); ?></h5>
+                                        <span class="badge bg-warning text-dark">
+                                            <i class="fas fa-star"></i> <?php echo number_format($guide->avg_rating, 1); ?>
+                                        </span>
+                                    </div>
+                                    <p class="card-text text-muted small mb-2">
+                                        <i class="fas fa-map-marker-alt"></i> <?php echo htmlspecialchars($guide->location); ?>
+                                    </p>
+                                    <p class="card-text text-dark"><?php echo htmlspecialchars(substr($guide->bio ?? 'Adventure specialist offering thrilling experiences', 0, 100)) . '...'; ?></p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="text-primary fw-bold">$<?php echo number_format($guide->hourly_rate, 2); ?>/hour</span>
+                                        <span class="btn btn-sm btn-outline-primary">View Profile</span>
+                                    </div>
+                                </div>
+                                <div class="card-footer bg-white">
+                                    <div class="small text-muted">Adventure specialties: 
+                                        <span class="fw-medium"><?php echo $guide->specialties ?? 'Hiking, Mountain Climbing, Rafting'; ?></span>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="card-footer bg-white">
-                                <div class="small text-muted">Adventure specialties: 
-                                    <span class="fw-medium"><?php echo $guide->specialties ?? 'Hiking, Mountain Climbing, Rafting'; ?></span>
-                                </div>
-                            </div>
-                        </div>
+                        </a>
                     </div>
                 <?php endforeach; ?>
             <?php else: ?>

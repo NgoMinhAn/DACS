@@ -339,4 +339,228 @@ class AdminController
 
         redirect('admin/guides');
     }
+
+    /**
+     * List all categories
+     */
+    public function categories()
+    {
+        $categoryModel = new CategoryModel();
+        $categories = $categoryModel->getAllCategories();
+        
+        // Get guide count for each category
+        foreach ($categories as $category) {
+            $category->guide_count = $categoryModel->getGuideCountByCategory($category->id);
+        }
+        
+        $data = [
+            'title' => 'Manage Categories',
+            'categories' => $categories
+        ];
+        
+        $this->loadView('admin/categories', $data);
+    }
+
+    /**
+     * Add a new category
+     */
+    public function addCategory()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $categoryModel = new CategoryModel();
+            
+            // Validate input
+            $name = trim($_POST['name'] ?? '');
+            $description = trim($_POST['description'] ?? '');
+            
+            // Check if name is provided
+            if (empty($name)) {
+                flash('admin_message', 'Category name is required.', 'alert alert-danger');
+                redirect('admin/categories');
+            }
+            
+            // Check if category name already exists
+            $existing = $categoryModel->getCategoryByName($name);
+            if ($existing) {
+                flash('admin_message', 'Category with this name already exists.', 'alert alert-danger');
+                redirect('admin/categories');
+            }
+            
+            // Handle category image upload
+            $imageFileName = null;
+            if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+                $uploadDir = dirname(__DIR__, 2) . '/public/img/categories/';
+                if (!is_dir($uploadDir)) {
+                    mkdir($uploadDir, 0777, true);
+                }
+                
+                $fileExtension = strtolower(pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION));
+                $allowedTypes = ['jpg', 'jpeg', 'png', 'gif'];
+                
+                if (!in_array($fileExtension, $allowedTypes)) {
+                    flash('admin_message', 'Only JPG, JPEG, PNG & GIF files are allowed.', 'alert alert-danger');
+                    redirect('admin/addCategory');
+                } elseif ($_FILES['image']['size'] > 5000000) { // 5MB
+                    flash('admin_message', 'File size must not exceed 5MB.', 'alert alert-danger');
+                    redirect('admin/addCategory');
+                } else {
+                    $imageFileName = 'category_' . uniqid() . '.' . $fileExtension;
+                    $targetPath = $uploadDir . $imageFileName;
+                    
+                    if (!move_uploaded_file($_FILES['image']['tmp_name'], $targetPath)) {
+                        flash('admin_message', 'Error uploading image. Please try again.', 'alert alert-danger');
+                        redirect('admin/addCategory');
+                    }
+                }
+            }
+
+            // Create category
+            // Note: Banner automatically uses the same image as category image
+            $data = [
+                'name' => $name,
+                'description' => $description ?: null,
+                'icon' => null,
+                'image' => $imageFileName
+            ];
+            
+            if ($categoryModel->createCategory($data)) {
+                flash('admin_message', 'Category created successfully.', 'alert alert-success');
+            } else {
+                flash('admin_message', 'Failed to create category. Please try again.', 'alert alert-danger');
+            }
+            
+            redirect('admin/categories');
+        }
+        
+        $data = [
+            'title' => 'Add New Category'
+        ];
+        
+        $this->loadView('admin/addCategory', $data);
+    }
+
+    /**
+     * Edit a category
+     */
+    public function editCategory($id)
+    {
+        $categoryModel = new CategoryModel();
+        $category = $categoryModel->getCategoryById($id);
+        
+        if (!$category) {
+            flash('admin_message', 'Category not found.', 'alert alert-danger');
+            redirect('admin/categories');
+        }
+        
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // Validate input
+            $name = trim($_POST['name'] ?? '');
+            $description = trim($_POST['description'] ?? '');
+            
+            // Check if name is provided
+            if (empty($name)) {
+                flash('admin_message', 'Category name is required.', 'alert alert-danger');
+                redirect('admin/editCategory/' . $id);
+            }
+            
+            // Check if category name already exists (excluding current category)
+            $existing = $categoryModel->getCategoryByName($name);
+            if ($existing && $existing->id != $id) {
+                flash('admin_message', 'Category with this name already exists.', 'alert alert-danger');
+                redirect('admin/editCategory/' . $id);
+            }
+            
+            // Handle category image upload
+            $imageFileName = null;
+            if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+                $uploadDir = dirname(__DIR__, 2) . '/public/img/categories/';
+                if (!is_dir($uploadDir)) {
+                    mkdir($uploadDir, 0777, true);
+                }
+                
+                $fileExtension = strtolower(pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION));
+                $allowedTypes = ['jpg', 'jpeg', 'png', 'gif'];
+                
+                if (!in_array($fileExtension, $allowedTypes)) {
+                    flash('admin_message', 'Only JPG, JPEG, PNG & GIF files are allowed.', 'alert alert-danger');
+                    redirect('admin/editCategory/' . $id);
+                } elseif ($_FILES['image']['size'] > 5000000) { // 5MB
+                    flash('admin_message', 'File size must not exceed 5MB.', 'alert alert-danger');
+                    redirect('admin/editCategory/' . $id);
+                } else {
+                    $imageFileName = 'category_' . uniqid() . '.' . $fileExtension;
+                    $targetPath = $uploadDir . $imageFileName;
+                    
+                    if (move_uploaded_file($_FILES['image']['tmp_name'], $targetPath)) {
+                        // Delete old image if exists
+                        if ($category->image && file_exists($uploadDir . $category->image)) {
+                            unlink($uploadDir . $category->image);
+                        }
+                    } else {
+                        flash('admin_message', 'Error uploading image. Please try again.', 'alert alert-danger');
+                        redirect('admin/editCategory/' . $id);
+                    }
+                }
+            }
+
+            // Update category
+            $data = [
+                'name' => $name,
+                'description' => $description ?: null,
+                'icon' => null
+            ];
+            
+            // Only add image to update if a new image was uploaded
+            // Note: Banner automatically uses the same image as category image
+            if ($imageFileName) {
+                $data['image'] = $imageFileName;
+            }
+            
+            if ($categoryModel->updateCategory($id, $data)) {
+                flash('admin_message', 'Category updated successfully.', 'alert alert-success');
+                redirect('admin/categories');
+            } else {
+                flash('admin_message', 'Failed to update category. Please try again.', 'alert alert-danger');
+                redirect('admin/editCategory/' . $id);
+            }
+        }
+        
+        // Get guide count for this category
+        $category->guide_count = $categoryModel->getGuideCountByCategory($category->id);
+        
+        $data = [
+            'title' => 'Edit Category',
+            'category' => $category
+        ];
+        
+        $this->loadView('admin/editCategory', $data);
+    }
+
+    /**
+     * Delete a category
+     */
+    public function deleteCategory($id)
+    {
+        $categoryModel = new CategoryModel();
+        $category = $categoryModel->getCategoryById($id);
+        
+        if (!$category) {
+            flash('admin_message', 'Category not found.', 'alert alert-danger');
+            redirect('admin/categories');
+        }
+        
+        // Try to delete
+        if ($categoryModel->deleteCategory($id)) {
+            flash('admin_message', 'Category deleted successfully.', 'alert alert-success');
+        } else {
+            $guideCount = $categoryModel->getGuideCountByCategory($id);
+            if ($guideCount > 0) {
+                flash('admin_message', 'Cannot delete category. It is being used by ' . $guideCount . ' guide(s).', 'alert alert-danger');
+            } else {
+                flash('admin_message', 'Failed to delete category. Please try again.', 'alert alert-danger');
+            }
+        }
+        
+        redirect('admin/categories');
+    }
 }

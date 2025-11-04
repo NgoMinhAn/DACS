@@ -2,11 +2,11 @@
 <div class="bg-light py-5 mb-5">
     <div class="container">
         <div class="row align-items-center">
-            <div class="col-lg-6">
+            <div class="col-lg-6 scroll-animate fade-left">
                 <h1 class="display-4 fw-bold">Contact Us</h1>
                 <p class="lead text-muted">Have questions? We're here to help you find the perfect tour guide.</p>
             </div>
-            <div class="col-lg-6">
+            <div class="col-lg-6 scroll-animate fade-right">
                 <img src="<?php echo url('public/images/contact-hero.jpg'); ?>" alt="Customer Support Team" class="img-fluid rounded-3 shadow">
             </div>
         </div>
@@ -17,7 +17,7 @@
 <div class="container mb-5">
     <div class="row g-5">
         <!-- Contact Information Column -->
-        <div class="col-lg-4">
+        <div class="col-lg-4 scroll-animate fade-left">
             <div class="card border-0 shadow-sm h-100">
                 <div class="card-body">
                     <h2 class="h4 mb-4">Get In Touch</h2>
@@ -80,7 +80,7 @@
         </div>
         
         <!-- Contact Form Column -->
-        <div class="col-lg-8">
+        <div class="col-lg-8 scroll-animate fade-right">
             <div class="card border-0 shadow-sm">
                 <div class="card-body p-4 p-md-5">
                     <h2 class="h4 mb-4">Send Us a Message</h2>
@@ -132,10 +132,10 @@
 <!-- FAQ Section -->
 <div class="bg-light py-5 mb-5">
     <div class="container">
-        <h2 class="text-center mb-5">Frequently Asked Questions</h2>
+        <h2 class="text-center mb-5 scroll-animate fade-up">Frequently Asked Questions</h2>
         
         <div class="row justify-content-center">
-            <div class="col-lg-10">
+            <div class="col-lg-10 scroll-animate fade-up delay-1">
                 <div class="accordion" id="faqAccordion">
                     <div class="accordion-item">
                         <h3 class="accordion-header" id="faqHeading1">
@@ -209,7 +209,7 @@
 
 <!-- Map Section -->
 <div class="container mb-5">
-    <div class="card border-0 shadow-sm">
+    <div class="card border-0 shadow-sm scroll-animate fade-up">
         <div class="card-body p-0">
             <div class="ratio ratio-21x9">
                 <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3723.657600383133!2d105.78236757374515!3d21.046398484339835!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3135ab323f3a20f1%3A0x4898724834e6958!2sHanoi%20University%20of%20Science%20and%20Technology!5e0!3m2!1sen!2s!4v1715167113971!5m2!1sen!2s" 
@@ -223,11 +223,11 @@
 <div class="bg-primary text-white py-5">
     <div class="container">
         <div class="row align-items-center justify-content-between">
-            <div class="col-lg-7 mb-4 mb-lg-0">
+            <div class="col-lg-7 mb-4 mb-lg-0 scroll-animate fade-left">
                 <h2 class="h3 mb-3">Ready to start your adventure?</h2>
                 <p class="lead mb-0">Find a local guide to show you the authentic experience of your destination.</p>
             </div>
-            <div class="col-lg-4 text-lg-end">
+            <div class="col-lg-4 text-lg-end scroll-animate fade-right">
                 <a href="<?php echo url('tourGuide/browse'); ?>" class="btn btn-light btn-lg">Browse Tour Guides</a>
             </div>
         </div>

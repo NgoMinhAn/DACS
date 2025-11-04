@@ -483,6 +483,8 @@ CREATE INDEX idx_reviews_rating ON guide_reviews(rating);
 CREATE INDEX idx_bookings_date ON bookings(booking_date);
 CREATE INDEX idx_bookings_status ON bookings(status);
 
+ADD COLUMN IF NOT EXISTS image VARCHAR(255) NULL AFTER icon;
+
 -- Grant privileges (adjust as needed for your production environment)
 GRANT ALL PRIVILEGES ON TourGuide.* TO 'root'@'localhost';
 FLUSH PRIVILEGES;

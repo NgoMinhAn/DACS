@@ -28,35 +28,39 @@
         <?php if(!empty($guides)): ?>
             <?php foreach($guides as $guide): ?>
                 <div class="col-md-6 col-lg-4 mb-4">
-                    <div class="card h-100 shadow-sm">
-                        <?php if($guide->featured): ?>
-                            <div class="position-absolute top-0 start-0 p-2">
-                                <span class="badge bg-primary">Featured</span>
+                    <a href="<?php echo url('tourGuide/profile/' . $guide->guide_id); ?>" class="text-decoration-none">
+                        <div class="card h-100 shadow-sm guide-card">
+                            <?php if($guide->featured): ?>
+                                <div class="position-absolute top-0 start-0 p-2" style="z-index: 2;">
+                                    <span class="badge bg-primary">Featured</span>
+                                </div>
+                            <?php endif; ?>
+                            <div class="card-img-wrapper position-relative overflow-hidden">
+                                <img src="<?php echo url('assets/images/profiles/' . ($guide->profile_image ?? 'default.jpg')); ?>" 
+                                     class="card-img-top guide-card-img" alt="<?php echo htmlspecialchars($guide->name); ?>" 
+                                     style="height: 200px; object-fit: cover;">
                             </div>
-                        <?php endif; ?>
-                        <img src="<?php echo url('assets/images/profiles/' . ($guide->profile_image ?? 'default.jpg')); ?>" 
-                             class="card-img-top" alt="<?php echo htmlspecialchars($guide->name); ?>" 
-                             style="height: 200px; object-fit: cover;">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <h5 class="card-title mb-0"><?php echo htmlspecialchars($guide->name); ?></h5>
-                                <span class="badge bg-warning text-dark">
-                                    <i class="fas fa-star"></i> <?php echo number_format($guide->avg_rating, 1); ?>
-                                </span>
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <h5 class="card-title mb-0 text-dark"><?php echo htmlspecialchars($guide->name); ?></h5>
+                                    <span class="badge bg-warning text-dark">
+                                        <i class="fas fa-star"></i> <?php echo number_format($guide->avg_rating, 1); ?>
+                                    </span>
+                                </div>
+                                <p class="card-text text-muted small mb-2">
+                                    <i class="fas fa-map-marker-alt"></i> <?php echo htmlspecialchars($guide->location); ?>
+                                </p>
+                                <p class="card-text text-dark"><?php echo htmlspecialchars(substr($guide->bio ?? 'Expert local guide', 0, 60)) . '...'; ?></p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="text-primary fw-bold">$<?php echo number_format($guide->hourly_rate, 2); ?>/hour</span>
+                                    <span class="btn btn-sm btn-outline-primary">View Profile</span>
+                                </div>
                             </div>
-                            <p class="card-text text-muted small mb-2">
-                                <i class="fas fa-map-marker-alt"></i> <?php echo htmlspecialchars($guide->location); ?>
-                            </p>
-                            <p class="card-text"><?php echo htmlspecialchars(substr($guide->bio ?? 'Expert local guide', 0, 60)) . '...'; ?></p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span class="text-primary fw-bold">$<?php echo number_format($guide->hourly_rate, 2); ?>/hour</span>
-                                <a href="<?php echo url('tourGuide/profile/' . $guide->guide_id); ?>" class="btn btn-sm btn-outline-primary">View Profile</a>
+                            <div class="card-footer bg-white">
+                                <small class="text-muted"><?php echo $guide->specialties ?? 'Various specialties'; ?></small>
                             </div>
                         </div>
-                        <div class="card-footer bg-white">
-                            <small class="text-muted"><?php echo $guide->specialties ?? 'Various specialties'; ?></small>
-                        </div>
-                    </div>
+                    </a>
                 </div>
             <?php endforeach; ?>
         <?php else: ?>

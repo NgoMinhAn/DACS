@@ -45,4 +45,16 @@
             </a>
         </div>
     </div>
+
+    <!-- Category Management -->
+    <div class="card mb-4 shadow rounded-4">
+        <div class="card-header bg-warning text-dark fw-bold">
+            <i class="fas fa-tags me-2"></i>Category Management
+        </div>
+        <div class="card-body">
+            <a href="<?php echo url('admin/categories'); ?>" class="btn btn-outline-warning btn-lg">
+                <i class="fas fa-tags"></i> Manage Categories
+            </a>
+        </div>
+    </div>
 </div>

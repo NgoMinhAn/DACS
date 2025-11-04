@@ -403,22 +403,78 @@ class GuideModel
      * @param string $query The search query
      * @return array The matching guides
      */
-    public function searchGuides($query)
+    /**
+     * Map location code to actual location names in database
+     * 
+     * @param string $locationCode The location code from form
+     * @return array Array of possible location names
+     */
+    private function mapLocationCode($locationCode)
     {
-        // Use positional placeholders for each field
+        $locationMap = [
+            'hanoi' => ['Hà Nội', 'Ha Noi', 'Hanoi', 'Hà Nội'],
+            'hochiminh' => ['Hồ Chí Minh', 'Ho Chi Minh', 'Ho Chi Minh City', 'Hồ Chí Minh', 'Sài Gòn', 'Sai Gon', 'Saigon'],
+            'danang' => ['Đà Nẵng', 'Da Nang', 'Danang'],
+            'hue' => ['Huế', 'Hue'],
+            'halong' => ['Hạ Long', 'Ha Long', 'Halong', 'Hạ Long Bay'],
+            'sapa' => ['Sapa', 'Sa Pa', 'Sapa'],
+            'nhatrang' => ['Nha Trang', 'Nha Trang'],
+            'dalat' => ['Đà Lạt', 'Da Lat', 'Dalat']
+        ];
+        
+        return isset($locationMap[$locationCode]) ? $locationMap[$locationCode] : [$locationCode];
+    }
+    
+    public function searchGuides($query, $location = null)
+    {
+        // Build SQL query with named parameters
+        $conditions = [];
+        
+        // If query is provided, search in name, bio, location, and specialties
+        if (!empty($query)) {
+            $conditions[] = "(name LIKE :query1 OR bio LIKE :query2 OR location LIKE :query3 OR specialties LIKE :query4)";
+        }
+        
+        // Add location filter if provided
+        if (!empty($location)) {
+            // Map location code to actual location names
+            $locationNames = $this->mapLocationCode($location);
+            
+            // Build OR conditions for all possible location names
+            $locationConditions = [];
+            foreach ($locationNames as $index => $locName) {
+                $locationConditions[] = "location LIKE :location" . $index;
+            }
+            $conditions[] = "(" . implode(' OR ', $locationConditions) . ")";
+        }
+        
+        // If no conditions, return empty result
+        if (empty($conditions)) {
+            return [];
+        }
+        
         $sql = "SELECT * FROM guide_listings 
-                WHERE name LIKE ? 
-                OR bio LIKE ? 
-                OR location LIKE ? 
-                OR specialties LIKE ?
+                WHERE " . implode(' AND ', $conditions) . "
                 ORDER BY avg_rating DESC";
 
         $this->db->query($sql);
-        $param = '%' . $query . '%';
-        $this->db->bind(1, $param);
-        $this->db->bind(2, $param);
-        $this->db->bind(3, $param);
-        $this->db->bind(4, $param);
+        
+        // Bind query parameters if provided
+        if (!empty($query)) {
+            $param = '%' . $query . '%';
+            $this->db->bind(':query1', $param);
+            $this->db->bind(':query2', $param);
+            $this->db->bind(':query3', $param);
+            $this->db->bind(':query4', $param);
+        }
+        
+        // Bind location parameters if provided
+        if (!empty($location)) {
+            $locationNames = $this->mapLocationCode($location);
+            foreach ($locationNames as $index => $locName) {
+                $this->db->bind(':location' . $index, '%' . $locName . '%');
+            }
+        }
 
         return $this->db->resultSet();
     }

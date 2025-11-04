@@ -2,12 +2,12 @@
 <div class="bg-light py-5 mb-5">
     <div class="container">
         <div class="row align-items-center">
-            <div class="col-lg-6">
+            <div class="col-lg-6 scroll-animate fade-left">
                 <h1 class="display-4 fw-bold">About Our Tour Guide Platform</h1>
                 <p class="lead text-muted">Connecting travelers with authentic local experiences since 2010.</p>
             </div>
-            <div class="col-lg-6">
-                <img src="<?php echo url('public/images/about-hero.jpg'); ?>" alt="Tour Guides Team" class="img-fluid rounded-3 shadow">
+            <div class="col-lg-6 scroll-animate fade-right">
+                <img src="<?php echo url('public/img/about-hero.jpg'); ?>" alt="Tour Guides Team" class="img-fluid rounded-3 shadow">
             </div>
         </div>
     </div>
@@ -16,7 +16,7 @@
 <!-- Our Story Section -->
 <div class="container mb-5">
     <div class="row">
-        <div class="col-lg-8 mx-auto text-center">
+        <div class="col-lg-8 mx-auto text-center scroll-animate fade-up">
             <h2 class="mb-4">Our Story</h2>
             <p class="lead">Founded by students who want to show appreciation to local guides, <?php echo SITE_NAME; ?> began with a simple mission: to create meaningful connections between visitors and local guides worldwide.</p>
             <p>What started as a small network of guides in Vietnam has grown into a global community of certified tour guides offering unique, personalized experiences all over the world. Our platform makes it easy for travelers to find guides who match their interests, preferred language, and travel style.</p>
@@ -28,7 +28,7 @@
 <div class="bg-primary text-white py-5 mb-5">
     <div class="container">
         <div class="row">
-            <div class="col-lg-8 mx-auto text-center">
+            <div class="col-lg-8 mx-auto text-center scroll-animate scale-in">
                 <h2 class="mb-4">Our Mission</h2>
                 <p class="lead">We believe that the best way to experience a destination is through the eyes of a local.</p>
                 <p>Our mission is to empower local guides to share their knowledge and passion while helping travelers discover authentic experiences that go beyond typical tourist attractions.</p>
@@ -39,9 +39,9 @@
 
 <!-- What Makes Us Different Section -->
 <div class="container mb-5">
-    <h2 class="text-center mb-5">What Makes Us Different</h2>
+    <h2 class="text-center mb-5 scroll-animate fade-up">What Makes Us Different</h2>
     <div class="row g-4">
-        <div class="col-md-4">
+        <div class="col-md-4 scroll-animate fade-up delay-1">
             <div class="card h-100 border-0 shadow-sm">
                 <div class="card-body text-center">
                     <div class="feature-icon bg-primary bg-gradient text-white rounded-circle mb-3">
@@ -52,7 +52,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-4 scroll-animate fade-up delay-2">
             <div class="card h-100 border-0 shadow-sm">
                 <div class="card-body text-center">
                     <div class="feature-icon bg-primary bg-gradient text-white rounded-circle mb-3">
@@ -63,7 +63,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-4 scroll-animate fade-up delay-3">
             <div class="card h-100 border-0 shadow-sm">
                 <div class="card-body text-center">
                     <div class="feature-icon bg-primary bg-gradient text-white rounded-circle mb-3">
@@ -80,9 +80,9 @@
 <!-- Team Section -->
 <div class="bg-light py-5 mb-5">
     <div class="container">
-        <h2 class="text-center mb-5">Meet Our Leadership Team</h2>
+        <h2 class="text-center mb-5 scroll-animate fade-up">Meet Our Leadership Team</h2>
         <div class="row">
-            <div class="col-lg-3 col-md-6 mb-4">
+            <div class="col-lg-3 col-md-6 mb-4 scroll-animate fade-up delay-1">
                 <div class="card border-0 shadow-sm">
                     <img src="<?php echo url('public/images/team/ceo.jpg'); ?>" class="card-img-top" alt="CEO">
                     <div class="card-body text-center">
@@ -92,7 +92,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-3 col-md-6 mb-4">
+            <div class="col-lg-3 col-md-6 mb-4 scroll-animate fade-up delay-2">
                 <div class="card border-0 shadow-sm">
                     <img src="<?php echo url('public/images/team/cto.jpg'); ?>" class="card-img-top" alt="CTO">
                     <div class="card-body text-center">
@@ -102,7 +102,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-3 col-md-6 mb-4">
+            <div class="col-lg-3 col-md-6 mb-4 scroll-animate fade-up delay-3">
                 <div class="card border-0 shadow-sm">
                     <img src="<?php echo url('public/images/team/coo.jpg'); ?>" class="card-img-top" alt="COO">
                     <div class="card-body text-center">
@@ -118,9 +118,9 @@
 
 <!-- Testimonials Section -->
 <div class="container mb-5">
-    <h2 class="text-center mb-5">What People Say About Us</h2>
+    <h2 class="text-center mb-5 scroll-animate fade-up">What People Say About Us</h2>
     <div class="row">
-        <div class="col-lg-4 mb-4">
+        <div class="col-lg-4 mb-4 scroll-animate fade-up delay-1">
             <div class="card h-100 border-0 shadow-sm">
                 <div class="card-body">
                     <div class="d-flex mb-3">
@@ -137,7 +137,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-4 mb-4">
+        <div class="col-lg-4 mb-4 scroll-animate fade-up delay-2">
             <div class="card h-100 border-0 shadow-sm">
                 <div class="card-body">
                     <div class="d-flex mb-3">
@@ -154,7 +154,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-4 mb-4">
+        <div class="col-lg-4 mb-4 scroll-animate fade-up delay-3">
             <div class="card h-100 border-0 shadow-sm">
                 <div class="card-body">
                     <div class="d-flex mb-3">
@@ -178,7 +178,7 @@
 <div class="bg-primary text-white py-5">
     <div class="container">
         <div class="row align-items-center">
-            <div class="col-lg-8 mx-auto text-center">
+            <div class="col-lg-8 mx-auto text-center scroll-animate scale-in">
                 <h2 class="mb-4">Join Our Community</h2>
                 <p class="lead mb-4">Whether you're looking to discover the world with a local guide or share your passion for your hometown with travelers, we invite you to join our growing community.</p>
                 <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
