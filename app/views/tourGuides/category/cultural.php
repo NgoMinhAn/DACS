@@ -1,21 +1,23 @@
-<!-- Cultural Category Header -->
-<div class="bg-primary text-white py-4 mb-5">
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-lg-6">
-                <h1 class="fw-bold"><?php echo htmlspecialchars($category_info->name ?? 'Cultural Guides'); ?></h1>
-                <p class="lead"><?php echo htmlspecialchars($category_info->description ?? 'Immerse yourself in local traditions, history, and heritage with our cultural specialists'); ?></p>
-            </div>
-            <div class="col-lg-6 d-none d-lg-block">
-                <?php if (!empty($category_info->image)): ?>
-                    <img src="<?php echo url('public/img/categories/' . htmlspecialchars($category_info->image)); ?>" 
-                         alt="<?php echo htmlspecialchars($category_info->name ?? 'Cultural Tours'); ?>" 
-                         class="img-fluid rounded-3 shadow-lg" 
-                         style="height: 250px; object-fit: cover; width: 100%;"
-                         onerror="this.src='<?php echo url('public/img/category-cultural.jpg'); ?>'">
-                <?php else: ?>
-                    <img src="<?php echo url('public/img/category-cultural.jpg'); ?>" alt="Cultural Tours" class="img-fluid rounded-3 shadow-lg" style="height: 250px; object-fit: cover; width: 100%;">
-                <?php endif; ?>
+<!-- Cultural Category Hero Header -->
+<div class="category-hero-header position-relative overflow-hidden mb-5">
+    <?php if (!empty($category_info->image)): ?>
+        <div class="category-hero-bg" style="background-image: url('<?php echo url('public/img/categories/' . htmlspecialchars($category_info->image)); ?>');"></div>
+    <?php else: ?>
+        <div class="category-hero-bg" style="background-image: url('<?php echo url('public/img/category-cultural.jpg'); ?>');"></div>
+    <?php endif; ?>
+    <div class="category-hero-overlay"></div>
+    <div class="container position-relative">
+        <div class="row align-items-center min-vh-30">
+            <div class="col-lg-8 mx-auto text-center scroll-animate fade-up">
+                <div class="category-hero-content">
+                    <h1 class="display-3 fw-bold text-white mb-4"><?php echo htmlspecialchars($category_info->name ?? 'Cultural Guides'); ?></h1>
+                    <p class="lead text-white mb-4 fs-5"><?php echo htmlspecialchars($category_info->description ?? 'Immerse yourself in local traditions, history, and heritage with our cultural specialists'); ?></p>
+                    <div class="category-hero-badge">
+                        <span class="badge bg-white bg-opacity-25 text-white px-4 py-2 fs-6">
+                            Rich Heritage
+                        </span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -45,7 +47,13 @@
         
         <div class="row">
             <!-- Cultural Guides from Database -->
-            <?php if(!empty($category_guides)): ?>
+            <?php 
+            $hasGuides = isset($category_guides) && (
+                (is_array($category_guides) && count($category_guides) > 0) ||
+                (is_object($category_guides) && count((array)$category_guides) > 0)
+            );
+            if($hasGuides): 
+            ?>
                 <?php foreach($category_guides as $guide): ?>
                     <div class="col-md-6 col-lg-4 mb-4">
                         <a href="<?php echo url('tourGuide/profile/' . $guide->guide_id); ?>" class="text-decoration-none">
@@ -81,9 +89,24 @@
                     </div>
                 <?php endforeach; ?>
             <?php else: ?>
+                <!-- Empty State: No Guides Available -->
                 <div class="col-12">
-                    <div class="alert alert-info text-center">
-                        <i class="fas fa-info-circle me-2"></i> No cultural guides available at the moment. Please check back soon or try another category!
+                    <div class="empty-state-container scroll-animate fade-up">
+                        <div class="text-center py-5">
+                            <div class="empty-state-icon mb-4">
+                                <i class="fas fa-landmark" style="font-size: 5rem; color: #dee2e6;"></i>
+                            </div>
+                            <h3 class="fw-bold mb-3">Không có hướng dẫn viên nào</h3>
+                            <p class="text-muted mb-4">Hiện tại danh mục này chưa có hướng dẫn viên nào. Vui lòng thử lại sau hoặc khám phá các danh mục khác.</p>
+                            <div class="d-flex gap-3 justify-content-center flex-wrap">
+                                <a href="<?php echo url('tourGuide/category/categories'); ?>" class="btn btn-primary">
+                                    <i class="fas fa-th-large me-2"></i>Xem tất cả danh mục
+                                </a>
+                                <a href="<?php echo url('tourGuide/browse'); ?>" class="btn btn-outline-primary">
+                                    <i class="fas fa-search me-2"></i>Tìm kiếm hướng dẫn viên
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             <?php endif; ?>
@@ -163,14 +186,16 @@
     <div class="container">
         <div class="row">
             <div class="col-12">
-                <div class="bg-primary text-white p-5 rounded-3">
+                <div class="p-5 rounded-4 shadow-lg scroll-animate fade-up" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
                     <div class="row align-items-center">
                         <div class="col-lg-8 mb-4 mb-lg-0">
-                            <h3 class="fw-bold">Want to Discover Local Heritage?</h3>
-                            <p class="lead mb-0">Connect with our cultural experts to design your personalized heritage journey</p>
+                            <h3 class="fw-bold text-white mb-3">Want to Discover Local Heritage?</h3>
+                            <p class="lead mb-0 text-white">Connect with our cultural experts to design your personalized heritage journey</p>
                         </div>
                         <div class="col-lg-4 text-lg-end">
-                            <a href="<?php echo url('contact'); ?>" class="btn btn-light btn-lg">Contact Us</a>
+                            <a href="<?php echo url('contact'); ?>" class="btn btn-light btn-lg shadow px-4">
+                                <i class="fas fa-envelope me-2"></i>Contact Us
+                            </a>
                         </div>
                     </div>
                 </div>

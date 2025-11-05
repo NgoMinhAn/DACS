@@ -5,9 +5,9 @@
     </button>
 
     <div id="ai-chat-panel" aria-hidden="true">
-        <div class="ai-chat-header bg-primary text-white d-flex justify-content-between align-items-center px-3 py-2">
-            <div><i class="fas fa-robot me-2"></i>Tour AI</div>
-            <button id="ai-chat-close" class="btn btn-sm btn-light">Close</button>
+        <div class="ai-chat-header text-white d-flex justify-content-between align-items-center px-3 py-2" style="background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);">
+            <div class="fw-bold"><i class="fas fa-robot me-2"></i>Tour AI</div>
+            <button id="ai-chat-close" class="btn btn-sm btn-light rounded-pill">Close</button>
         </div>
         <div id="ai-chat-messages" class="p-3" style="height: 260px; overflow-y:auto; background:#fbfbff;">
         </div>
@@ -21,7 +21,7 @@
 <style>
 /* Floating chat button/panel (bottom-left) */
 #ai-chat-root { position: fixed; left: 20px; bottom: 20px; z-index: 1200; }
-#ai-chat-button { width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg,#0d6efd,#6610f2); color: #fff; border: none; box-shadow: 0 8px 24px rgba(13,110,253,0.25); display:flex; align-items:center; justify-content:center; font-size:20px; }
+#ai-chat-button { width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%); color: #fff; border: none; box-shadow: 0 8px 24px rgba(74,85,104,0.3); display:flex; align-items:center; justify-content:center; font-size:20px; }
 #ai-chat-button:focus { outline: none; box-shadow: 0 8px 30px rgba(13,110,253,0.35); }
 #ai-chat-panel { width: 340px; max-width: calc(100vw - 40px); background: #fff; border-radius: 10px; box-shadow: 0 20px 60px rgba(2,6,23,0.2); overflow: hidden; margin-bottom: 12px; display: none; }
 .ai-chat-header { font-weight:600; }
@@ -96,23 +96,30 @@ aiForm.addEventListener('submit', function(e) {
 
 <div class="container my-5">
     <!-- Page Header -->
-    <div class="row mb-4">
+    <div class="row mb-5">
         <div class="col-12 scroll-animate fade-up">
-            <h1 class="display-4"><?php echo $title; ?></h1>
-            <p class="lead">Find your perfect guide for an unforgettable experience</p>
+            <h1 class="display-5 fw-bold mb-3">
+                <i class="fas fa-search me-2" style="background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;"></i>
+                <?php echo $title; ?>
+            </h1>
+            <p class="lead text-muted">Find your perfect guide for an unforgettable experience</p>
         </div>
     </div>
 
     <!-- Filters Section -->
-    <div class="row mb-4">
+    <div class="row mb-5">
         <div class="col-md-3 scroll-animate fade-left">
-            <div class="card">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header border-0" style="background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);">
+                    <h5 class="mb-0 text-white fw-bold py-2">
+                        <i class="fas fa-filter me-2"></i>Filters
+                    </h5>
+                </div>
                 <div class="card-body">
-                    <h5 class="card-title">Filters</h5>
                     <form method="GET" action="<?php echo url('tourGuide/browse'); ?>">
                         <!-- Language Filter -->
                         <div class="mb-3">
-                            <label class="form-label">Languages</label>
+                            <label class="form-label small">Languages</label>
                             <select class="form-select" name="language">
                                 <option value="">All Languages</option>
                                 <?php foreach ($languages as $language): ?>
@@ -125,7 +132,7 @@ aiForm.addEventListener('submit', function(e) {
 
                         <!-- Specialty Filter -->
                         <div class="mb-3">
-                            <label class="form-label">Specialty</label>
+                            <label class="form-label small">Specialty</label>
                             <select class="form-select" name="specialty">
                                 <option value="">All Specialties</option>
                                 <?php foreach ($specialties as $specialty): ?>
@@ -138,7 +145,7 @@ aiForm.addEventListener('submit', function(e) {
 
                         <!-- Price Range Filter -->
                         <div class="mb-3">
-                            <label class="form-label">Price Range (per hour)</label>
+                            <label class="form-label small">Price Range (per hour)</label>
                             <select class="form-select" name="price_range">
                                 <option value="">Any Price</option>
                                 <option value="0-25" <?php echo (isset($current_filters['price_range']) && $current_filters['price_range'] === '0-25') ? 'selected' : ''; ?>>Under $25</option>
@@ -148,10 +155,24 @@ aiForm.addEventListener('submit', function(e) {
                             </select>
                         </div>
 
-                        <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
+                        <!-- Rating Filter -->
+                        <div class="mb-3">
+                            <label class="form-label small">Minimum Rating</label>
+                            <select class="form-select" name="rating">
+                                <option value="">Any Rating</option>
+                                <option value="5" <?php echo (isset($current_filters['rating']) && $current_filters['rating'] === '5') ? 'selected' : ''; ?>>5 Stars</option>
+                                <option value="4" <?php echo (isset($current_filters['rating']) && $current_filters['rating'] === '4') ? 'selected' : ''; ?>>4+ Stars</option>
+                                <option value="3" <?php echo (isset($current_filters['rating']) && $current_filters['rating'] === '3') ? 'selected' : ''; ?>>3+ Stars</option>
+                                <option value="2" <?php echo (isset($current_filters['rating']) && $current_filters['rating'] === '2') ? 'selected' : ''; ?>>2+ Stars</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn w-100 text-white mb-2" style="background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);">
+                            Apply Filters
+                        </button>
                         
                         <?php if (!empty($current_filters)): ?>
-                            <a href="<?php echo url('tourGuide/browse'); ?>" class="btn btn-outline-secondary w-100 mt-2">Clear Filters</a>
+                            <a href="<?php echo url('tourGuide/browse'); ?>" class="btn btn-outline-secondary w-100">Clear</a>
                         <?php endif; ?>
                     </form>
                 </div>
@@ -162,42 +183,45 @@ aiForm.addEventListener('submit', function(e) {
         <div class="col-md-9">
             <!-- Recommended Section (highlighted) -->
             <?php if (!empty($recommended_guides)): ?>
-                <div class="mb-4 recommend-highlight p-3 rounded-3 scroll-animate fade-up">
-                    <div class="d-flex align-items-center justify-content-between mb-3">
+                <div class="mb-5 p-4 rounded-4 shadow-lg scroll-animate fade-up" style="background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);">
+                    <div class="d-flex align-items-center justify-content-between mb-4">
                         <div>
-                            <h4 class="mb-0">Recommended for you</h4>
-                            <small class="text-muted">Based on your interests and past activity</small>
+                            <h4 class="mb-1 text-white fw-bold">
+                                <i class="fas fa-star me-2"></i>Recommended for you
+                            </h4>
+                            <small class="text-white" style="opacity: 0.8;">Based on your interests and past activity</small>
                         </div>
                         <div>
-                            <span class="badge bg-primary fs-6 recommendation-pill">Top Picks</span>
+                            <span class="badge rounded-pill px-3 py-2" style="background: rgba(255,255,255,0.2); color: white; fs-6;">
+                                <i class="fas fa-crown me-1"></i>Top Picks
+                            </span>
                         </div>
                     </div>
 
-                    <div class="recommended-scroller d-flex gap-3 py-2">
+                    <div class="recommended-scroller d-flex gap-3 py-2" style="overflow-x: auto;">
                         <?php foreach ($recommended_guides as $rguide): ?>
-                            <div class="card recommend-card flex-shrink-0" style="width: 260px;">
-                                <div class="ribbon">Recommended</div>
-                                <img src="<?php echo url('assets/images/profiles/' . ($rguide->profile_image ?? 'default.jpg')); ?>" 
-                                     class="card-img-top" alt="<?php echo htmlspecialchars($rguide->name ?? $rguide->name); ?>"
-                                     style="height: 160px; object-fit: cover;">
+                            <div class="card border-0 shadow-lg flex-shrink-0 guide-card" style="width: 280px;">
+                                <div class="position-absolute top-0 start-0 p-2" style="z-index: 2;">
+                                    <span class="badge rounded-pill px-3 py-2" style="background: linear-gradient(135deg, #22543d 0%, #2f855a 100%); color: white;">
+                                        <i class="fas fa-crown me-1"></i>Recommended
+                                    </span>
+                                </div>
+                                <div class="card-img-wrapper position-relative overflow-hidden">
+                                    <img src="<?php echo url('assets/images/profiles/' . ($rguide->profile_image ?? 'default.jpg')); ?>" 
+                                         class="card-img-top guide-card-img" alt="<?php echo htmlspecialchars($rguide->name ?? $rguide->name ?? 'Guide'); ?>"
+                                         style="height: 180px; object-fit: cover;">
+                                </div>
                                 <div class="card-body">
-                                    <h5 class="card-title mb-1"><?php echo htmlspecialchars($rguide->name ?? ($rguide->name ?? 'Guide')); ?></h5>
-                                    <div class="mb-2 small">
-                                        <span class="text-warning">
-                                            <?php for($i = 1; $i <= 5; $i++): ?>
-                                                <?php if($i <= round($rguide->avg_rating ?? 0)): ?>
-                                                    <i class="fas fa-star"></i>
-                                                <?php else: ?>
-                                                    <i class="far fa-star"></i>
-                                                <?php endif; ?>
-                                            <?php endfor; ?>
+                                    <h5 class="card-title mb-2 text-dark fw-bold"><?php echo htmlspecialchars($rguide->name ?? ($rguide->name ?? 'Guide')); ?></h5>
+                                    <div class="mb-2">
+                                        <span class="badge rounded-pill px-3 py-2" style="background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%); color: white;">
+                                            <i class="fas fa-star"></i> <?php echo number_format($rguide->avg_rating ?? 0, 1); ?> (<?php echo $rguide->total_reviews ?? 0; ?>)
                                         </span>
-                                        <small class="text-muted"> (<?php echo $rguide->total_reviews ?? 0; ?>)</small>
                                     </div>
-                                    <p class="card-text small mb-2"><?php echo htmlspecialchars(substr($rguide->bio ?? 'Expert local guide', 0, 80)) . '...'; ?></p>
+                                    <p class="card-text small mb-3 text-dark"><?php echo htmlspecialchars(substr($rguide->bio ?? 'Expert local guide', 0, 80)) . '...'; ?></p>
                                     <div class="d-flex justify-content-between align-items-center">
-                                        <span class="text-primary fw-bold">$<?php echo number_format($rguide->hourly_rate ?? 0, 2); ?>/hr</span>
-                                        <a href="<?php echo url('tourGuide/profile/' . ($rguide->guide_id ?? $rguide->id ?? '')); ?>" class="btn btn-sm btn-outline-primary">View</a>
+                                        <span class="fw-bold" style="color: #4CAF50; font-size: 1.1rem;">$<?php echo number_format($rguide->hourly_rate ?? 0, 2); ?>/hr</span>
+                                        <a href="<?php echo url('tourGuide/profile/' . ($rguide->guide_id ?? $rguide->id ?? '')); ?>" class="btn btn-sm rounded-pill px-3" style="background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%); color: white;">View</a>
                                     </div>
                                 </div>
                             </div>
@@ -214,47 +238,38 @@ aiForm.addEventListener('submit', function(e) {
                     <?php foreach ($guides as $index => $guide): ?>
                         <div class="col scroll-animate fade-up <?php echo 'delay-' . min(($index % 5) + 1, 5); ?>">
                             <a href="<?php echo url('tourGuide/profile/' . $guide->guide_id); ?>" class="text-decoration-none">
-                                <div class="card h-100 shadow-sm guide-card">
+                                <div class="card h-100 border-0 shadow-lg guide-card">
                                     <div class="card-img-wrapper position-relative overflow-hidden">
                                         <img src="<?php echo url('assets/images/profiles/' . ($guide->profile_image ?? 'default.jpg')); ?>" 
                                              class="card-img-top guide-card-img" alt="<?php echo htmlspecialchars($guide->name); ?>"
                                              style="height: 200px; object-fit: cover;">
                                     </div>
                                     <div class="card-body">
-                                        <h5 class="card-title text-dark"><?php echo htmlspecialchars($guide->name); ?></h5>
+                                        <h5 class="card-title mb-2 text-dark fw-bold"><?php echo htmlspecialchars($guide->name); ?></h5>
                                         <div class="mb-2">
-                                            <span class="text-warning">
-                                                <?php for($i = 1; $i <= 5; $i++): ?>
-                                                    <?php if($i <= round($guide->avg_rating)): ?>
-                                                        <i class="fas fa-star"></i>
-                                                    <?php else: ?>
-                                                        <i class="far fa-star"></i>
-                                                    <?php endif; ?>
-                                                <?php endfor; ?>
+                                            <span class="badge rounded-pill px-3 py-2" style="background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%); color: white;">
+                                                <i class="fas fa-star"></i> <?php echo number_format($guide->avg_rating, 1); ?> (<?php echo $guide->total_reviews; ?>)
                                             </span>
-                                            <small class="text-muted">(<?php echo $guide->total_reviews; ?> <?php echo $guide->total_reviews == 1 ? 'review' : 'reviews'; ?>)</small>
                                         </div>
-                                        <p class="card-text text-dark"><?php echo htmlspecialchars(substr($guide->bio ?? 'Expert local guide', 0, 100)) . '...'; ?></p>
-                                        <p class="card-text">
+                                        <p class="card-text text-dark mb-3"><?php echo htmlspecialchars(substr($guide->bio ?? 'Expert local guide', 0, 80)) . '...'; ?></p>
+                                        <p class="card-text mb-2">
                                             <small class="text-muted">
-                                                <i class="fas fa-map-marker-alt me-1"></i> <?php echo htmlspecialchars($guide->location ?? 'Local area'); ?>
+                                                <i class="fas fa-map-marker-alt me-1 text-primary"></i> <?php echo htmlspecialchars($guide->location ?? 'Local area'); ?>
                                             </small>
                                         </p>
-                                        <p class="card-text">
-                                            <small class="text-muted">
-                                                <i class="fas fa-tag me-1"></i> $<?php echo number_format($guide->hourly_rate ?? 0, 2); ?>/hour
-                                            </small>
-                                        </p>
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <span class="fw-bold" style="color: #4CAF50; font-size: 1.1rem;">$<?php echo number_format($guide->hourly_rate ?? 0, 2); ?>/hour</span>
+                                        </div>
                                         <?php if (!empty($guide->specialties)): ?>
-                                            <p class="card-text">
+                                            <p class="card-text mb-3">
                                                 <small class="text-muted">
-                                                    <i class="fas fa-certificate me-1"></i> <?php echo htmlspecialchars($guide->specialties); ?>
+                                                    <i class="fas fa-tags me-1"></i> <?php echo htmlspecialchars($guide->specialties); ?>
                                                 </small>
                                             </p>
                                         <?php endif; ?>
                                     </div>
-                                    <div class="card-footer bg-transparent border-top-0">
-                                        <span class="btn btn-outline-primary w-100">View Profile</span>
+                                    <div class="card-footer bg-white border-0">
+                                        <span class="btn btn-sm w-100 rounded-pill px-3" style="background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%); color: white;">View Profile</span>
                                     </div>
                                 </div>
                             </a>
@@ -262,7 +277,7 @@ aiForm.addEventListener('submit', function(e) {
                     <?php endforeach; ?>
                 <?php else: ?>
                     <div class="col-12">
-                        <div class="alert alert-info" role="alert">
+                        <div class="alert alert-info rounded-4 p-4 shadow" role="alert">
                             <i class="fas fa-info-circle me-2"></i> No tour guides found matching your criteria. Try adjusting your filters.
                         </div>
                     </div>

@@ -462,6 +462,35 @@ class GuideController
             // Update user table (name)
             $this->userModel->updateName($userId, $name);
 
+            // Handle profile image upload
+            if (isset($_FILES['profile_image']) && $_FILES['profile_image']['error'] === UPLOAD_ERR_OK) {
+                $ext = pathinfo($_FILES['profile_image']['name'], PATHINFO_EXTENSION);
+                $allowedExts = ['jpg', 'jpeg', 'png', 'gif'];
+                
+                if (in_array(strtolower($ext), $allowedExts)) {
+                    $filename = 'guide_' . $userId . '_' . time() . '.' . $ext;
+                    $uploadDir = dirname(__DIR__, 2) . '/assets/images/profiles/';
+                    
+                    if (!is_dir($uploadDir)) {
+                        mkdir($uploadDir, 0777, true);
+                    }
+                    
+                    $target = $uploadDir . $filename;
+                    
+                    if (move_uploaded_file($_FILES['profile_image']['tmp_name'], $target)) {
+                        // Delete old profile image if exists and not default
+                        if ($guide->profile_image && $guide->profile_image !== 'default.jpg') {
+                            $oldImage = $uploadDir . $guide->profile_image;
+                            if (file_exists($oldImage)) {
+                                unlink($oldImage);
+                            }
+                        }
+                        // Update profile_image in users table
+                        $this->userModel->updateProfileImage($userId, $filename);
+                    }
+                }
+            }
+
             // Update guide_profiles table
             $this->guideModel->updateProfile($guide->id, [
                 'bio' => $bio,

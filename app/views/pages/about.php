@@ -1,13 +1,19 @@
 <!-- About Us Hero Section -->
-<div class="bg-light py-5 mb-5">
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-lg-6 scroll-animate fade-left">
-                <h1 class="display-4 fw-bold">About Our Tour Guide Platform</h1>
-                <p class="lead text-muted">Connecting travelers with authentic local experiences since 2010.</p>
-            </div>
-            <div class="col-lg-6 scroll-animate fade-right">
-                <img src="<?php echo url('public/img/about-hero.jpg'); ?>" alt="Tour Guides Team" class="img-fluid rounded-3 shadow">
+<div class="category-hero-header position-relative overflow-hidden mb-5">
+    <div class="category-hero-bg" style="background-image: url('<?php echo url('public/img/about-hero.jpg'); ?>'); background-position: center;"></div>
+    <div class="category-hero-overlay"></div>
+    <div class="container position-relative">
+        <div class="row align-items-center min-vh-30">
+            <div class="col-lg-8 mx-auto text-center scroll-animate fade-up">
+                <div class="category-hero-content">
+                    <h1 class="display-3 fw-bold text-white mb-4">About Our Tour Guide Platform</h1>
+                    <p class="lead text-white mb-4 fs-5">Connecting travelers with authentic local experiences since 2010</p>
+                    <div class="category-hero-badge">
+                        <span class="badge bg-white bg-opacity-25 text-white px-4 py-2 fs-6">
+                            Your Journey, Our Passion
+                        </span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -25,13 +31,15 @@
 </div>
 
 <!-- Our Mission Section -->
-<div class="bg-primary text-white py-5 mb-5">
+<div class="py-5 mb-5" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
     <div class="container">
         <div class="row">
             <div class="col-lg-8 mx-auto text-center scroll-animate scale-in">
-                <h2 class="mb-4">Our Mission</h2>
-                <p class="lead">We believe that the best way to experience a destination is through the eyes of a local.</p>
-                <p>Our mission is to empower local guides to share their knowledge and passion while helping travelers discover authentic experiences that go beyond typical tourist attractions.</p>
+                <div class="text-white">
+                    <h2 class="mb-4 text-white">Our Mission</h2>
+                    <p class="lead text-white">We believe that the best way to experience a destination is through the eyes of a local.</p>
+                    <p class="text-white">Our mission is to empower local guides to share their knowledge and passion while helping travelers discover authentic experiences that go beyond typical tourist attractions.</p>
+                </div>
             </div>
         </div>
     </div>
@@ -44,8 +52,8 @@
         <div class="col-md-4 scroll-animate fade-up delay-1">
             <div class="card h-100 border-0 shadow-sm">
                 <div class="card-body text-center">
-                    <div class="feature-icon bg-primary bg-gradient text-white rounded-circle mb-3">
-                        <i class="fas fa-user-check fa-2x"></i>
+                    <div class="feature-icon mb-3" style="width: 80px; height: 80px; margin: 0 auto; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-user-check fa-2x text-white"></i>
                     </div>
                     <h5 class="card-title">Verified Local Guides</h5>
                     <p class="card-text">All our guides undergo a thorough verification process. We personally interview each guide and verify their qualifications and expertise.</p>
@@ -55,8 +63,8 @@
         <div class="col-md-4 scroll-animate fade-up delay-2">
             <div class="card h-100 border-0 shadow-sm">
                 <div class="card-body text-center">
-                    <div class="feature-icon bg-primary bg-gradient text-white rounded-circle mb-3">
-                        <i class="fas fa-hands-helping fa-2x"></i>
+                    <div class="feature-icon mb-3" style="width: 80px; height: 80px; margin: 0 auto; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-hands-helping fa-2x text-white"></i>
                     </div>
                     <h5 class="card-title">Community-Based Approach</h5>
                     <p class="card-text">We promote sustainable tourism that benefits local communities, ensuring that tourism income goes directly to local experts.</p>
@@ -66,8 +74,8 @@
         <div class="col-md-4 scroll-animate fade-up delay-3">
             <div class="card h-100 border-0 shadow-sm">
                 <div class="card-body text-center">
-                    <div class="feature-icon bg-primary bg-gradient text-white rounded-circle mb-3">
-                        <i class="fas fa-route fa-2x"></i>
+                    <div class="feature-icon mb-3" style="width: 80px; height: 80px; margin: 0 auto; background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-route fa-2x text-white"></i>
                     </div>
                     <h5 class="card-title">Customized Experiences</h5>
                     <p class="card-text">Each tour is tailored to your interests. Whether you're a history buff, foodie, or adventure seeker, we connect you with the perfect guide.</p>
@@ -78,37 +86,37 @@
 </div>
 
 <!-- Team Section -->
-<div class="bg-light py-5 mb-5">
+<div class="py-5 mb-5" style="background-color: var(--warm-cream);">
     <div class="container">
         <h2 class="text-center mb-5 scroll-animate fade-up">Meet Our Leadership Team</h2>
         <div class="row">
             <div class="col-lg-3 col-md-6 mb-4 scroll-animate fade-up delay-1">
-                <div class="card border-0 shadow-sm">
-                    <img src="<?php echo url('public/images/team/ceo.jpg'); ?>" class="card-img-top" alt="CEO">
+                <div class="card border-0 shadow-sm h-100 team-card">
+                    <img src="<?php echo url('public/images/team/ceo.jpg'); ?>" class="card-img-top" alt="CEO" style="height: 250px; object-fit: cover;">
                     <div class="card-body text-center">
                         <h5 class="card-title mb-0">Ngo Minh An</h5>
                         <p class="text-muted">Main Developer</p>
-                        <p class="small">2280618417.</p>
+                        <p class="small text-muted">2280618417</p>
                     </div>
                 </div>
             </div>
             <div class="col-lg-3 col-md-6 mb-4 scroll-animate fade-up delay-2">
-                <div class="card border-0 shadow-sm">
-                    <img src="<?php echo url('public/images/team/cto.jpg'); ?>" class="card-img-top" alt="CTO">
+                <div class="card border-0 shadow-sm h-100 team-card">
+                    <img src="<?php echo url('public/images/team/cto.jpg'); ?>" class="card-img-top" alt="CTO" style="height: 250px; object-fit: cover;">
                     <div class="card-body text-center">
                         <h5 class="card-title mb-0">Phan Tri Tai</h5>
                         <p class="text-muted">N/A</p>
-                        <p class="small">2280618417</p>
+                        <p class="small text-muted">2280618417</p>
                     </div>
                 </div>
             </div>
             <div class="col-lg-3 col-md-6 mb-4 scroll-animate fade-up delay-3">
-                <div class="card border-0 shadow-sm">
-                    <img src="<?php echo url('public/images/team/coo.jpg'); ?>" class="card-img-top" alt="COO">
+                <div class="card border-0 shadow-sm h-100 team-card">
+                    <img src="<?php echo url('public/images/team/coo.jpg'); ?>" class="card-img-top" alt="COO" style="height: 250px; object-fit: cover;">
                     <div class="card-body text-center">
                         <h5 class="card-title mb-0">Nguyen Thanh Khoa</h5>
                         <p class="text-muted">N/A</p>
-                        <p class="small">2280601532</p>
+                        <p class="small text-muted">2280601532</p>
                     </div>
                 </div>
             </div>
@@ -175,15 +183,15 @@
 </div>
 
 <!-- Join Us CTA Section -->
-<div class="bg-primary text-white py-5">
+<div class="py-5" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
     <div class="container">
         <div class="row align-items-center">
             <div class="col-lg-8 mx-auto text-center scroll-animate scale-in">
-                <h2 class="mb-4">Join Our Community</h2>
-                <p class="lead mb-4">Whether you're looking to discover the world with a local guide or share your passion for your hometown with travelers, we invite you to join our growing community.</p>
+                <h2 class="mb-4 text-white">Join Our Community</h2>
+                <p class="lead mb-4 text-white">Whether you're looking to discover the world with a local guide or share your passion for your hometown with travelers, we invite you to join our growing community.</p>
                 <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
-                    <a href="<?php echo url('account/register'); ?>" class="btn btn-light btn-lg px-4 me-sm-3">Sign Up as Traveler</a>
-                    <a href="<?php echo url('account/register/guide'); ?>" class="btn btn-outline-light btn-lg px-4">Become a Guide</a>
+                    <a href="<?php echo url('account/register'); ?>" class="btn btn-light btn-lg px-4 me-sm-3 shadow">Sign Up as Traveler</a>
+                    <a href="<?php echo url('account/register/guide'); ?>" class="btn btn-outline-light btn-lg px-4 shadow">Become a Guide</a>
                 </div>
             </div>
         </div>

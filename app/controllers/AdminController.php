@@ -29,11 +29,79 @@ class AdminController
         // Get counts for dashboard
         $userCount = $this->userModel->getUserCount();
         $guideCount = $this->userModel->getGuideCount();
+        
+        // Get pending applications count
+        $db = new Database();
+        $db->query('SELECT COUNT(*) as count FROM guide_applications WHERE status = "pending"');
+        $pendingResult = $db->single();
+        $pendingCount = $pendingResult ? $pendingResult->count : 0;
+        
+        // Get categories count
+        $categoryModel = new CategoryModel();
+        $allCategories = $categoryModel->getAllCategories();
+        $categoryCount = is_array($allCategories) ? count($allCategories) : 0;
+
+        // Get data for charts
+        // Users and Guides by month (last 12 months)
+        $usersByMonth = [];
+        $guidesByMonth = [];
+        $monthLabels = [];
+        for ($i = 11; $i >= 0; $i--) {
+            $date = date('Y-m', strtotime("-$i months"));
+            $monthLabels[] = date('M Y', strtotime("-$i months"));
+            
+            // Users count for this month
+            $db->query('SELECT COUNT(*) as count FROM users WHERE user_type = "user" AND DATE_FORMAT(created_at, "%Y-%m") = :date');
+            $db->bind(':date', $date);
+            $result = $db->single();
+            $usersByMonth[] = $result ? $result->count : 0;
+            
+            // Guides count for this month
+            $db->query('SELECT COUNT(*) as count FROM users WHERE user_type = "guide" AND DATE_FORMAT(created_at, "%Y-%m") = :date');
+            $db->bind(':date', $date);
+            $result = $db->single();
+            $guidesByMonth[] = $result ? $result->count : 0;
+        }
+        
+        // Bookings by month (last 6 months)
+        $bookingsByMonth = [];
+        $bookingLabels = [];
+        for ($i = 5; $i >= 0; $i--) {
+            $date = date('Y-m', strtotime("-$i months"));
+            $bookingLabels[] = date('M Y', strtotime("-$i months"));
+            
+            $db->query('SELECT COUNT(*) as count FROM bookings WHERE DATE_FORMAT(created_at, "%Y-%m") = :date');
+            $db->bind(':date', $date);
+            $result = $db->single();
+            $bookingsByMonth[] = $result ? $result->count : 0;
+        }
+        
+        // Guides by category (pie chart)
+        $guidesByCategory = [];
+        $categoryLabels = [];
+        if (is_array($allCategories) && count($allCategories) > 0) {
+            foreach ($allCategories as $category) {
+                $categoryLabels[] = $category->name;
+                $db->query('SELECT COUNT(DISTINCT guide_id) as count FROM guide_specialties WHERE specialty_id = :specialty_id');
+                $db->bind(':specialty_id', $category->id);
+                $result = $db->single();
+                $guidesByCategory[] = $result ? $result->count : 0;
+            }
+        }
 
         $data = [
             'title' => 'Admin Dashboard',
             'userCount' => $userCount,
-            'guideCount' => $guideCount
+            'guideCount' => $guideCount,
+            'pendingCount' => $pendingCount,
+            'categoryCount' => $categoryCount,
+            'monthLabels' => $monthLabels,
+            'usersByMonth' => $usersByMonth,
+            'guidesByMonth' => $guidesByMonth,
+            'bookingLabels' => $bookingLabels,
+            'bookingsByMonth' => $bookingsByMonth,
+            'categoryLabels' => $categoryLabels,
+            'guidesByCategory' => $guidesByCategory
         ];
 
         $this->loadView('admin/dashboard', $data);
@@ -75,8 +143,8 @@ class AdminController
         // Extract data variables into the current symbol table
         extract($data);
 
-        // Load header
-        require_once VIEW_PATH . '/shares/header.php';
+        // Load admin header
+        require_once VIEW_PATH . '/shares/admin-header.php';
 
         // Load the view - create a temporary fallback if view doesn't exist
         $viewPath = VIEW_PATH . '/' . $view . '.php';
@@ -127,8 +195,8 @@ class AdminController
             echo '</div></div></div>';
         }
 
-        // Load footer
-        require_once VIEW_PATH . '/shares/footer.php';
+        // Load admin footer
+        require_once VIEW_PATH . '/shares/admin-footer.php';
     }
 
     public function editUser($id)

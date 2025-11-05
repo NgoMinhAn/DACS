@@ -1,11 +1,6 @@
 <!-- Admin Guide Management -->
 <div class="container py-4">
     <h2 class="mb-4 fw-bold"><i class="fas fa-user-tie me-2"></i>Guide Management</h2>
-    <div class="mb-3">
-        <a href="<?php echo url('admin/guideApplications'); ?>" class="btn btn-warning btn-lg">
-            <i class="fas fa-user-clock"></i> Pending Guide Applications
-        </a>
-    </div>
     <?php if (!empty($guides)): ?>
         <div class="table-responsive shadow rounded-4">
             <table class="table table-bordered table-hover align-middle mb-0">

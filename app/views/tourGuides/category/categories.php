@@ -1,10 +1,19 @@
-<!-- Categories Header -->
-<div class="bg-primary text-white py-4 mb-5">
-    <div class="container">
-        <div class="row">
-            <div class="col-12 text-center scroll-animate fade-up">
-                <h1 class="fw-bold">Tour Guide Categories</h1>
-                <p class="lead">Browse our guides by their areas of expertise</p>
+<!-- Categories Hero Header -->
+<div class="category-hero-header position-relative overflow-hidden mb-5">
+    <div class="category-hero-bg" style="background-image: url('<?php echo url('public/img/saigon-cathedral.jpeg'); ?>'); background-position: center;"></div>
+    <div class="category-hero-overlay"></div>
+    <div class="container position-relative">
+        <div class="row align-items-center min-vh-30">
+            <div class="col-lg-8 mx-auto text-center scroll-animate fade-up">
+                <div class="category-hero-content">
+                    <h1 class="display-3 fw-bold text-white mb-4">Tour Guide Categories</h1>
+                    <p class="lead text-white mb-4 fs-5">Browse our guides by their areas of expertise</p>
+                    <div class="category-hero-badge">
+                        <span class="badge bg-white bg-opacity-25 text-white px-4 py-2 fs-6">
+                            Explore All Categories
+                        </span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

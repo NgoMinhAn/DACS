@@ -68,6 +68,10 @@ class TourGuideController {
             if (isset($_GET['price_range']) && !empty($_GET['price_range'])) {
                 $filters['price_range'] = sanitize($_GET['price_range']);
             }
+            
+            if (isset($_GET['rating']) && !empty($_GET['rating'])) {
+                $filters['rating'] = sanitize($_GET['rating']);
+            }
         }
         
         // Get all languages and specialties for filter options and to normalize incoming filter values
@@ -494,24 +498,93 @@ class TourGuideController {
                     'city' => 'City Tours'
                 ];
                 
-                error_log("Trying to map '" . $type . "' to a database specialty");
+                // Convert slug to potential category names to search in database
+                // URL format from categories page: strtolower(str_replace(' & ', '-', str_replace(' ', '-', $category->name)))
+                // So we need to reverse this: "food-cuisine" -> "Food & Cuisine" or "Food Cuisine"
+                $potentialNames = [];
+                
+                // First, try the specialty map
+                if (isset($specialtyMap[$type])) {
+                    $potentialNames[] = $specialtyMap[$type];
+                }
+                
+                // Convert slug to readable format: "food-cuisine" -> "Food Cuisine"
+                $slugToName = ucwords(str_replace('-', ' ', $type));
+                $potentialNames[] = $slugToName;
+                
+                // Try with ampersand: "food-cuisine" -> "Food & Cuisine"
+                // Common patterns: "food-cuisine" should try "Food & Cuisine"
+                // Check if the slug might represent something with "&"
+                $slugWithAmpersand = str_replace('-and-', ' & ', $type);
+                $slugWithAmpersand = str_replace('-', ' ', $slugWithAmpersand);
+                $slugWithAmpersand = ucwords($slugWithAmpersand);
+                if ($slugWithAmpersand !== $slugToName) {
+                    $potentialNames[] = $slugWithAmpersand;
+                }
+                
+                // Also try replacing common word boundaries with " & "
+                // For example: "food-cuisine" -> "Food & Cuisine"
+                // This is a heuristic: if slug has 2+ words, try adding " & " between common pairs
+                $words = explode('-', $type);
+                if (count($words) >= 2) {
+                    // Try "FirstWord & SecondWord Rest"
+                    $ampersandName = ucwords($words[0]) . ' & ' . ucwords(implode(' ', array_slice($words, 1)));
+                    $potentialNames[] = $ampersandName;
+                }
+                
+                // Try direct match with slug (original and capitalized)
+                $potentialNames[] = $type;
+                $potentialNames[] = ucfirst($type);
+                
+                // Remove duplicates
+                $potentialNames = array_unique($potentialNames);
+                
+                // Try to find category in database first
+                $categoryInfo = null;
+                $foundCategoryName = null;
+                
+                foreach ($potentialNames as $name) {
+                    $categoryInfo = $categoryModel->getCategoryByName($name);
+                    if ($categoryInfo) {
+                        $foundCategoryName = $name;
+                        error_log("Found category in database: " . $name);
+                        break;
+                    }
+                }
+                
+                // If category found in database, use its name to search for guides
+                if ($categoryInfo) {
+                    // Category exists in database, search for guides (even if empty)
+                    $categoryGuides = $this->guideModel->getGuidesBySpecialty($foundCategoryName);
+                    // Ensure it's an array
+                    if (!is_array($categoryGuides)) {
+                        $categoryGuides = [];
+                    }
+                    $title = $categoryInfo->name . ' Tour Guides';
+                    error_log("Category found in DB: " . $foundCategoryName . ", guides count: " . count($categoryGuides));
+                } else {
+                    // Category not in database, try to find guides by specialty name
+                    error_log("Category not found in database, trying specialty mapping");
                 
                 // Check if we have a direct mapping for this slug
                 if (isset($specialtyMap[$type])) {
                     $exactSpecialty = $specialtyMap[$type];
                     error_log("Found exact specialty mapping: $type -> $exactSpecialty");
                     $categoryGuides = $this->guideModel->getGuidesBySpecialty($exactSpecialty);
+                        $displayTitle = $exactSpecialty;
                 } else {
                     // Try different capitalizations and formats
                     $categoryGuides = [];
                     
                     // Try direct match first
                     $categoryGuides = $this->guideModel->getGuidesBySpecialty($type);
+                        $displayTitle = $type;
                     
                     // If no results, try with first letter capitalized
                     if (empty($categoryGuides)) {
                         $specialty = ucfirst($type);
                         $categoryGuides = $this->guideModel->getGuidesBySpecialty($specialty);
+                            $displayTitle = $specialty;
                         error_log("Trying with ucfirst: " . $specialty);
                     }
                     
@@ -520,6 +593,7 @@ class TourGuideController {
                         $specialty = str_replace('-', ' ', $type);
                         $specialty = ucwords($specialty); // Capitalize first letter of each word
                         $categoryGuides = $this->guideModel->getGuidesBySpecialty($specialty);
+                            $displayTitle = $specialty;
                         error_log("Trying with dashes replaced by spaces: " . $specialty);
                     }
                     
@@ -529,30 +603,27 @@ class TourGuideController {
                         $specialty = str_replace('-', ' ', $specialty);
                         $specialty = ucwords($specialty);
                         $categoryGuides = $this->guideModel->getGuidesBySpecialty($specialty);
+                            $displayTitle = $specialty;
                         error_log("Trying with ampersand: " . $specialty);
                     }
                 }
                 
-                // Use the last specialty name we tried
+                    // If no guides found and category not in database, redirect
                 if (empty($categoryGuides)) {
                     flash('error_message', 'No guides found for this specialty.', 'alert alert-info');
-                    error_log("No guides found for any variation of: " . $type);
+                        error_log("No guides found for any variation of: " . $type . " and category not in database");
                     redirect('tourGuide/browse');
                 }
                 
-                // For title display, use a readable version
-                $displayTitle = isset($specialtyMap[$type]) ? $specialtyMap[$type] : ucwords(str_replace('-', ' ', $type));
                 $title = $displayTitle . ' Tour Guides';
-                error_log("Found guides for category: " . $type . ", title: " . $title);
-                
-                // Try to get category info from database
-                if (!empty($displayTitle)) {
+                    
+                    // Try to get category info from database using the found name
                     $categoryInfo = $categoryModel->getCategoryByName($displayTitle);
-                    // Try alternative names if not found
                     if (!$categoryInfo && isset($specialtyMap[$type])) {
                         $categoryInfo = $categoryModel->getCategoryByName($specialtyMap[$type]);
                     }
                 }
+                
                 break;
         }
         
@@ -568,6 +639,11 @@ class TourGuideController {
             } elseif ($sort === 'price_low') {
                 // Sort by price low to high
             }
+        }
+        
+        // Ensure categoryGuides is always an array
+        if (!is_array($categoryGuides)) {
+            $categoryGuides = [];
         }
         
         // Data to be passed to the view
