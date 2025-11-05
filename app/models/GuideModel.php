@@ -58,6 +58,11 @@ class GuideModel
                         break;
                 }
             }
+
+            // Filter by minimum rating
+            if (!empty($filters['rating']) && is_numeric($filters['rating'])) {
+                $sql .= " AND avg_rating >= :rating";
+            }
         }
 
         // Order by featured and rating
@@ -78,6 +83,12 @@ class GuideModel
                 $specBind = '%' . $filters['specialty'] . '%';
                 error_log('[DEBUG][GuideModel::getAllGuides] binding :specialty => ' . $specBind);
                 $this->db->bind(':specialty', $specBind);
+            }
+
+            if (!empty($filters['rating']) && is_numeric($filters['rating'])) {
+                $minRating = (float)$filters['rating'];
+                error_log('[DEBUG][GuideModel::getAllGuides] binding :rating => ' . $minRating);
+                $this->db->bind(':rating', $minRating);
             }
         }
 

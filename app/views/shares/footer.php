@@ -5,7 +5,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-4 mb-4 mb-md-0">
-                    <h5><?php echo SITE_NAME; ?></h5>
+                    <img src="<?php echo url('public/img/logo.png'); ?>" alt="<?php echo SITE_NAME; ?>" style="height: 40px; width: auto; margin-bottom: 1rem; filter: brightness(0) invert(1);">
                     <p class="text-white">Connecting travelers with expert local guides worldwide.</p>
                     <div class="social-links mt-3">
                         <a href="<?php echo getConfig('social_media.facebook'); ?>" class="text-white me-2"><i class="fab fa-facebook-f"></i></a>
