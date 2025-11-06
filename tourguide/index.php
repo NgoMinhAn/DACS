@@ -4,8 +4,14 @@
  * Focusing on connecting users directly with tour guides
  */
 
-// Load Composer's autoloader
-require_once __DIR__ . '/vendor/autoload.php';
+// Load Composer's autoloader (support both local and project-root vendor)
+$localAutoload = __DIR__ . '/vendor/autoload.php';
+$rootAutoload  = __DIR__ . '/../vendor/autoload.php';
+if (file_exists($localAutoload)) {
+    require_once $localAutoload;
+} elseif (file_exists($rootAutoload)) {
+    require_once $rootAutoload;
+}
 
 // Load PHP configuration
 require_once __DIR__ . '/app/config/php-config.php';

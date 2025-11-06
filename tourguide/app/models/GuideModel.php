@@ -630,9 +630,9 @@ class GuideModel
         $specialties = $this->db->resultSet();
         $guide->specialties = !empty($specialties) ? implode(', ', array_map(fn($s) => $s->name, $specialties)) : '';
 
-        // Fetch all languages
+        // Fetch all languages with fluency levels
         $this->db->query('
-            SELECT l.name, gl.fluent
+            SELECT l.name, gl.fluency_level
             FROM guide_languages gl
             JOIN languages l ON gl.language_id = l.id
             WHERE gl.guide_id = :id
@@ -645,7 +645,7 @@ class GuideModel
         $fluentLanguages = [];
         foreach ($languages as $lang) {
             $allLanguages[] = $lang->name;
-            if ($lang->fluent) {
+            if (in_array(strtolower($lang->fluency_level), ['fluent','native'], true)) {
                 $fluentLanguages[] = $lang->name;
             }
         }
