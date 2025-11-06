@@ -6,16 +6,16 @@
         </div>
         <!-- Settings Content -->
         <div class="col-md-9">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <h3 class="card-title mb-4">
-                        <i class="fas fa-cog me-2 text-primary"></i>
+            <div class="card border-0 shadow-lg rounded-4">
+                <div class="card-body p-4">
+                    <h3 class="card-title mb-4 fw-bold">
+                        <i class="fas fa-cog me-2" style="background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;"></i>
                         General Settings
                     </h3>
 
                     <!-- Contact Requests Button -->
                     <?php if ($_SESSION['user_type'] === 'guide'): ?>
-                        <a href="<?php echo url('guide/contacts'); ?>" class="btn btn-outline-primary btn-lg w-100 d-flex align-items-center justify-content-center gap-2 mb-3">
+                        <a href="<?php echo url('guide/contacts'); ?>" class="btn btn-outline-primary btn-lg w-100 d-flex align-items-center justify-content-center gap-2 mb-3 rounded-pill">
                             <i class="fa fa-envelope-open-text"></i>
                             <span>View contact requests from users</span>
                         </a>
@@ -23,10 +23,12 @@
                     <?php endif; ?>
 
                     <!-- Email -->
-                    <div class="mb-4 p-3 bg-light rounded">
-                        <div class="d-flex align-items-center mb-2">
-                            <i class="fas fa-envelope text-primary me-2"></i>
-                            <h5 class="mb-0">Email Address</h5>
+                    <div class="mb-4 p-4 rounded-4 shadow-sm" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="rounded-circle p-3 me-3" style="background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);">
+                                <i class="fas fa-envelope fa-lg text-white"></i>
+                            </div>
+                            <h5 class="mb-0 fw-bold">Email Address</h5>
                         </div>
                         <form method="post" action="">
                             <div class="row">
@@ -35,7 +37,7 @@
                                         value="<?php echo htmlspecialchars($guide->email ?? ''); ?>" required>
                                 </div>
                                 <div class="col-md-4 mb-2">
-                                    <button type="submit" class="btn btn-outline-primary w-100">
+                                    <button type="submit" class="btn btn-outline-primary w-100 rounded-pill">
                                         <i class="fas fa-save me-2"></i>Update Email
                                     </button>
                                 </div>
@@ -44,26 +46,30 @@
                     </div>
 
                     <!-- Password Change -->
-                    <div class="mb-4 p-3 bg-light rounded">
-                        <div class="d-flex align-items-center mb-2">
-                            <i class="fas fa-shield-alt text-primary me-2"></i>
-                            <h5 class="mb-0">Account Security</h5>
+                    <div class="mb-4 p-4 rounded-4 shadow-sm" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="rounded-circle p-3 me-3" style="background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);">
+                                <i class="fas fa-shield-alt fa-lg text-white"></i>
+                            </div>
+                            <h5 class="mb-0 fw-bold">Account Security</h5>
                         </div>
                         <p class="text-muted mb-3">Manage your account security settings and password.</p>
-                        <a href="<?php echo url('guide/password-settings'); ?>" class="btn btn-outline-primary">
+                        <a href="<?php echo url('guide/password-settings'); ?>" class="btn btn-outline-primary rounded-pill px-4">
                             <i class="fas fa-key me-2"></i>
                             Change Password
                         </a>
                     </div>
 
                     <!-- Delete Account -->
-                    <div class="mt-5 p-3 bg-danger bg-opacity-10 rounded border border-danger">
-                        <div class="d-flex align-items-center mb-2">
-                            <i class="fas fa-exclamation-triangle text-danger me-2"></i>
-                            <h5 class="text-danger mb-0">Danger Zone</h5>
+                    <div class="mt-5 p-4 rounded-4 border border-danger" style="background: linear-gradient(135deg, #fff5f5 0%, #ffe5e5 100%);">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="rounded-circle p-3 me-3 bg-danger">
+                                <i class="fas fa-exclamation-triangle fa-lg text-white"></i>
+                            </div>
+                            <h5 class="text-danger mb-0 fw-bold">Danger Zone</h5>
                         </div>
                         <p class="text-muted mb-3">Once you delete your account, there is no going back. Please be certain.</p>
-                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">
+                        <button type="button" class="btn btn-danger rounded-pill px-4" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">
                             <i class="fas fa-trash-alt me-2"></i>
                             Delete Account
                         </button>

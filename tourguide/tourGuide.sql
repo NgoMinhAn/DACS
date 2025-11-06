@@ -2,7 +2,11 @@
 CREATE DATABASE IF NOT EXISTS TourGuide;
 USE TourGuide;
 
+-- Temporarily disable foreign key checks to avoid dependency errors while dropping
+SET FOREIGN_KEY_CHECKS = 0;
+
 -- Drop tables if they exist (for clean installation)
+DROP TABLE IF EXISTS messages;
 DROP TABLE IF EXISTS bookings;
 DROP TABLE IF EXISTS guide_languages;
 DROP TABLE IF EXISTS guide_specialties;
@@ -15,6 +19,9 @@ DROP TABLE IF EXISTS specialties;
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS guide_applications;
 DROP TABLE IF EXISTS contact_requests;
+
+-- Re-enable foreign key checks
+SET FOREIGN_KEY_CHECKS = 1;
 
 -- Users table (both regular users and guides)
 CREATE TABLE users (
@@ -106,6 +113,7 @@ CREATE TABLE specialties (
     name VARCHAR(50) NOT NULL UNIQUE,
     description TEXT NULL,
     icon VARCHAR(50) NULL,
+    image VARCHAR(255) NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -194,9 +202,12 @@ CREATE TABLE contact_requests (
 );
 
 ALTER TABLE bookings MODIFY status ENUM('pending','confirmed','completed','cancelled','accepted','declined') NOT NULL DEFAULT 'pending';
-SELECT id, name, email, account_type AS role, balance FROM users
-ALTER TABLE guide_profiles ADD COLUMN experience_years INT DEFAULT 0;
-ALTER TABLE guide_languages ADD COLUMN fluent TINYINT(1) NOT NULL DEFAULT 0;
+-- Removed stray SELECT with non-existent columns
+-- SELECT id, name, email, account_type AS role, balance FROM users;
+-- experience_years already exists in guide_profiles; skip duplicate add
+-- ALTER TABLE guide_profiles ADD COLUMN experience_years INT DEFAULT 0;
+-- Additional legacy column not needed; keep schema minimal
+-- ALTER TABLE guide_languages ADD COLUMN fluent TINYINT(1) NOT NULL DEFAULT 0;
 -- Insert sample data
 
 -- Users (password is 'password' hashed with bcrypt)
@@ -326,6 +337,7 @@ ORDER BY
     g.featured DESC, g.avg_rating DESC;
 
 -- Create or replace a stored procedure to update average ratings
+DROP PROCEDURE IF EXISTS update_guide_rating;
 DELIMITER //
 CREATE PROCEDURE update_guide_rating(IN guide_id_param INT)
 BEGIN
@@ -356,6 +368,7 @@ END //
 DELIMITER ;
 
 -- Create a procedure for updating user profiles
+DROP PROCEDURE IF EXISTS update_user_profile;
 DELIMITER //
 CREATE PROCEDURE update_user_profile(
     IN user_id_param INT, 
@@ -380,6 +393,7 @@ END //
 DELIMITER ;
 
 -- Create a procedure for updating guide profiles
+DROP PROCEDURE IF EXISTS update_guide_profile;
 DELIMITER //
 CREATE PROCEDURE update_guide_profile(
     IN guide_id_param INT,
@@ -406,6 +420,7 @@ END //
 DELIMITER ;
 
 -- Create a procedure for updating user preferences
+DROP PROCEDURE IF EXISTS update_user_preferences;
 DELIMITER //
 CREATE PROCEDURE update_user_preferences(
     IN user_id_param INT,
@@ -431,6 +446,7 @@ END //
 DELIMITER ;
 
 -- Create a procedure for changing password
+DROP PROCEDURE IF EXISTS change_user_password;
 DELIMITER //
 CREATE PROCEDURE change_user_password(
     IN user_id_param INT,
@@ -449,6 +465,9 @@ END //
 DELIMITER ;
 
 -- Create triggers to automatically update guide ratings
+DROP TRIGGER IF EXISTS after_review_insert;
+DROP TRIGGER IF EXISTS after_review_update;
+DROP TRIGGER IF EXISTS after_review_delete;
 DELIMITER //
 CREATE TRIGGER after_review_insert
 AFTER INSERT ON guide_reviews
@@ -482,8 +501,6 @@ CREATE INDEX idx_guides_rating ON guide_profiles(avg_rating);
 CREATE INDEX idx_reviews_rating ON guide_reviews(rating);
 CREATE INDEX idx_bookings_date ON bookings(booking_date);
 CREATE INDEX idx_bookings_status ON bookings(status);
-
-ADD COLUMN IF NOT EXISTS image VARCHAR(255) NULL AFTER icon;
 
 -- Grant privileges (adjust as needed for your production environment)
 GRANT ALL PRIVILEGES ON TourGuide.* TO 'root'@'localhost';

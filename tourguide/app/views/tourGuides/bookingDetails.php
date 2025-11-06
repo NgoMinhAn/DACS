@@ -1,30 +1,61 @@
-<div class="container py-4">
-    <h2>Booking Details</h2>
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="display-6 fw-bold mb-0">
+            <i class="fas fa-file-invoice me-2" style="background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;"></i>
+            Booking Details
+        </h1>
+        <a href="<?php echo url('guide/bookings'); ?>" class="btn btn-outline-primary rounded-pill">
+            <i class="fas fa-arrow-left me-2"></i>Back to Bookings
+        </a>
+    </div>
+
     <?php if ($booking): ?>
-        <ul class="list-group mb-3">
-            <li class="list-group-item"><strong>Client:</strong> <?php echo htmlspecialchars($booking->client_name); ?></li>
-            <li class="list-group-item"><strong>Email:</strong> <?php echo htmlspecialchars($booking->client_email); ?></li>
-            <li class="list-group-item"><strong>Date:</strong> <?php echo htmlspecialchars($booking->booking_date); ?></li>
-            <li class="list-group-item"><strong>Time:</strong> <?php echo htmlspecialchars($booking->start_time); ?> - <?php echo htmlspecialchars($booking->end_time); ?></li>
-            <li class="list-group-item"><strong>Status:</strong> <?php echo htmlspecialchars($booking->status); ?></li>
-            <li class="list-group-item"><strong>Price:</strong> $<?php echo number_format($booking->total_price, 2); ?></li>
-            <li class="list-group-item"><strong>Special Requests:</strong> <?php echo !is_null($booking->special_requests) ? htmlspecialchars($booking->special_requests) : ''; ?></li>
-        </ul>
+        <div class="card border-0 shadow-lg rounded-4 mb-4">
+            <div class="card-body p-4">
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <div class="mb-2"><strong>Client:</strong> <?php echo htmlspecialchars($booking->client_name); ?></div>
+                        <div class="mb-2"><strong>Email:</strong> <?php echo htmlspecialchars($booking->client_email); ?></div>
+                        <div class="mb-2"><strong>Special Requests:</strong> <?php echo !is_null($booking->special_requests) ? htmlspecialchars($booking->special_requests) : '—'; ?></div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-2"><strong>Date:</strong> <?php echo date('M d, Y', strtotime($booking->booking_date)); ?></div>
+                        <div class="mb-2"><strong>Time:</strong> <?php echo date('h:i A', strtotime($booking->start_time)); ?> - <?php echo date('h:i A', strtotime($booking->end_time)); ?></div>
+                        <div class="mb-2">
+                            <strong>Status:</strong>
+                            <?php
+                                $statusClass = 'bg-secondary';
+                                switch ($booking->status) {
+                                    case 'confirmed': $statusClass = 'bg-success'; break;
+                                    case 'pending': $statusClass = 'bg-warning text-dark'; break;
+                                    case 'cancelled': $statusClass = 'bg-danger'; break;
+                                    case 'completed': $statusClass = 'bg-primary'; break;
+                                }
+                            ?>
+                            <span class="badge rounded-pill px-3 py-2 <?php echo $statusClass; ?>"><?php echo ucfirst($booking->status); ?></span>
+                        </div>
+                        <div><strong>Price:</strong> $<?php echo number_format($booking->total_price, 2); ?></div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-        <!-- Accept Button (only if not already accepted/declined) -->
-        <?php if ($booking->status === 'pending'): ?>
-            <form method="post" action="<?php echo url('guide/acceptBooking/' . $booking->id); ?>" class="d-inline">
-                <button type="submit" class="btn btn-success">Accept Booking</button>
-            </form>
-            <form method="post" action="<?php echo url('guide/declineBooking/' . $booking->id); ?>" class="d-inline ms-2">
-                <button type="submit" class="btn btn-danger">Decline Booking</button>
-            </form>
-        <?php endif; ?>
+        <div class="d-flex flex-wrap gap-2">
+            <?php if ($booking->status === 'pending'): ?>
+                <form method="post" action="<?php echo url('guide/acceptBooking/' . $booking->id); ?>">
+                    <button type="submit" class="btn btn-success rounded-pill px-4"><i class="fas fa-check me-2"></i>Accept Booking</button>
+                </form>
+                <form method="post" action="<?php echo url('guide/declineBooking/' . $booking->id); ?>">
+                    <button type="submit" class="btn btn-danger rounded-pill px-4"><i class="fas fa-times me-2"></i>Decline Booking</button>
+                </form>
+            <?php endif; ?>
 
-        <!-- Chat Button -->
-        <a href="<?php echo url('guide/chat/' . $booking->id); ?>" class="btn btn-primary ms-2">Chat with Client</a>
+            <a href="<?php echo url('guide/chat/' . $booking->id); ?>" class="btn rounded-pill px-4 text-white" style="background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);">
+                <i class="fas fa-comments me-2"></i>Chat with Client
+            </a>
+        </div>
 
     <?php else: ?>
-        <div class="alert alert-danger">Booking not found.</div>
+        <div class="alert alert-danger rounded-4 p-4 shadow">Booking not found.</div>
     <?php endif; ?>
 </div>
