@@ -22,15 +22,38 @@ class UserController {
     }
     
     /**
-     * Display user's bookings
+     * Display user's bookings with pagination
      */
     public function bookings() {
-        // Get user's bookings
-        $bookings = $this->bookingModel->getUserBookings($_SESSION['user_id']);
+        // Pagination settings
+        $itemsPerPage = 4;
+        $currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        $currentPage = max(1, $currentPage); // Ensure page is at least 1
+        
+        // Calculate offset
+        $offset = ($currentPage - 1) * $itemsPerPage;
+        
+        // Get total count of bookings
+        $totalBookings = $this->bookingModel->getUserBookingsCount($_SESSION['user_id']);
+        
+        // Get paginated bookings
+        $bookings = $this->bookingModel->getUserBookings($_SESSION['user_id'], $itemsPerPage, $offset);
+        
+        // Calculate total pages
+        $totalPages = ceil($totalBookings / $itemsPerPage);
+        
+        // Get all bookings for stats (only if needed for stats display)
+        // We get all bookings to calculate statistics accurately
+        $allBookings = $this->bookingModel->getUserBookings($_SESSION['user_id']);
         
         $data = [
             'title' => 'My Bookings',
-            'bookings' => $bookings
+            'bookings' => $bookings,
+            'allBookings' => $allBookings, // For statistics
+            'currentPage' => $currentPage,
+            'totalPages' => $totalPages,
+            'totalBookings' => $totalBookings,
+            'itemsPerPage' => $itemsPerPage
         ];
         
         $this->loadView('user/bookings', $data);
@@ -67,12 +90,60 @@ class UserController {
 
 public function bookingDetail($id) {
     $bookingModel = new BookingModel();
-    $booking = $bookingModel->getBookingById($id);
+    $booking = $bookingModel->getBookingById($id, $_SESSION['user_id']);
     if (!$booking) {
         die('Booking not found');
     }
     $this->loadView('user/bookingDetail', ['booking' => $booking]);
 }
+
+    /**
+     * View invoice details (AJAX)
+     */
+    public function invoice($id) {
+        $booking = $this->bookingModel->getBookingById($id, $_SESSION['user_id']);
+        
+        if (!$booking) {
+            header('Content-Type: application/json');
+            echo json_encode(['success' => false, 'message' => 'Booking not found']);
+            exit;
+        }
+
+        // Get user info
+        $user = $this->userModel->findUserById($_SESSION['user_id']);
+        
+        // Render invoice HTML
+        ob_start();
+        include VIEW_PATH . '/user/invoice_template.php';
+        $html = ob_get_clean();
+
+        header('Content-Type: application/json');
+        echo json_encode(['success' => true, 'html' => $html]);
+        exit;
+    }
+
+    /**
+     * Print invoice
+     */
+    public function printInvoice($id) {
+        $booking = $this->bookingModel->getBookingById($id, $_SESSION['user_id']);
+        
+        if (!$booking) {
+            die('Booking not found');
+        }
+
+        // Get user info
+        $user = $this->userModel->findUserById($_SESSION['user_id']);
+        
+        $data = [
+            'title' => 'Invoice #' . str_pad($booking->id, 6, '0', STR_PAD_LEFT),
+            'booking' => $booking,
+            'user' => $user
+        ];
+        
+        $this->loadView('user/invoice_print', $data);
+    }
+
     /**
      * Load view helper
      */

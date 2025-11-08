@@ -6,8 +6,8 @@ date_default_timezone_set('Asia/Ho_Chi_Minh');
  * and open the template in the editor.
  */
   
-$vnp_TmnCode = "OSNSAXQM"; //Mã định danh merchant kết nối (Terminal Id)
-$vnp_HashSecret = "LROBP8XF6RNAXDYEJHG6RZ0GA4F1GON9"; //Secret key
+$vnp_TmnCode = "4BA3R3VC"; //Mã định danh merchant kết nối (Terminal Id)
+$vnp_HashSecret = "3UMD6M37HCXKL91M30XZKXJPSKJYQC0X"; //Secret key
 $vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
 // Build return URL dynamically to support subfolder deployment
 $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
