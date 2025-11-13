@@ -7,10 +7,10 @@
         </div>
         <!-- Profile Settings Content -->
         <div class="col-md-9">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <h3 class="card-title mb-4">
-                        <i class="fas fa-user-circle me-2 text-primary"></i>
+            <div class="card border-0 shadow-lg rounded-4">
+                <div class="card-body p-4">
+                    <h3 class="card-title mb-4 fw-bold">
+                        <i class="fas fa-user-circle me-2" style="background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;"></i>
                         Profile Settings
                     </h3>
                     <?php if (isset($profile_message)): ?>
@@ -19,7 +19,7 @@
 
                     <form method="post" action="" enctype="multipart/form-data">
                         <!-- Profile Image Section -->
-                        <div class="mb-4 p-4 bg-light rounded text-center">
+                        <div class="mb-4 p-4 rounded-4 shadow-sm text-center" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);">
                             <div class="d-inline-block position-relative mb-3">
                                 <img src="<?php echo url('assets/images/profiles/' . ($guide->profile_image ?? 'default.jpg')); ?>"
                                      alt="Profile Image"
@@ -37,7 +37,7 @@
                         </div>
 
                         <!-- Basic Information -->
-                        <div class="mb-4 p-3 bg-light rounded">
+                        <div class="mb-4 p-4 rounded-4 shadow-sm" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);">
                             <h5 class="d-flex align-items-center mb-3">
                                 <i class="fas fa-user text-primary me-2"></i>
                                 Basic Information
@@ -55,7 +55,7 @@
                         </div>
 
                         <!-- Guide Information -->
-                        <div class="mb-4 p-3 bg-light rounded">
+                        <div class="mb-4 p-4 rounded-4 shadow-sm" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);">
                             <h5 class="d-flex align-items-center mb-3">
                                 <i class="fas fa-map text-primary me-2"></i>
                                 Guide Information
@@ -86,7 +86,7 @@
                         </div>
 
                         <div class="text-end">
-                            <button type="submit" class="btn btn-primary">
+                            <button type="submit" class="btn btn-primary rounded-pill px-4">
                                 <i class="fas fa-save me-2"></i>
                                 Save Changes
                             </button>

@@ -47,6 +47,8 @@ $routes = [
     ['pattern' => '#^user/bookings$#', 'controller' => 'UserController', 'method' => 'bookings', 'params' => []],
     ['pattern' => '#^user/chat/(\d+)$#', 'controller' => 'UserController', 'method' => 'chat', 'params' => [1]],
     ['pattern' => '#^user/booking/(\d+)$#', 'controller' => 'UserController', 'method' => 'bookingDetail', 'params' => [1]],
+    ['pattern' => '#^user/invoice/(\d+)$#', 'controller' => 'UserController', 'method' => 'invoice', 'params' => [1]],
+    ['pattern' => '#^user/invoice/print/(\d+)$#', 'controller' => 'UserController', 'method' => 'printInvoice', 'params' => [1]],
 
     // Admin routes
     ['pattern' => '#^admin/dashboard$#', 'controller' => 'AdminController', 'method' => 'dashboard', 'params' => []],
