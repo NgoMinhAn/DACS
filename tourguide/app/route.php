@@ -50,6 +50,10 @@ $routes = [
     ['pattern' => '#^user/invoice/(\d+)$#', 'controller' => 'UserController', 'method' => 'invoice', 'params' => [1]],
     ['pattern' => '#^user/invoice/print/(\d+)$#', 'controller' => 'UserController', 'method' => 'printInvoice', 'params' => [1]],
 
+    // Message routes
+    ['pattern' => '#^messages/mark-delivered$#', 'controller' => 'MessageController', 'method' => 'markDelivered', 'params' => []],
+    ['pattern' => '#^messages/mark-read$#', 'controller' => 'MessageController', 'method' => 'markRead', 'params' => []],
+
     // Admin routes
     ['pattern' => '#^admin/dashboard$#', 'controller' => 'AdminController', 'method' => 'dashboard', 'params' => []],
     ['pattern' => '#^admin/users$#', 'controller' => 'AdminController', 'method' => 'users', 'params' => []],

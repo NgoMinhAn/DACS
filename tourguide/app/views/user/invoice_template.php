@@ -201,3 +201,5 @@ $paymentDate = $booking->transaction_pay_date ?? $booking->payment_date ?? null;
     font-weight: 600;
 }
 </style>
+
+

@@ -26,6 +26,11 @@ define('SITE_NAME', 'Tour Guide Connect');
 // App Version
 define('APP_VERSION', '1.0.0');
 
+// Realtime websocket configuration (update secrets in production!)
+define('REALTIME_SERVER_URL', getenv('REALTIME_SERVER_URL') ?: 'http://127.0.0.1:3001');
+define('REALTIME_AUTH_SECRET', 'e6f1c4173a224b6aa3f6eab8c8910f3d45e9a6f74f3f4fd9d8b41b2bb8e7c1dd');
+define('REALTIME_BROADCAST_TOKEN', 'f3bd869c9c3945cf8cbab3b2f1da6d7ae21983f2a4c740498c0794d35c9d7e5b');
+
 
 // Gemini API Key (set your Gemini API key here)
 define('GEMINI_API_KEY', 'AIzaSyD3vI4jA1b2BGGUDPERmQvx_39-NWtm8Fg');
