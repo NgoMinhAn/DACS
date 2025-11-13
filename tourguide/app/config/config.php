@@ -28,7 +28,7 @@ define('APP_VERSION', '1.0.0');
 
 
 // Gemini API Key (set your Gemini API key here)
-define('GEMINI_API_KEY', 'AIzaSyCxIxv7AHMwBiyE1wnt_orOgJyiSFfWaFo');
+define('GEMINI_API_KEY', 'AIzaSyD3vI4jA1b2BGGUDPERmQvx_39-NWtm8Fg');
 //Remember to encode the key
 
 // Site configuration

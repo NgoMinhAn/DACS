@@ -261,8 +261,74 @@ class GuideModel
     }
 
     /**
-     * Get recommended guides for a user based on their booking history (specialties) and past searches.
-     * Falls back to top rated guides when there's no data.
+     * Score a guide based on how well it matches user hobbies
+     * 
+     * @param object $guide The guide object
+     * @param array $hobbies Array of user hobbies (normalized keywords)
+     * @return float The match score
+     */
+    private function scoreGuideByHobbies($guide, $hobbies)
+    {
+        $score = 0;
+        
+        // Normalize guide data for matching
+        $guideSpecialties = strtolower($guide->specialties ?? '');
+        $guideBio = strtolower($guide->bio ?? '');
+        $guideLocation = strtolower($guide->location ?? '');
+        
+        // Score each hobby match
+        foreach ($hobbies as $hobby) {
+            $hobbyLower = strtolower(trim($hobby));
+            if (empty($hobbyLower)) continue;
+            
+            $hobbyMatched = false;
+            
+            // Check specialties first (highest weight)
+            if (!empty($guideSpecialties)) {
+                // Split specialties by comma and check each one
+                $specialtyList = array_map('trim', explode(',', $guideSpecialties));
+                foreach ($specialtyList as $specialty) {
+                    $specialtyLower = strtolower($specialty);
+                    // Exact match in specialty (highest weight: 10 points)
+                    if ($specialtyLower === $hobbyLower) {
+                        $score += 10;
+                        $hobbyMatched = true;
+                        break; // Only count once per hobby per specialty
+                    }
+                    // Partial match in specialty (high weight: 7 points)
+                    elseif (stripos($specialtyLower, $hobbyLower) !== false || stripos($hobbyLower, $specialtyLower) !== false) {
+                        $score += 7;
+                        $hobbyMatched = true;
+                        break; // Only count once per hobby per specialty
+                    }
+                }
+            }
+            
+            // Match in bio (medium weight: 5 points) - only if not already matched in specialties
+            if (!$hobbyMatched && stripos($guideBio, $hobbyLower) !== false) {
+                $score += 5;
+            }
+            
+            // Match in location (lower weight: 2 points) - only if not already matched
+            if (!$hobbyMatched && stripos($guideLocation, $hobbyLower) !== false) {
+                $score += 2;
+            }
+        }
+        
+        // Add rating bonus (normalized to 0-5 points)
+        $ratingBonus = ($guide->avg_rating ?? 0) * 1.0; // 1 point per rating star
+        $score += $ratingBonus;
+        
+        // Add review count bonus (normalized, max 3 points)
+        $reviewBonus = min(($guide->total_reviews ?? 0) / 10, 3); // 0.1 point per review, max 3
+        $score += $reviewBonus;
+        
+        return $score;
+    }
+
+    /**
+     * Get recommended guides for a user based on their hobbies (using weighted algorithm) or booking history.
+     * Falls back to top rated guides when there's no data or hobbies are blank.
      *
      * @param int|null $userId
      * @param int $limit
@@ -275,7 +341,77 @@ class GuideModel
             return $this->getTopRatedGuides($limit);
         }
 
-        // 1) Try to find specialties from the user's past bookings
+        // 1) First priority: Check if user has hobbies and use weighted algorithm for recommendations
+        require_once __DIR__ . '/../models/UserModel.php';
+        $userModel = new UserModel();
+        $userHobbies = $userModel->getUserHobbies($userId);
+        
+        if (!empty($userHobbies) && trim($userHobbies) !== '') {
+            try {
+                // Get all available guides
+                $allGuides = $this->getAllGuides();
+                
+                if (!empty($allGuides)) {
+                    // Parse hobbies (split by comma, semicolon, or newline)
+                    $hobbies = preg_split('/[,;\n\r]+/', $userHobbies);
+                    $hobbies = array_map('trim', $hobbies);
+                    $hobbies = array_filter($hobbies, function($h) { return !empty($h); });
+                    
+                    if (!empty($hobbies)) {
+                        // Score each guide based on hobby matches
+                        $scoredGuides = [];
+                        foreach ($allGuides as $guide) {
+                            // Only consider verified guides
+                            if (!($guide->verified ?? false)) {
+                                continue;
+                            }
+                            
+                            $score = $this->scoreGuideByHobbies($guide, $hobbies);
+                            
+                            // Only include guides with some match (score > 0)
+                            if ($score > 0) {
+                                $scoredGuides[] = [
+                                    'guide' => $guide,
+                                    'score' => $score
+                                ];
+                            }
+                        }
+                        
+                        // Sort by score (descending), then by rating, then by review count
+                        usort($scoredGuides, function($a, $b) {
+                            if ($a['score'] != $b['score']) {
+                                return $b['score'] <=> $a['score']; // Higher score first
+                            }
+                            // If scores are equal, sort by rating
+                            $ratingA = $a['guide']->avg_rating ?? 0;
+                            $ratingB = $b['guide']->avg_rating ?? 0;
+                            if ($ratingA != $ratingB) {
+                                return $ratingB <=> $ratingA; // Higher rating first
+                            }
+                            // If ratings are equal, sort by review count
+                            $reviewsA = $a['guide']->total_reviews ?? 0;
+                            $reviewsB = $b['guide']->total_reviews ?? 0;
+                            return $reviewsB <=> $reviewsA; // More reviews first
+                        });
+                        
+                        // Extract guides and limit results
+                        $recommendedGuides = array_map(function($item) {
+                            return $item['guide'];
+                        }, array_slice($scoredGuides, 0, $limit));
+                        
+                        if (!empty($recommendedGuides)) {
+                            error_log("[Recommendations] Using weighted algorithm recommendations based on hobbies for user {$userId}");
+                            return $recommendedGuides;
+                        }
+                    }
+                }
+            } catch (Exception $e) {
+                error_log("[Recommendations] Hobby-based recommendation algorithm failed: " . $e->getMessage() . ". Falling back to other methods.");
+                // Continue to fallback methods below
+            }
+        }
+
+        // 2) Fallback: Try to find specialties from the user's past bookings
         $this->db->query('SELECT DISTINCT s.name as specialty
                           FROM bookings b
                           JOIN guide_specialties gs ON b.guide_id = gs.guide_id
@@ -291,7 +427,7 @@ class GuideModel
             if (!empty($r->specialty)) $specialties[] = $r->specialty;
         }
 
-        // 2) If we have specialties, get guides matching those specialties ordered by rating
+        // 3) If we have specialties, get guides matching those specialties ordered by rating
         if (!empty($specialties)) {
             // Build parameterized OR conditions for specialties
             $sql = "SELECT * FROM guide_listings WHERE (";
@@ -315,7 +451,7 @@ class GuideModel
             }
         }
 
-        // 3) No booking-based specialties found - look for user's past searches if a table exists
+        // 4) No booking-based specialties found - look for user's past searches if a table exists
         $this->db->query('SELECT query FROM user_searches WHERE user_id = :user_id ORDER BY created_at DESC LIMIT 5');
         $this->db->bind(':user_id', $userId);
         $searchRows = [];
@@ -337,7 +473,7 @@ class GuideModel
             return $this->searchGuides($q);
         }
 
-        // 4) Last resort - return global top rated guides
+        // 5) Last resort - return global top rated guides
         return $this->getTopRatedGuides($limit);
     }
 
