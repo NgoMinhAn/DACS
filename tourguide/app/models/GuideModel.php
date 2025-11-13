@@ -500,7 +500,7 @@ class GuideModel
 
     public function getBookingById($bookingId, $guideId)
     {
-        $this->db->query("SELECT b.*, u.name as client_name, u.email as client_email
+        $this->db->query("SELECT b.*, u.name as client_name, u.email as client_email, u.id as client_user_id
                         FROM bookings b
                         JOIN users u ON b.user_id = u.id
                         WHERE b.id = :id AND b.guide_id = :guide_id");

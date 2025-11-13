@@ -34,6 +34,7 @@ require_once APP_PATH . '/config/config.php';
 require_once APP_PATH . '/config/database.php';
 require_once APP_PATH . '/config/google.php';
 require_once HELPER_PATH . '/functions.php';
+require_once HELPER_PATH . '/RealtimeHelper.php';
 
 
 // Register autoloader

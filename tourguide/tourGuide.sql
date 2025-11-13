@@ -186,6 +186,8 @@ CREATE TABLE messages (
     sender_id INT NOT NULL,
     message TEXT NOT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    delivered_at DATETIME NULL,
+    read_at DATETIME NULL,
     FOREIGN KEY (booking_id) REFERENCES bookings(id) ON DELETE CASCADE,
 	FOREIGN KEY (sender_id) REFERENCES users(id)
 );
