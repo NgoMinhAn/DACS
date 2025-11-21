@@ -51,12 +51,12 @@
                             <div class="rounded-circle p-3 me-3" style="background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);">
                                 <i class="fas fa-shield-alt fa-lg text-white"></i>
                             </div>
-                            <h5 class="mb-0 fw-bold">Account Security</h5>
+                                <h5 class="mb-0 fw-bold">Account Security</h5>
                         </div>
                         <p class="text-muted mb-3">Manage your account security settings and password.</p>
                         <a href="<?php echo url('guide/password-settings'); ?>" class="btn btn-outline-primary rounded-pill px-4">
                             <i class="fas fa-key me-2"></i>
-                            Change Password
+                                <?php echo __('buttons.change_password') ?? 'Change Password'; ?>
                         </a>
                     </div>
 
@@ -66,12 +66,12 @@
                             <div class="rounded-circle p-3 me-3 bg-danger">
                                 <i class="fas fa-exclamation-triangle fa-lg text-white"></i>
                             </div>
-                            <h5 class="text-danger mb-0 fw-bold">Danger Zone</h5>
+                                <h5 class="text-danger mb-0 fw-bold"><?php echo __('common.danger_zone') ?? 'Danger Zone'; ?></h5>
                         </div>
                         <p class="text-muted mb-3">Once you delete your account, there is no going back. Please be certain.</p>
                         <button type="button" class="btn btn-danger rounded-pill px-4" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">
                             <i class="fas fa-trash-alt me-2"></i>
-                            Delete Account
+                                <?php echo __('buttons.delete_account') ?? 'Delete Account'; ?>
                         </button>
                     </div>
                 </div>

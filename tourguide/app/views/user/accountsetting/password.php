@@ -34,7 +34,7 @@
                 <div class="card-body p-4">
                     <h3 class="card-title mb-4 fw-bold">
                         <i class="fas fa-key me-2" style="background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;"></i>
-                        Change Password
+                        <?php echo __('buttons.change_password') ?? 'Change Password'; ?>
                     </h3>
                     
                     <form action="<?php echo url('account/settings/password'); ?>" method="POST">

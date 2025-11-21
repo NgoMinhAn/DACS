@@ -11,7 +11,7 @@
             <div class="col-lg-8 mx-auto text-center scroll-animate fade-up">
                 <div class="category-hero-content">
                     <h1 class="display-3 fw-bold text-white mb-4"><?php echo htmlspecialchars($category_info->name ?? 'Food & Cuisine Guides'); ?></h1>
-                    <p class="lead text-white mb-4 fs-5"><?php echo htmlspecialchars($category_info->description ?? 'Discover local flavors, culinary traditions, and gastronomic delights with expert food guides'); ?></p>
+                    <p class="lead text-white mb-4 fs-5"><?php echo htmlspecialchars($category_info->description ?? __('category.contact_prompt')); ?></p>
                     <div class="category-hero-badge">
                         <span class="badge bg-white bg-opacity-25 text-white px-4 py-2 fs-6">
                             Taste the Culture
@@ -76,7 +76,7 @@
                                     <p class="card-text text-dark"><?php echo htmlspecialchars(substr($guide->bio ?? 'Culinary expert with passion for local cuisine and food traditions', 0, 100)) . '...'; ?></p>
                                     <div class="d-flex justify-content-between align-items-center">
                                         <span class="text-primary fw-bold">$<?php echo number_format($guide->hourly_rate, 2); ?>/hour</span>
-                                        <span class="btn btn-sm btn-outline-primary">View Profile</span>
+                                        <span class="btn btn-sm btn-outline-primary"><?php echo __('buttons.view_profile'); ?></span>
                                     </div>
                                 </div>
                                 <div class="card-footer bg-white">
@@ -194,7 +194,7 @@
                         </div>
                         <div class="col-lg-4 text-lg-end">
                             <a href="<?php echo url('contact'); ?>" class="btn btn-light btn-lg shadow px-4">
-                                <i class="fas fa-envelope me-2"></i>Contact Us
+                                <i class="fas fa-envelope me-2"></i><?php echo __('buttons.contact_us'); ?>
                             </a>
                         </div>
                     </div>

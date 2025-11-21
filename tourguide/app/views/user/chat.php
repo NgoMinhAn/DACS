@@ -1,6 +1,6 @@
 <?php $realtimeSignature = generate_realtime_signature($booking->id, $currentUserId); ?>
 <?php
-    $guideName = $booking->guide_name ?? 'Hướng dẫn viên';
+    $guideName = $booking->guide_name ?? __('chat_ui.guide');
     $guideAvatar = !empty($booking->guide_image) ? $booking->guide_image : 'https://via.placeholder.com/48x48?text=G';
 ?>
 
@@ -215,7 +215,7 @@
 
 <div class="chat-page">
     <a href="<?php echo url('user/bookings'); ?>" class="chat-back-link d-inline-flex align-items-center mb-3">
-        <i class="fas fa-arrow-left me-2"></i> Quay lại danh sách đặt tour
+        <i class="fas fa-arrow-left me-2"></i> <?php echo __('bookings.back_to_list'); ?>
     </a>
 
     <div class="chat-wrapper">
@@ -226,7 +226,7 @@
                     <div class="chat-username"><?php echo htmlspecialchars($guideName); ?></div>
                     <div class="chat-status offline" id="presenceStatus">
                         <span class="status-dot" id="presenceDot"></span>
-                        <span id="presenceText">Hướng dẫn viên ngoại tuyến</span>
+                        <span id="presenceText"><?php echo __('chat.offline'); ?></span>
                     </div>
                 </div>
             </div>
@@ -244,11 +244,11 @@
                     $statusText = '';
                     if ($isCurrentUser) {
                         if (!empty($msg->read_at)) {
-                            $statusText = 'Đã xem';
+                            $statusText = __('messages.read');
                         } elseif (!empty($msg->delivered_at)) {
-                            $statusText = 'Đã gửi';
+                            $statusText = __('messages.sent');
                         } else {
-                            $statusText = 'Đang gửi...';
+                            $statusText = __('messages.sending');
                         }
                     }
                 ?>
@@ -273,11 +273,11 @@
         </div>
 
         <div class="chat-typing">
-            <span id="typingIndicator" class="d-none">Guide is typing...</span>
+            <span id="typingIndicator" class="d-none"><?php echo htmlspecialchars($guideName . ' ' . __('chat_ui.typing')); ?></span>
         </div>
 
         <form method="post" class="chat-input-bar">
-            <input type="text" name="message" placeholder="Aa" required autocomplete="off">
+            <input type="text" name="message" placeholder="<?php echo __('message.placeholder'); ?>" required autocomplete="off">
             <button type="submit" class="chat-send-btn">
                 <i class="fas fa-paper-plane"></i>
             </button>
@@ -305,6 +305,19 @@
         const messageInput = document.querySelector('input[name="message"]');
         const presenceDot = document.getElementById('presenceDot');
         const presenceText = document.getElementById('presenceText');
+        const uiLocale = "<?php echo function_exists('getLocale') ? getLocale() : 'en'; ?>";
+
+        const UI_STRINGS = {
+            read: "<?php echo addslashes(__('messages.read')); ?>",
+            sent: "<?php echo addslashes(__('messages.sent')); ?>",
+            sending: "<?php echo addslashes(__('messages.sending')); ?>",
+            typing: "<?php echo addslashes($guideName . ' ' . __('chat_ui.typing')); ?>",
+            you: "<?php echo addslashes(__('chat_ui.you')); ?>",
+            guide: "<?php echo addslashes(__('chat_ui.guide')); ?>",
+            presence_online: "<?php echo addslashes(__('chat.online')); ?>",
+            presence_offline: "<?php echo addslashes(__('chat.offline')); ?>",
+            presence_last_active: "<?php echo addslashes(__('chat.last_active')); ?>"
+        };
         let typingTimeout = null;
         let lastTypingState = false;
         const TYPING_DELAY = 3000;
@@ -332,7 +345,7 @@
             });
         }
 
-        const relativeTimeFormatter = new Intl.RelativeTimeFormat('vi', { numeric: 'auto' });
+        const relativeTimeFormatter = new Intl.RelativeTimeFormat(uiLocale, { numeric: 'auto' });
 
         function formatRelativeTime(date) {
             const now = new Date();
@@ -350,7 +363,7 @@
                     return relativeTimeFormatter.format(rounded, unit);
                 }
             }
-            return date.toLocaleTimeString('vi', { hour: '2-digit', minute: '2-digit', timeZone: 'UTC' });
+            return date.toLocaleTimeString(uiLocale, { hour: '2-digit', minute: '2-digit', timeZone: 'UTC' });
         }
 
         function appendMessage(data) {
@@ -362,7 +375,7 @@
             }
 
             const isCurrentUser = Number(data.sender_id) === currentUserId;
-            const label = isCurrentUser ? 'You' : 'Guide';
+            const label = isCurrentUser ? UI_STRINGS.you : UI_STRINGS.guide;
 
             const wrapper = document.createElement('div');
             wrapper.className = 'chat-message ' + (isCurrentUser ? 'message-out' : 'message-in');
@@ -413,12 +426,12 @@
 
         function getStatusText(readAt, deliveredAt) {
             if (readAt) {
-                return 'Đã xem';
+                return UI_STRINGS.read;
             }
             if (deliveredAt) {
-                return 'Đã gửi';
+                return UI_STRINGS.sent;
             }
-            return 'Đang gửi...';
+            return UI_STRINGS.sending;
         }
 
         function parseUtcTimestamp(timestamp) {
@@ -435,7 +448,7 @@
             if (Math.abs(diffMs) < 3600 * 1000) {
                 return formatRelativeTime(date);
             }
-            return date.toLocaleTimeString('vi', { hour: '2-digit', minute: '2-digit', timeZone: 'UTC' });
+            return date.toLocaleTimeString(uiLocale, { hour: '2-digit', minute: '2-digit', timeZone: 'UTC' });
         }
 
         function emitTyping(isTyping) {
@@ -584,14 +597,14 @@
             }
             if (presenceText) {
                 presenceText.textContent = isOnline
-                    ? 'Hướng dẫn viên đang hoạt động'
-                    : 'Hướng dẫn viên ngoại tuyến';
+                    ? UI_STRINGS.presence_online
+                    : UI_STRINGS.presence_offline;
             }
             presenceStatus.classList.toggle('online', isOnline);
             presenceStatus.classList.toggle('offline', !isOnline);
 
             if (!isOnline && lastActive) {
-                presenceStatus.setAttribute('title', 'Hoạt động gần nhất: ' + lastActive);
+                presenceStatus.setAttribute('title', UI_STRINGS.presence_last_active + ' ' + lastActive);
             } else {
                 presenceStatus.removeAttribute('title');
             }
@@ -628,11 +641,11 @@
 
             if (payload.status === 'delivered') {
                 messageElement.dataset.delivered = '1';
-                statusElement.textContent = 'Đã gửi';
+                statusElement.textContent = UI_STRINGS.sent;
             } else if (payload.status === 'read') {
                 messageElement.dataset.delivered = '1';
                 messageElement.dataset.read = '1';
-                statusElement.textContent = 'Đã xem';
+                statusElement.textContent = UI_STRINGS.read;
             }
         });
 

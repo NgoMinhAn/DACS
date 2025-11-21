@@ -21,7 +21,7 @@
                             <label class="form-label">Message</label>
                             <textarea name="message" class="form-control" rows="5" required></textarea>
                         </div>
-                        <button type="submit" class="btn btn-primary w-100">Send Message</button>
+                        <button type="submit" class="btn btn-primary w-100"><?php echo __('contact.send_message_button'); ?></button>
                     </form>
                 </div>
             </div>

@@ -6,7 +6,7 @@
         <div class="row align-items-center min-vh-30">
             <div class="col-lg-8 mx-auto text-center scroll-animate fade-up">
                 <div class="category-hero-content">
-                    <h1 class="display-3 fw-bold text-white mb-4">Tour Guide Categories</h1>
+                    <h1 class="display-3 fw-bold text-white mb-4"><?php echo __('nav.guide_categories'); ?></h1>
                     <p class="lead text-white mb-4 fs-5">Browse our guides by their areas of expertise</p>
                     <div class="category-hero-badge">
                         <span class="badge bg-white bg-opacity-25 text-white px-4 py-2 fs-6">

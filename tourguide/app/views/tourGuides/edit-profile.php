@@ -86,10 +86,10 @@
                         </div>
                         <div class="d-flex gap-3 mt-4">
                             <button type="submit" class="btn btn-lg shadow text-white flex-fill" style="background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);">
-                                <i class="fas fa-save me-2"></i>Save Changes
+                                <i class="fas fa-save me-2"></i><?php echo __('buttons.save_changes') ?? 'Save Changes'; ?>
                             </button>
                             <a href="<?php echo url('guide/dashboard'); ?>" class="btn btn-lg btn-outline-secondary flex-fill">
-                                <i class="fas fa-times me-2"></i>Cancel
+                                <i class="fas fa-times me-2"></i><?php echo __('buttons.cancel'); ?>
                             </a>
                         </div>
                     </form>

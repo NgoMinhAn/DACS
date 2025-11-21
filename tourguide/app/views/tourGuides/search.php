@@ -2,13 +2,13 @@
 <div class="bg-light py-4 mb-5">
     <div class="container">
         <h1 class="fs-2 fw-bold"><?php echo $title; ?></h1>
-        <p class="lead mb-3">Found <?php echo $result_count; ?> guides matching your search</p>
+        <p class="lead mb-3"><?php echo __('search.results', ['count' => $result_count]); ?></p>
         
         <!-- Search form to allow refining search -->
         <form action="<?php echo url('tourGuide/search'); ?>" method="GET" class="mt-3">
             <div class="input-group">
-                <input type="text" class="form-control" name="q" value="<?php echo htmlspecialchars($query); ?>" placeholder="Refine your search...">
-                <button class="btn btn-primary" type="submit">Search Again</button>
+                <input type="text" class="form-control" name="q" value="<?php echo htmlspecialchars($query); ?>" placeholder="<?php echo __('search.placeholder'); ?>">
+                <button class="btn btn-primary" type="submit"><?php echo __('search.button'); ?></button>
             </div>
         </form>
     </div>
@@ -53,7 +53,7 @@
                                 <p class="card-text text-dark"><?php echo htmlspecialchars(substr($guide->bio ?? 'Expert local guide', 0, 60)) . '...'; ?></p>
                                 <div class="d-flex justify-content-between align-items-center">
                                     <span class="text-primary fw-bold">$<?php echo number_format($guide->hourly_rate, 2); ?>/hour</span>
-                                    <span class="btn btn-sm btn-outline-primary">View Profile</span>
+                                    <span class="btn btn-sm btn-outline-primary"><?php echo __('buttons.view_profile'); ?></span>
                                 </div>
                             </div>
                             <div class="card-footer bg-white">
@@ -66,19 +66,19 @@
         <?php else: ?>
             <div class="col-12">
                 <div class="alert alert-info">
-                    <i class="fas fa-info-circle me-2"></i> No guides found matching "<?php echo htmlspecialchars($query); ?>". 
-                    Try different keywords or <a href="<?php echo url('tourGuide/browse'); ?>" class="alert-link">browse all guides</a>.
+                    <i class="fas fa-info-circle me-2"></i> <?php echo __('search.no_results', ['q' => htmlspecialchars($query)]); ?> 
+                    <?php echo __('search.try_or'); ?> <a href="<?php echo url('tourGuide/browse'); ?>" class="alert-link"><?php echo __('nav.find_guide'); ?></a>.
                 </div>
                 
                 <!-- Suggestion section -->
                 <div class="card mt-4">
                     <div class="card-body">
-                        <h5 class="card-title">Popular searches</h5>
+                        <h5 class="card-title"><?php echo __('search.popular'); ?></h5>
                         <div class="d-flex flex-wrap gap-2 mt-3">
-                            <a href="<?php echo url('tourGuide/search?q=city'); ?>" class="btn btn-outline-secondary btn-sm">City tours</a>
-                            <a href="<?php echo url('tourGuide/search?q=food'); ?>" class="btn btn-outline-secondary btn-sm">Food experiences</a>
-                            <a href="<?php echo url('tourGuide/search?q=cultural'); ?>" class="btn btn-outline-secondary btn-sm">Cultural guides</a>
-                            <a href="<?php echo url('tourGuide/search?q=adventure'); ?>" class="btn btn-outline-secondary btn-sm">Adventure guides</a>
+                            <a href="<?php echo url('tourGuide/search?q=city'); ?>" class="btn btn-outline-secondary btn-sm"><?php echo __('search.city_tours'); ?></a>
+                            <a href="<?php echo url('tourGuide/search?q=food'); ?>" class="btn btn-outline-secondary btn-sm"><?php echo __('search.food_experiences'); ?></a>
+                            <a href="<?php echo url('tourGuide/search?q=cultural'); ?>" class="btn btn-outline-secondary btn-sm"><?php echo __('search.cultural_guides'); ?></a>
+                            <a href="<?php echo url('tourGuide/search?q=adventure'); ?>" class="btn btn-outline-secondary btn-sm"><?php echo __('search.adventure_guides'); ?></a>
                         </div>
                     </div>
                 </div>
@@ -87,6 +87,6 @@
     </div>
     
     <div class="text-center mt-4">
-        <a href="<?php echo url('tourGuide/browse'); ?>" class="btn btn-outline-primary">Browse All Guides</a>
+        <a href="<?php echo url('tourGuide/browse'); ?>" class="btn btn-outline-primary"><?php echo __('nav.find_guide'); ?></a>
     </div>
 </div> 

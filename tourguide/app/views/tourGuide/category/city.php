@@ -1,13 +1,13 @@
 <!-- City Category Header -->
 <div class="bg-primary text-white py-4 mb-5">
     <div class="container">
-        <div class="row align-items-center">
+                <div class="row align-items-center">
             <div class="col-lg-6">
-                <h1 class="fw-bold">City Guides</h1>
-                <p class="lead">Discover urban landscapes and hidden gems with our expert city tour guides</p>
+                <h1 class="fw-bold"><?php echo htmlspecialchars($category_info->name ?? 'City Guides'); ?></h1>
+                <p class="lead"><?php echo htmlspecialchars($category_info->description ?? __('category.contact_prompt')); ?></p>
             </div>
             <div class="col-lg-6 d-none d-lg-block">
-                <img src="<?php echo url('public/img/category-city.jpg'); ?>" alt="City Tours" class="img-fluid rounded-3 shadow-lg" style="height: 250px; object-fit: cover; width: 100%;">
+                <img src="<?php echo url('public/img/category-city.jpg'); ?>" alt="<?php echo __('category.city_title'); ?>" class="img-fluid rounded-3 shadow-lg" style="height: 250px; object-fit: cover; width: 100%;">
             </div>
         </div>
     </div>
@@ -19,7 +19,7 @@
         <div class="row">
             <div class="col-12 mb-4">
                 <div class="d-flex justify-content-between align-items-center">
-                    <h2 class="fw-bold">Urban Exploration Specialists</h2>
+                    <h2 class="fw-bold"><?php echo __('category.urban_specialists') ?? 'Urban Exploration Specialists'; ?></h2>
                     <div class="dropdown">
                         <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="sortDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                             Sort By
@@ -60,7 +60,7 @@
                                     <p class="card-text text-dark"><?php echo htmlspecialchars(substr($guide->bio ?? 'Expert city guide with in-depth knowledge of urban areas', 0, 100)) . '...'; ?></p>
                                     <div class="d-flex justify-content-between align-items-center">
                                         <span class="text-primary fw-bold">$<?php echo number_format($guide->hourly_rate, 2); ?>/hour</span>
-                                        <span class="btn btn-sm btn-outline-primary">View Profile</span>
+                                        <span class="btn btn-sm btn-outline-primary"><?php echo __('buttons.view_profile'); ?></span>
                                     </div>
                                 </div>
                                 <div class="card-footer bg-white">
@@ -100,9 +100,9 @@
 <section class="mb-5 py-5 bg-light">
     <div class="container">
         <div class="row">
-            <div class="col-12 text-center mb-4">
-                <h2 class="fw-bold">Popular City Tour Experiences</h2>
-                <p class="text-muted">Explore the urban landscape with specialized city tours</p>
+                <div class="col-12 text-center mb-4">
+                <h2 class="fw-bold"><?php echo __('category.popular_city_title'); ?></h2>
+                <p class="text-muted"><?php echo __('category.popular_city_desc'); ?></p>
             </div>
         </div>
         
@@ -162,7 +162,7 @@
                             <p class="lead mb-0">Tell us what you're interested in and we'll match you with the perfect city guide</p>
                         </div>
                         <div class="col-lg-4 text-lg-end">
-                            <a href="<?php echo url('contact'); ?>" class="btn btn-light btn-lg">Contact Us</a>
+                            <a href="<?php echo url('contact'); ?>" class="btn btn-light btn-lg"><?php echo __('buttons.contact_us'); ?></a>
                         </div>
                     </div>
                 </div>

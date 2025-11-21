@@ -77,7 +77,7 @@
                                     <p class="card-text text-dark"><?php echo htmlspecialchars(substr($guide->bio ?? 'Experienced guide offering specialized tours', 0, 100)) . '...'; ?></p>
                                 <div class="d-flex justify-content-between align-items-center">
                                     <span class="text-primary fw-bold">$<?php echo number_format($guide->hourly_rate, 2); ?>/hour</span>
-                                        <span class="btn btn-sm btn-outline-primary">View Profile</span>
+                                        <span class="btn btn-sm btn-outline-primary"><?php echo __('buttons.view_profile'); ?></span>
                                 </div>
                             </div>
                             <div class="card-footer bg-white">
@@ -97,14 +97,14 @@
                             <div class="empty-state-icon mb-4">
                                 <i class="fas fa-compass" style="font-size: 5rem; color: #dee2e6;"></i>
                             </div>
-                            <h3 class="fw-bold mb-3">Không có hướng dẫn viên nào</h3>
-                            <p class="text-muted mb-4">Hiện tại danh mục này chưa có hướng dẫn viên nào. Vui lòng thử lại sau hoặc khám phá các danh mục khác.</p>
+                            <h3 class="fw-bold mb-3"><?php echo __('category.none_title'); ?></h3>
+                            <p class="text-muted mb-4"><?php echo __('category.none_desc'); ?></p>
                             <div class="d-flex gap-3 justify-content-center flex-wrap">
                                 <a href="<?php echo url('tourGuide/category/categories'); ?>" class="btn btn-primary">
-                                    <i class="fas fa-th-large me-2"></i>Xem tất cả danh mục
+                                    <i class="fas fa-th-large me-2"></i><?php echo __('category.view_all'); ?>
                                 </a>
                                 <a href="<?php echo url('tourGuide/browse'); ?>" class="btn btn-outline-primary">
-                                    <i class="fas fa-search me-2"></i>Tìm kiếm hướng dẫn viên
+                                    <i class="fas fa-search me-2"></i><?php echo __('category.search_guides'); ?>
                                 </a>
                             </div>
                         </div>

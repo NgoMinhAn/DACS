@@ -11,11 +11,11 @@
             <div class="card-body p-5">
                 <form method="POST" enctype="multipart/form-data">
                     <div class="mb-4">
-                        <label for="location" class="form-label fw-semibold"><i class="fas fa-map-marker-alt me-2 text-primary"></i>Location <span class="text-danger">*</span></label>
+                        <label for="location" class="form-label fw-semibold"><i class="fas fa-map-marker-alt me-2 text-primary"></i><?php echo __('search.location'); ?> <span class="text-danger">*</span></label>
                         <input type="text" class="form-control form-control-lg rounded-3" id="location" name="location" required>
                     </div>
                     <div class="mb-4">
-                        <label for="phone" class="form-label fw-semibold"><i class="fas fa-phone me-2 text-primary"></i>Phone Number <span class="text-danger">*</span></label>
+                        <label for="phone" class="form-label fw-semibold"><i class="fas fa-phone me-2 text-primary"></i><?php echo __('contact.phone_number'); ?> <span class="text-danger">*</span></label>
                         <input type="text" class="form-control form-control-lg rounded-3" id="phone" name="phone" required>
                     </div>
                     <div class="mb-4">
@@ -35,7 +35,7 @@
                         <textarea class="form-control rounded-3" id="experience" name="experience" rows="3"></textarea>
                     </div>
                     <div class="d-grid gap-2 mt-4">
-                        <button type="submit" class="btn btn-primary btn-lg rounded-pill shadow"><span class="fw-bold">Next</span> <i class="fas fa-arrow-right ms-2"></i></button>
+                        <button type="submit" class="btn btn-primary btn-lg rounded-pill shadow"><span class="fw-bold"><?php echo __('buttons.next'); ?></span> <i class="fas fa-arrow-right ms-2"></i></button>
                     </div>
                 </form>
             </div>

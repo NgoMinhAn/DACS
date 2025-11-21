@@ -4,9 +4,9 @@
         <div class="row align-items-center">
             <div class="col-lg-6 scroll-animate fade-left">
                 <h1 class="display-5 fw-bold text-white mb-2">
-                    <i class="fas fa-envelope-open me-2"></i>Contact Us
+                    <i class="fas fa-envelope-open me-2"></i><?php echo __('nav.contact'); ?>
                 </h1>
-                <p class="text-white mb-3">Have questions? We're here to help you find the perfect tour guide.</p>
+                <p class="text-white mb-3"><?php echo __('contact.tagline'); ?></p>
                 <div class="d-flex flex-wrap gap-2">
                     <span class="badge rounded-pill px-3 py-1" style="background: rgba(255,255,255,0.2); color: white; font-size: 0.9rem;">
                         <i class="fas fa-headset me-1"></i>24/7 Support
@@ -31,7 +31,7 @@
             <div class="card border-0 shadow-lg h-100">
                 <div class="card-header border-0 pb-0" style="background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);">
                     <h2 class="h4 mb-0 text-white fw-bold py-3">
-                        <i class="fas fa-phone-alt me-2"></i>Get In Touch
+                        <i class="fas fa-phone-alt me-2"></i><?php echo __('contact.get_in_touch'); ?>
                     </h2>
                 </div>
                 <div class="card-body p-4">
@@ -42,7 +42,7 @@
                             </div>
                         </div>
                         <div class="ms-3">
-                            <h5 class="mb-1 fw-bold">Our Location</h5>
+                            <h5 class="mb-1 fw-bold"><?php echo __('contact.our_location'); ?></h5>
                             <p class="text-muted mb-0"><?php echo getConfig('contact.address'); ?></p>
                         </div>
                     </div>
@@ -54,7 +54,7 @@
                             </div>
                         </div>
                         <div class="ms-3">
-                            <h5 class="mb-1 fw-bold">Phone Number</h5>
+                            <h5 class="mb-1 fw-bold"><?php echo __('contact.phone_number'); ?></h5>
                             <p class="text-muted mb-0"><?php echo getConfig('contact.phone'); ?></p>
                         </div>
                     </div>
@@ -66,7 +66,7 @@
                             </div>
                         </div>
                         <div class="ms-3">
-                            <h5 class="mb-1 fw-bold">Email Address</h5>
+                            <h5 class="mb-1 fw-bold"><?php echo __('contact.email_address'); ?></h5>
                             <p class="text-muted mb-0"><?php echo getConfig('contact.email'); ?></p>
                         </div>
                     </div>
@@ -74,7 +74,7 @@
                     <hr class="my-4">
                     
                     <h5 class="mb-3 fw-bold">
-                        <i class="fas fa-share-alt me-2 text-primary"></i>Follow Us
+                        <i class="fas fa-share-alt me-2 text-primary"></i><?php echo __('contact.follow_us'); ?>
                     </h5>
                     <div class="social-links">
                         <a href="<?php echo getConfig('social_media.facebook'); ?>" class="btn btn-outline-primary rounded-pill me-2 mb-2" target="_blank" rel="noopener">
@@ -99,7 +99,7 @@
             <div class="card border-0 shadow-lg">
                 <div class="card-header border-0 pb-0" style="background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);">
                     <h2 class="h4 mb-0 text-white fw-bold py-3">
-                        <i class="fas fa-paper-plane me-2"></i>Send Us a Message
+                        <i class="fas fa-paper-plane me-2"></i><?php echo __('contact.send_message'); ?>
                     </h2>
                 </div>
                 <div class="card-body p-4 p-md-5">
@@ -109,28 +109,28 @@
                         <div class="row g-4">
                             <div class="col-md-6">
                                 <label for="name" class="form-label fw-bold">
-                                    <i class="fas fa-user me-2 text-primary"></i>Your Name
+                                    <i class="fas fa-user me-2 text-primary"></i><?php echo __('form.name'); ?>
                                 </label>
                                 <input type="text" class="form-control form-control-lg" id="name" name="name" placeholder="Your full name" required>
                             </div>
                             
                             <div class="col-md-6">
                                 <label for="email" class="form-label fw-bold">
-                                    <i class="fas fa-envelope me-2 text-primary"></i>Email Address
+                                    <i class="fas fa-envelope me-2 text-primary"></i><?php echo __('form.email'); ?>
                                 </label>
                                 <input type="email" class="form-control form-control-lg" id="email" name="email" placeholder="Your email address" required>
                             </div>
                             
                             <div class="col-12">
                                 <label for="subject" class="form-label fw-bold">
-                                    <i class="fas fa-tag me-2 text-primary"></i>Subject
+                                    <i class="fas fa-tag me-2 text-primary"></i><?php echo __('form.subject'); ?>
                                 </label>
                                 <input type="text" class="form-control form-control-lg" id="subject" name="subject" placeholder="What is this regarding?" required>
                             </div>
                             
                             <div class="col-12">
                                 <label for="message" class="form-label fw-bold">
-                                    <i class="fas fa-comment-dots me-2 text-primary"></i>Message
+                                    <i class="fas fa-comment-dots me-2 text-primary"></i><?php echo __('form.message'); ?>
                                 </label>
                                 <textarea class="form-control form-control-lg" id="message" name="message" rows="6" placeholder="How can we help you?" required></textarea>
                             </div>
@@ -138,15 +138,15 @@
                             <div class="col-12">
                                 <div class="form-check p-3 rounded" style="background-color: var(--warm-cream);">
                                     <input class="form-check-input" type="checkbox" id="privacy" name="privacy" required>
-                                    <label class="form-check-label" for="privacy">
-                                        I agree to the <a href="<?php echo url('privacy'); ?>" class="text-primary fw-bold">Privacy Policy</a>
+                                        <label class="form-check-label" for="privacy">
+                                        <?php echo __('contact.agree_privacy'); ?> <a href="<?php echo url('privacy'); ?>" class="text-primary fw-bold"><?php echo __('contact.privacy_policy'); ?></a>
                                     </label>
                                 </div>
                             </div>
                             
                             <div class="col-12 mt-4">
                                 <button type="submit" class="btn btn-lg rounded-pill px-5 shadow text-white" style="background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);">
-                                    <i class="fas fa-paper-plane me-2"></i>Send Message
+                                    <i class="fas fa-paper-plane me-2"></i><?php echo __('contact.send_message_button'); ?>
                                 </button>
                             </div>
                         </div>
@@ -215,12 +215,12 @@
                     <div class="accordion-item border-0 mb-3 rounded">
                         <h3 class="accordion-header" id="faqHeading4">
                             <button class="accordion-button collapsed rounded" type="button" data-bs-toggle="collapse" data-bs-target="#faqCollapse4" aria-expanded="false" aria-controls="faqCollapse4" style="background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%); color: white;">
-                                <i class="fas fa-user-tie me-2"></i>How do I become a guide on your platform?
+                                <i class="fas fa-user-tie me-2"></i><?php echo __('faq.how_become_guide'); ?>
                             </button>
                         </h3>
                         <div id="faqCollapse4" class="accordion-collapse collapse" aria-labelledby="faqHeading4" data-bs-parent="#faqAccordion">
                             <div class="accordion-body">
-                                To become a guide, click on the "Become a Guide" button in the navigation bar and complete our application process. You'll need to provide information about your expertise, languages spoken, and availability. We'll review your application and may schedule an interview before approving your profile.
+                                To become a guide, click on the "<?php echo __('nav.become_guide'); ?>" button in the navigation bar and complete our application process. You'll need to provide information about your expertise, languages spoken, and availability. We'll review your application and may schedule an interview before approving your profile.
                             </div>
                         </div>
                     </div>
@@ -272,7 +272,7 @@
             </div>
             <div class="col-lg-4 text-lg-end scroll-animate fade-right">
                 <a href="<?php echo url('tourGuide/browse'); ?>" class="btn btn-light btn-lg rounded-pill px-4 shadow">
-                    <i class="fas fa-th-large me-2"></i>Browse Tour Guides
+                    <i class="fas fa-th-large me-2"></i><?php echo __('nav.find_guide'); ?>
                 </a>
             </div>
         </div>

@@ -1,9 +1,9 @@
 <!-- Hero Section with Carousel -->
 <!-- 
-    HƯỚNG DẪN THÊM ẢNH:
-    1. Thêm ảnh vào thư mục: public/img/
-    2. Thêm button indicator mới (thay đổi số slide-to)
-    3. Thêm div carousel-item mới với đường dẫn ảnh của bạn
+    IMAGE ADD INSTRUCTIONS:
+    1. Add images to folder: public/img/
+    2. Add a new indicator button (update the data-bs-slide-to number)
+    3. Add a new carousel-item div with the path to your image
 -->
 <div id="heroCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="4000" data-bs-pause="false">
     <div class="carousel-indicators">
@@ -50,16 +50,16 @@
                         <div class="row g-3 align-items-end">
                             <div class="col-md-5">
                                 <label class="form-label text-dark fw-semibold mb-2">
-                                    <i class="fas fa-search text-primary me-2"></i>Tìm kiếm hướng dẫn viên
+                                    <i class="fas fa-search text-primary me-2"></i><?php echo __('search.label'); ?>
                                 </label>
-                                <input type="text" class="form-control form-control-lg" name="q" placeholder="Tên, chuyên môn, hoặc từ khóa..." style="border-radius: 10px; border: 2px solid #e0e0e0;">
+                                <input type="text" class="form-control form-control-lg" name="q" placeholder="<?php echo __('search.placeholder'); ?>" style="border-radius: 10px; border: 2px solid #e0e0e0;">
                             </div>
                             <div class="col-md-4">
                                 <label class="form-label text-dark fw-semibold mb-2">
-                                    <i class="fas fa-map-marker-alt text-primary me-2"></i>Địa điểm
+                                    <i class="fas fa-map-marker-alt text-primary me-2"></i><?php echo __('search.location'); ?>
                                 </label>
                                 <select class="form-select form-select-lg" name="location" style="border-radius: 10px; border: 2px solid #e0e0e0;">
-                                    <option value="" selected>Tất cả địa điểm</option>
+                                    <option value="" selected><?php echo __('search.all_locations'); ?></option>
                                     <option value="hanoi">Hà Nội</option>
                                     <option value="hochiminh">Hồ Chí Minh</option>
                                     <option value="danang">Đà Nẵng</option>
@@ -71,8 +71,8 @@
                                 </select>
                             </div>
                             <div class="col-md-3">
-                                <button class="btn btn-lg w-100 text-white fw-bold" type="submit" style="background-color: #4CAF50; border-radius: 10px; min-height: 58px; border: none;">
-                                    <i class="fas fa-search me-2"></i>Tìm Kiếm
+                                    <button class="btn btn-lg w-100 text-white fw-bold" type="submit" style="background-color: #4CAF50; border-radius: 10px; min-height: 58px; border: none;">
+                                    <i class="fas fa-search me-2"></i><?php echo __('search.button'); ?>
                                 </button>
                             </div>
                         </div>
@@ -87,9 +87,9 @@
 <section class="py-5 scroll-animate fade-up" style="background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);">
     <div class="container">
         <div class="row">
-            <div class="col-12 text-center text-white">
-                <h1 class="display-4 fw-bold mb-3">Kết Nối Hướng Dẫn Viên Với Khách Du Lịch</h1>
-                <p class="lead mb-0 fs-5">Nền tảng <span class="fw-bold text-warning">hàng đầu</span> giúp bạn tìm được hướng dẫn viên phù hợp và trải nghiệm du lịch đáng nhớ</p>
+                <div class="col-12 text-center text-white">
+                <h1 class="display-4 fw-bold mb-3"><?php echo __('hero.title'); ?></h1>
+                <p class="lead mb-0 fs-5"><?php echo __('hero.desc'); ?></p>
             </div>
         </div>
     </div>
@@ -102,9 +102,9 @@
             <div class="col-12 text-center mb-5 scroll-animate fade-up">
                 <h2 class="fw-bold display-5 mb-3">
                     <i class="fas fa-star me-2" style="background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
-                    Our Top-Rated Guides
+                    <?php echo __('home.top_rated_title'); ?>
                 </h2>
-                <p class="text-muted lead">Connect with our highest-rated local experts for an unforgettable experience</p>
+                <p class="text-muted lead"><?php echo __('home.top_rated_desc'); ?></p>
             </div>
         </div>
         
@@ -140,7 +140,7 @@
                                     <p class="card-text text-dark mb-3"><?php echo htmlspecialchars(substr($guide->bio ?? 'Expert local guide', 0, 60)) . '...'; ?></p>
                                     <div class="d-flex justify-content-between align-items-center">
                                         <span class="fw-bold" style="color: #4CAF50; font-size: 1.1rem;">$<?php echo number_format($guide->hourly_rate, 2); ?>/hour</span>
-                                        <span class="btn btn-sm rounded-pill px-3" style="background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%); color: white;">View Profile</span>
+                                        <span class="btn btn-sm rounded-pill px-3" style="background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%); color: white;"><?php echo __('buttons.view_profile'); ?></span>
                                     </div>
                                 </div>
                                 <div class="card-footer bg-white border-0">
@@ -163,7 +163,7 @@
         
         <div class="text-center mt-5">
             <a href="<?php echo url('tourGuide/browse'); ?>" class="btn btn-lg rounded-pill px-5 shadow text-white" style="background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);">
-                <i class="fas fa-th-large me-2"></i>Browse All Guides
+                <i class="fas fa-th-large me-2"></i><?php echo __('nav.find_guide'); ?>
             </a>
         </div>
     </div>
@@ -375,7 +375,7 @@
                         </div>
                         <div class="col-lg-4 text-lg-end">
                             <a href="<?php echo url('account/register/guide'); ?>" class="btn btn-light btn-lg rounded-pill px-4 shadow">
-                                <i class="fas fa-rocket me-2"></i>Become a Guide
+                                <i class="fas fa-rocket me-2"></i><?php echo __('nav.become_guide'); ?>
                             </a>
                         </div>
                     </div>

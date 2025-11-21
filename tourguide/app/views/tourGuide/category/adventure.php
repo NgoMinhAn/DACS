@@ -1,10 +1,10 @@
 <!-- Adventure Category Header -->
 <div class="bg-primary text-white py-4 mb-5">
     <div class="container">
-        <div class="row align-items-center">
+                <div class="row align-items-center">
             <div class="col-lg-6">
-                <h1 class="fw-bold">Adventure Guides</h1>
-                <p class="lead">Connect with guides who specialize in thrilling and unforgettable adventure experiences</p>
+                <h1 class="fw-bold"><?php echo htmlspecialchars($category_info->name ?? 'Adventure Guides'); ?></h1>
+                <p class="lead"><?php echo htmlspecialchars($category_info->description ?? __('category.contact_prompt')); ?></p>
             </div>
             <div class="col-lg-6 d-none d-lg-block">
                 <img src="<?php echo url('public/img/category-adventure.jpg'); ?>" alt="Adventure Tours" class="img-fluid rounded-3 shadow-lg" style="height: 250px; object-fit: cover; width: 100%;">
@@ -60,7 +60,7 @@
                                     <p class="card-text text-dark"><?php echo htmlspecialchars(substr($guide->bio ?? 'Adventure specialist offering thrilling experiences', 0, 100)) . '...'; ?></p>
                                     <div class="d-flex justify-content-between align-items-center">
                                         <span class="text-primary fw-bold">$<?php echo number_format($guide->hourly_rate, 2); ?>/hour</span>
-                                        <span class="btn btn-sm btn-outline-primary">View Profile</span>
+                                        <span class="btn btn-sm btn-outline-primary"><?php echo __('buttons.view_profile'); ?></span>
                                     </div>
                                 </div>
                                 <div class="card-footer bg-white">
@@ -158,11 +158,11 @@
                 <div class="bg-primary text-white p-5 rounded-3">
                     <div class="row align-items-center">
                         <div class="col-lg-8 mb-4 mb-lg-0">
-                            <h3 class="fw-bold">Need a Customized Adventure Experience?</h3>
-                            <p class="lead mb-0">Contact us to connect with specialized adventure guides for your perfect trip</p>
+                            <h3 class="fw-bold"><?php echo __('category.cta_title'); ?></h3>
+                            <p class="lead mb-0"><?php echo __('category.cta_desc'); ?></p>
                         </div>
                         <div class="col-lg-4 text-lg-end">
-                            <a href="<?php echo url('contact'); ?>" class="btn btn-light btn-lg">Contact Us</a>
+                            <a href="<?php echo url('contact'); ?>" class="btn btn-light btn-lg"><?php echo __('buttons.contact_us'); ?></a>
                         </div>
                     </div>
                 </div>

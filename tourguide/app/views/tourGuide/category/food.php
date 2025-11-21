@@ -3,8 +3,8 @@
     <div class="container">
         <div class="row align-items-center">
             <div class="col-lg-6">
-                <h1 class="fw-bold">Food & Cuisine Guides</h1>
-                <p class="lead">Discover local flavors, culinary traditions, and gastronomic delights with expert food guides</p>
+                <h1 class="fw-bold"><?php echo htmlspecialchars($category_info->name ?? __('category.food_title')); ?></h1>
+                <p class="lead"><?php echo htmlspecialchars($category_info->description ?? __('category.contact_prompt')); ?></p>
             </div>
             <div class="col-lg-6 d-none d-lg-block">
                 <img src="<?php echo url('public/img/category-food.jpg'); ?>" alt="Food Tours" class="img-fluid rounded-3 shadow-lg" style="height: 250px; object-fit: cover; width: 100%;">
@@ -60,7 +60,7 @@
                                     <p class="card-text text-dark"><?php echo htmlspecialchars(substr($guide->bio ?? 'Culinary expert with passion for local cuisine and food traditions', 0, 100)) . '...'; ?></p>
                                     <div class="d-flex justify-content-between align-items-center">
                                         <span class="text-primary fw-bold">$<?php echo number_format($guide->hourly_rate, 2); ?>/hour</span>
-                                        <span class="btn btn-sm btn-outline-primary">View Profile</span>
+                                        <span class="btn btn-sm btn-outline-primary"><?php echo __('buttons.view_profile'); ?></span>
                                     </div>
                                 </div>
                                 <div class="card-footer bg-white">
@@ -158,11 +158,11 @@
                 <div class="bg-primary text-white p-5 rounded-3">
                     <div class="row align-items-center">
                         <div class="col-lg-8 mb-4 mb-lg-0">
-                            <h3 class="fw-bold">Hungry for an Authentic Experience?</h3>
-                            <p class="lead mb-0">Let us connect you with food guides who know all the best local flavors</p>
+                            <h3 class="fw-bold"><?php echo __('cta.hungry_title'); ?></h3>
+                            <p class="lead mb-0"><?php echo __('cta.hungry_desc'); ?></p>
                         </div>
                         <div class="col-lg-4 text-lg-end">
-                            <a href="<?php echo url('contact'); ?>" class="btn btn-light btn-lg">Contact Us</a>
+                            <a href="<?php echo url('contact'); ?>" class="btn btn-light btn-lg"><?php echo __('buttons.contact_us'); ?></a>
                         </div>
                     </div>
                 </div>

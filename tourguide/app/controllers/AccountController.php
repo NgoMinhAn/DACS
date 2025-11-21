@@ -530,6 +530,18 @@ class AccountController {
         }
 
         // Handle different sections
+        // Handle language change (from General Settings form)
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['language'])) {
+            $_POST = $this->sanitizeInputArray($_POST);
+            $lang = $_POST['language'] ?? 'en';
+            require_once HELPER_PATH . '/functions.php';
+            if (function_exists('site_set_locale')) {
+                site_set_locale($lang);
+            }
+            flash('settings_message', 'Language preference saved.', 'alert alert-success');
+            redirect('account/settings');
+        }
+
         switch ($section) {
             case 'profile':
                 if ($_SERVER['REQUEST_METHOD'] === 'POST') {

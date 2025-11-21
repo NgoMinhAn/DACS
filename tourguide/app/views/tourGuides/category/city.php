@@ -11,12 +11,12 @@
             <div class="col-lg-8 mx-auto text-center scroll-animate fade-up">
                 <div class="category-hero-content">
                     <h1 class="display-3 fw-bold text-white mb-4"><?php echo htmlspecialchars($category_info->name ?? 'City Guides'); ?></h1>
-                    <p class="lead text-white mb-4 fs-5"><?php echo htmlspecialchars($category_info->description ?? 'Discover urban landscapes and hidden gems with our expert city tour guides'); ?></p>
+                    <p class="lead text-white mb-4 fs-5"><?php echo htmlspecialchars($category_info->description ?? __('category.contact_prompt')); ?></p>
                     <div class="category-hero-badge">
-                        <span class="badge bg-white bg-opacity-25 text-white px-4 py-2 fs-6">
-                            Explore the City
-                        </span>
-                    </div>
+                            <span class="badge bg-white bg-opacity-25 text-white px-4 py-2 fs-6">
+                                <?php echo __('category.city_title'); ?>
+                            </span>
+                        </div>
                 </div>
             </div>
         </div>
@@ -78,7 +78,7 @@
                                     <p class="card-text text-dark"><?php echo htmlspecialchars(substr($guide->bio ?? 'Expert city guide with in-depth knowledge of urban areas', 0, 100)) . '...'; ?></p>
                                     <div class="d-flex justify-content-between align-items-center">
                                         <span class="text-primary fw-bold">$<?php echo number_format($guide->hourly_rate, 2); ?>/hour</span>
-                                        <span class="btn btn-sm btn-outline-primary">View Profile</span>
+                                        <span class="btn btn-sm btn-outline-primary"><?php echo __('buttons.view_profile'); ?></span>
                                     </div>
                                 </div>
                                 <div class="card-footer bg-white">
@@ -133,9 +133,9 @@
 <section class="mb-5 py-5 bg-light">
     <div class="container">
         <div class="row">
-            <div class="col-12 text-center mb-4">
-                <h2 class="fw-bold">Popular City Tour Experiences</h2>
-                <p class="text-muted">Explore the urban landscape with specialized city tours</p>
+                <div class="col-12 text-center mb-4">
+                <h2 class="fw-bold"><?php echo __('category.popular_city_title'); ?></h2>
+                <p class="text-muted"><?php echo __('category.popular_city_desc'); ?></p>
             </div>
         </div>
         
@@ -196,7 +196,7 @@
                         </div>
                         <div class="col-lg-4 text-lg-end">
                             <a href="<?php echo url('contact'); ?>" class="btn btn-light btn-lg shadow px-4">
-                                <i class="fas fa-envelope me-2"></i>Contact Us
+                                <i class="fas fa-envelope me-2"></i><?php echo __('buttons.contact_us'); ?>
                             </a>
                         </div>
                     </div>

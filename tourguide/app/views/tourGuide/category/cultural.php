@@ -1,10 +1,10 @@
 <!-- Cultural Category Header -->
 <div class="bg-primary text-white py-4 mb-5">
     <div class="container">
-        <div class="row align-items-center">
+                <div class="row align-items-center">
             <div class="col-lg-6">
-                <h1 class="fw-bold">Cultural Guides</h1>
-                <p class="lead">Immerse yourself in local traditions, history, and heritage with our cultural specialists</p>
+                <h1 class="fw-bold"><?php echo htmlspecialchars($category_info->name ?? 'Cultural Guides'); ?></h1>
+                <p class="lead"><?php echo htmlspecialchars($category_info->description ?? __('category.contact_prompt')); ?></p>
             </div>
             <div class="col-lg-6 d-none d-lg-block">
                 <img src="<?php echo url('public/img/category-cultural.jpg'); ?>" alt="Cultural Tours" class="img-fluid rounded-3 shadow-lg" style="height: 250px; object-fit: cover; width: 100%;">
@@ -60,7 +60,7 @@
                                     <p class="card-text text-dark"><?php echo htmlspecialchars(substr($guide->bio ?? 'Cultural expert with deep knowledge of local traditions and history', 0, 100)) . '...'; ?></p>
                                     <div class="d-flex justify-content-between align-items-center">
                                         <span class="text-primary fw-bold">$<?php echo number_format($guide->hourly_rate, 2); ?>/hour</span>
-                                        <span class="btn btn-sm btn-outline-primary">View Profile</span>
+                                        <span class="btn btn-sm btn-outline-primary"><?php echo __('buttons.view_profile'); ?></span>
                                     </div>
                                 </div>
                                 <div class="card-footer bg-white">
@@ -162,7 +162,7 @@
                             <p class="lead mb-0">Connect with our cultural experts to design your personalized heritage journey</p>
                         </div>
                         <div class="col-lg-4 text-lg-end">
-                            <a href="<?php echo url('contact'); ?>" class="btn btn-light btn-lg">Contact Us</a>
+                            <a href="<?php echo url('contact'); ?>" class="btn btn-light btn-lg"><?php echo __('buttons.contact_us'); ?></a>
                         </div>
                     </div>
                 </div>
