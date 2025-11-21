@@ -544,7 +544,7 @@
                         <!-- Contact option -->
                         <div class="text-center mt-3">
                             <a href="<?php echo url('message/guide/' . $guide->id); ?>" class="btn btn-outline-primary">
-                                <i class="fas fa-envelope me-2"></i> Send Message
+                                <i class="fas fa-envelope me-2"></i> <?php echo __('contact.send_message'); ?>
                             </a>
                         </div>
                     <?php endif; ?>

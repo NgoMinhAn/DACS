@@ -10,18 +10,18 @@ $paymentDate = $booking->transaction_pay_date ?? $booking->payment_date ?? null;
         <div class="col-md-6">
             <h3 class="fw-bold text-primary mb-2">
                 <i class="fas fa-file-invoice-dollar me-2"></i>
-                HÓA ĐƠN THANH TOÁN
+                <?php echo __('invoice_meta.title'); ?>
             </h3>
             <p class="text-muted mb-1">
-                <strong>Mã hóa đơn:</strong> #<?php echo str_pad($booking->id, 6, '0', STR_PAD_LEFT); ?>
+                <strong><?php echo __('invoice_meta.invoice_number'); ?>:</strong> #<?php echo str_pad($booking->id, 6, '0', STR_PAD_LEFT); ?>
             </p>
             <p class="text-muted mb-1">
-                <strong>Ngày tạo:</strong> <?php echo date('d/m/Y H:i:s', strtotime($booking->created_at)); ?>
+                <strong><?php echo __('invoice_meta.created_at'); ?>:</strong> <?php echo date('d/m/Y H:i:s', strtotime($booking->created_at)); ?>
             </p>
         </div>
         <div class="col-md-6 text-end">
             <div class="badge bg-<?php echo ($paymentStatus == 'success' || $booking->payment_status == 'paid') ? 'success' : 'warning'; ?> text-white fs-6 px-4 py-2 rounded-pill">
-                <?php echo ($paymentStatus == 'success' || $booking->payment_status == 'paid') ? 'Đã Thanh Toán' : 'Chưa Thanh Toán'; ?>
+                <?php echo ($paymentStatus == 'success' || $booking->payment_status == 'paid') ? __('status.sent') : __('status.cancelled'); ?>
             </div>
         </div>
     </div>
@@ -31,7 +31,7 @@ $paymentDate = $booking->transaction_pay_date ?? $booking->payment_date ?? null;
     <!-- Customer & Guide Info -->
     <div class="row mb-4">
         <div class="col-md-6">
-            <h5 class="fw-bold mb-3">Thông Tin Khách Hàng</h5>
+            <h5 class="fw-bold mb-3"><?php echo __('invoice_meta.customer_info'); ?></h5>
             <div class="p-3 bg-light rounded">
                 <p class="mb-2"><strong>Tên:</strong> <?php echo htmlspecialchars($user->name ?? 'N/A'); ?></p>
                 <p class="mb-2"><strong>Email:</strong> <?php echo htmlspecialchars($user->email ?? 'N/A'); ?></p>
@@ -41,7 +41,7 @@ $paymentDate = $booking->transaction_pay_date ?? $booking->payment_date ?? null;
             </div>
         </div>
         <div class="col-md-6">
-            <h5 class="fw-bold mb-3">Thông Tin Hướng Dẫn Viên</h5>
+            <h5 class="fw-bold mb-3"><?php echo __('invoice.guide_info'); ?></h5>
             <div class="p-3 bg-light rounded">
                 <p class="mb-2"><strong>Tên:</strong> <?php echo htmlspecialchars($booking->guide_name ?? 'N/A'); ?></p>
                 <?php if(isset($booking->guide_email)): ?>
@@ -57,7 +57,7 @@ $paymentDate = $booking->transaction_pay_date ?? $booking->payment_date ?? null;
     <!-- Booking Details -->
     <div class="row mb-4">
         <div class="col-12">
-            <h5 class="fw-bold mb-3">Chi Tiết Đặt Tour</h5>
+            <h5 class="fw-bold mb-3"><?php echo __('invoice_meta.booking_details'); ?></h5>
             <div class="table-responsive">
                 <table class="table table-bordered">
                     <thead class="table-light">
@@ -80,7 +80,7 @@ $paymentDate = $booking->transaction_pay_date ?? $booking->payment_date ?? null;
                             </td>
                         </tr>
                         <tr>
-                            <td><strong>Địa điểm gặp mặt</strong></td>
+                            <td><strong><?php echo __('invoice.meeting_place'); ?></strong></td>
                             <td><?php echo htmlspecialchars($booking->meeting_location ?? 'N/A'); ?></td>
                         </tr>
                         <tr>
@@ -94,19 +94,12 @@ $paymentDate = $booking->transaction_pay_date ?? $booking->payment_date ?? null;
                         </tr>
                         <?php endif; ?>
                         <tr>
-                            <td><strong>Trạng thái</strong></td>
+                            <td><strong><?php echo __('status_label') ?? 'Status'; ?></strong></td>
                             <td>
                                 <span class="badge bg-info">
                                     <?php 
-                                        $statusMap = [
-                                            'pending' => 'Chờ xác nhận',
-                                            'confirmed' => 'Đã xác nhận',
-                                            'accepted' => 'Đã chấp nhận',
-                                            'completed' => 'Hoàn thành',
-                                            'cancelled' => 'Đã hủy',
-                                            'declined' => 'Từ chối'
-                                        ];
-                                        echo $statusMap[$booking->status] ?? ucfirst($booking->status);
+                                        $statusKey = $booking->status ?? '';
+                                        echo __('booking_status.' . $statusKey);
                                     ?>
                                 </span>
                             </td>
@@ -120,7 +113,7 @@ $paymentDate = $booking->transaction_pay_date ?? $booking->payment_date ?? null;
     <!-- Payment Information -->
     <div class="row mb-4">
         <div class="col-12">
-            <h5 class="fw-bold mb-3">Thông Tin Thanh Toán</h5>
+            <h5 class="fw-bold mb-3"><?php echo __('invoice_meta.payment_info'); ?></h5>
             <div class="table-responsive">
                 <table class="table table-bordered">
                     <thead class="table-light">
@@ -186,7 +179,7 @@ $paymentDate = $booking->transaction_pay_date ?? $booking->payment_date ?? null;
     <div class="row mt-4">
         <div class="col-12 text-center">
             <p class="text-muted mb-0">
-                <small>Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi!</small>
+                <small><?php echo __('invoice_meta.thank_you'); ?></small>
             </p>
         </div>
     </div>

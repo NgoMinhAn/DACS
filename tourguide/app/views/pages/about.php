@@ -191,7 +191,7 @@
                 <p class="lead mb-4 text-white">Whether you're looking to discover the world with a local guide or share your passion for your hometown with travelers, we invite you to join our growing community.</p>
                 <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
                     <a href="<?php echo url('account/register'); ?>" class="btn btn-light btn-lg px-4 me-sm-3 shadow">Sign Up as Traveler</a>
-                    <a href="<?php echo url('account/register/guide'); ?>" class="btn btn-outline-light btn-lg px-4 shadow">Become a Guide</a>
+                    <a href="<?php echo url('account/register/guide'); ?>" class="btn btn-outline-light btn-lg px-4 shadow"><?php echo __('nav.become_guide'); ?></a>
                 </div>
             </div>
         </div>

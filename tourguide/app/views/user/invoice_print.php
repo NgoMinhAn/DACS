@@ -5,7 +5,8 @@ $paymentMethod = $booking->transaction_payment_method ?? $booking->payment_metho
 $paymentDate = $booking->transaction_pay_date ?? $booking->payment_date ?? null;
 ?>
 <!DOCTYPE html>
-<html lang="vi">
+<?php if (session_status() === PHP_SESSION_NONE) { @session_start(); } ?>
+<html lang="<?php echo function_exists('getLocale') ? getLocale() : 'en'; ?>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -111,15 +112,15 @@ $paymentDate = $booking->transaction_pay_date ?? $booking->payment_date ?? null;
 <body>
     <!-- Header -->
     <div class="invoice-header">
-        <div class="invoice-title">HÓA ĐƠN THANH TOÁN</div>
+        <div class="invoice-title"><?php echo __('invoice_meta.title'); ?></div>
         <div class="invoice-info">
-            <strong>Mã hóa đơn:</strong> #<?php echo str_pad($booking->id ?? 0, 6, '0', STR_PAD_LEFT); ?><br>
-            <strong>Ngày tạo:</strong> <?php echo !empty($booking->created_at) ? date('d/m/Y H:i:s', strtotime($booking->created_at)) : date('d/m/Y H:i:s'); ?>
+            <strong><?php echo __('invoice_meta.invoice_number'); ?>:</strong> #<?php echo str_pad($booking->id ?? 0, 6, '0', STR_PAD_LEFT); ?><br>
+            <strong><?php echo __('invoice_meta.created_at'); ?>:</strong> <?php echo !empty($booking->created_at) ? date('d/m/Y H:i:s', strtotime($booking->created_at)) : date('d/m/Y H:i:s'); ?>
         </div>
         <div class="text-right" style="margin-top: -40px;">
             <?php 
                 $statusClass = ($paymentStatus == 'success' || ($booking->payment_status ?? '') == 'paid') ? 'status-paid' : 'status-pending';
-                $statusText = ($paymentStatus == 'success' || ($booking->payment_status ?? '') == 'paid') ? 'Đã Thanh Toán' : 'Chưa Thanh Toán';
+                $statusText = ($paymentStatus == 'success' || ($booking->payment_status ?? '') == 'paid') ? __('status.sent') : __('status.cancelled');
             ?>
             <span class="status-badge <?php echo $statusClass; ?>"><?php echo $statusText; ?></span>
         </div>
@@ -128,7 +129,7 @@ $paymentDate = $booking->transaction_pay_date ?? $booking->payment_date ?? null;
     <!-- Customer & Guide Info -->
     <div style="display: flex; gap: 20px; margin-bottom: 30px;">
         <div style="flex: 1;">
-            <div class="section-title">Thông Tin Khách Hàng</div>
+            <div class="section-title"><?php echo __('invoice_meta.customer_info'); ?></div>
             <div class="info-box">
                 <p class="mb-0"><strong>Tên:</strong> <?php echo htmlspecialchars($user->name ?? 'N/A', ENT_QUOTES, 'UTF-8'); ?></p>
                 <p class="mb-0"><strong>Email:</strong> <?php echo htmlspecialchars($user->email ?? 'N/A', ENT_QUOTES, 'UTF-8'); ?></p>
@@ -138,7 +139,7 @@ $paymentDate = $booking->transaction_pay_date ?? $booking->payment_date ?? null;
             </div>
         </div>
         <div style="flex: 1;">
-            <div class="section-title">Thông Tin Hướng Dẫn Viên</div>
+            <div class="section-title"><?php echo __('invoice.guide_info'); ?></div>
             <div class="info-box">
                 <p class="mb-0"><strong>Tên:</strong> <?php echo htmlspecialchars($booking->guide_name ?? 'N/A', ENT_QUOTES, 'UTF-8'); ?></p>
                 <?php if(!empty($booking->guide_email)): ?>
@@ -152,11 +153,11 @@ $paymentDate = $booking->transaction_pay_date ?? $booking->payment_date ?? null;
     </div>
 
     <!-- Booking Details -->
-    <div class="section-title">Chi Tiết Đặt Tour</div>
+    <div class="section-title"><?php echo __('invoice_meta.booking_details'); ?></div>
     <table>
         <tr>
-            <th style="width: 30%;">Thông Tin</th>
-            <th>Chi Tiết</th>
+            <th style="width: 30%;"><?php echo __('table.info') ?? 'Information'; ?></th>
+            <th><?php echo __('table.details') ?? 'Details'; ?></th>
         </tr>
         <tr>
             <td><strong>Ngày đặt tour</strong></td>
@@ -174,7 +175,7 @@ $paymentDate = $booking->transaction_pay_date ?? $booking->payment_date ?? null;
             </td>
         </tr>
         <tr>
-            <td><strong>Địa điểm gặp mặt</strong></td>
+            <td><strong><?php echo __('invoice.meeting_place'); ?></strong></td>
             <td><?php echo htmlspecialchars($booking->meeting_location ?? 'N/A', ENT_QUOTES, 'UTF-8'); ?></td>
         </tr>
         <tr>
@@ -188,25 +189,17 @@ $paymentDate = $booking->transaction_pay_date ?? $booking->payment_date ?? null;
         </tr>
         <?php endif; ?>
         <tr>
-            <td><strong>Trạng thái</strong></td>
+            <td><strong><?php echo __('status_label') ?? 'Status'; ?></strong></td>
             <td>
                 <?php 
-                    $statusMap = [
-                        'pending' => 'Chờ xác nhận',
-                        'confirmed' => 'Đã xác nhận',
-                        'accepted' => 'Đã chấp nhận',
-                        'completed' => 'Hoàn thành',
-                        'cancelled' => 'Đã hủy',
-                        'declined' => 'Từ chối'
-                    ];
-                    echo $statusMap[$booking->status] ?? ucfirst($booking->status);
+                    echo __('booking_status.' . ($booking->status ?? ''));
                 ?>
             </td>
         </tr>
     </table>
 
     <!-- Payment Information -->
-    <div class="section-title">Thông Tin Thanh Toán</div>
+    <div class="section-title"><?php echo __('invoice_meta.payment_info'); ?></div>
     <table>
         <tr>
             <th style="width: 30%;">Thông Tin</th>
@@ -262,18 +255,18 @@ $paymentDate = $booking->transaction_pay_date ?? $booking->payment_date ?? null;
 
     <!-- Footer -->
     <div class="footer">
-        <p class="mb-0">Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi!</p>
+        <p class="mb-0"><?php echo __('invoice_meta.thank_you'); ?></p>
         <p class="mb-0" style="margin-top: 10px;">
-            <small>Hóa đơn này được tạo tự động bởi hệ thống Tour Guide</small>
+            <small><?php echo __('invoice_meta.generated_by') ?? 'This invoice was automatically generated by the Tour Guide system'; ?></small>
         </p>
     </div>
 
     <div class="no-print" style="text-align: center; margin-top: 30px;">
         <button onclick="window.print()" style="padding: 10px 30px; font-size: 16px; background: #667eea; color: white; border: none; border-radius: 5px; cursor: pointer;">
-            In Hóa Đơn
+            <?php echo __('buttons.print') ?? 'Print Invoice'; ?>
         </button>
         <button onclick="window.close()" style="padding: 10px 30px; font-size: 16px; background: #6c757d; color: white; border: none; border-radius: 5px; cursor: pointer; margin-left: 10px;">
-            Đóng
+            <?php echo __('buttons.close') ?? 'Close'; ?>
         </button>
     </div>
 

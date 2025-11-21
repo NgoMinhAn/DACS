@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en">
+<?php if (session_status() === PHP_SESSION_NONE) { @session_start(); } ?>
+<html lang="<?php echo function_exists('getLocale') ? getLocale() : 'en'; ?>">
 
 <head>
     <meta charset="UTF-8">
@@ -33,15 +34,15 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link" href="<?php echo url(); ?>">Home</a>
+                        <a class="nav-link" href="<?php echo url(); ?>"><?php echo __('nav.home'); ?></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="<?php echo url('tourGuide/browse'); ?>">Find a Guide</a>
+                        <a class="nav-link" href="<?php echo url('tourGuide/browse'); ?>"><?php echo __('nav.find_guide'); ?></a>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                             data-bs-toggle="dropdown">
-                            Guide Categories
+                            <?php echo __('nav.guide_categories'); ?>
                         </a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="<?php echo url('tourGuide/category/city'); ?>">City
@@ -55,18 +56,26 @@
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
-                            <li><a class="dropdown-item" href="<?php echo url('tourGuide/category/categories'); ?>">All
-                                    Categories</a></li>
+                                <li><a class="dropdown-item" href="<?php echo url('tourGuide/category/categories'); ?>"><?php echo __('category.view_all'); ?></a></li>
                         </ul>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="<?php echo url('about'); ?>">About Us</a>
+                        <a class="nav-link" href="<?php echo url('about'); ?>"><?php echo __('nav.about'); ?></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="<?php echo url('contact'); ?>">Contact</a>
+                        <a class="nav-link" href="<?php echo url('contact'); ?>"><?php echo __('nav.contact'); ?></a>
                     </li>
                 </ul>
                 <ul class="navbar-nav mb-2 mb-lg-0">
+                    <li class="nav-item dropdown me-2">
+                        <a class="nav-link dropdown-toggle" href="#" id="langDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-globe"></i> <?php echo strtoupper(function_exists('getLocale') ? getLocale() : 'EN'); ?>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="langDropdown">
+                            <li><a class="dropdown-item" href="<?php echo url('locale/set/en'); ?>">English</a></li>
+                            <li><a class="dropdown-item" href="<?php echo url('locale/set/vi'); ?>">Tiếng Việt</a></li>
+                        </ul>
+                    </li>
                     <?php if (isLoggedIn()): ?>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
@@ -81,27 +90,27 @@
                                     <li><a class="dropdown-item" href="<?php echo url('guide/dashboard'); ?>">Guide Dashboard</a></li>
                                     <li><a class="dropdown-item"
                                             href="<?php echo url('tourGuide/profile/' . $_SESSION['user_id']); ?>">View My Public Profile</a></li>
-                                    <li><a class="dropdown-item" href="<?php echo url('guide/account-settings'); ?>">Account Settings</a></li>
+                                    <li><a class="dropdown-item" href="<?php echo url('guide/account-settings'); ?>"><?php echo __('nav.account_settings'); ?></a></li>
                                 <?php else: ?>
                                     <li><a class="dropdown-item" href="<?php echo url('user/bookings'); ?>">My Bookings</a></li>
-                                    <li><a class="dropdown-item" href="<?php echo url('account/settings'); ?>">Account Settings</a></li>
+                                    <li><a class="dropdown-item" href="<?php echo url('account/settings'); ?>"><?php echo __('nav.account_settings'); ?></a></li>
                                 <?php endif; ?>
                                 <li>
                                     <hr class="dropdown-divider">
                                 </li>
-                                <li><a class="dropdown-item" href="<?php echo url('account/logout'); ?>">Logout</a></li>
+                                <li><a class="dropdown-item" href="<?php echo url('account/logout'); ?>"><?php echo __('nav.logout'); ?></a></li>
                             </ul>
                         </li>
                     <?php else: ?>
                         <li class="nav-item">
-                            <a class="nav-link" href="<?php echo url('account/login'); ?>">Login</a>
+                            <a class="nav-link" href="<?php echo url('account/login'); ?>"><?php echo __('nav.login'); ?></a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="<?php echo url('account/register'); ?>">Register</a>
+                            <a class="nav-link" href="<?php echo url('account/register'); ?>"><?php echo __('nav.register'); ?></a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link btn btn-light text-primary ms-2 px-3 fw-bold"
-                                href="<?php echo url('account/register/guide'); ?>">Become a Guide</a>
+                                href="<?php echo url('account/register/guide'); ?>"><?php echo __('nav.become_guide'); ?></a>
                         </li>
                     <?php endif; ?>
                 </ul>

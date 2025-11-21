@@ -14,25 +14,25 @@
                     </div>
                 </div>
                 <div class="col-md-2 mb-4 mb-md-0">
-                    <h6>Guides</h6>
+                    <h6><?php echo __('footer.guides'); ?></h6>
                     <ul class="list-unstyled">
-                        <li><a href="<?php echo url('tourGuide/browse'); ?>" class="text-white text-decoration-none">Find a Guide</a></li>
-                        <li><a href="<?php echo url('tourGuide/categories'); ?>" class="text-white text-decoration-none">Guide Categories</a></li>
-                        <li><a href="<?php echo url('account/register/guide'); ?>" class="text-white text-decoration-none ">Become a Guide</a></li>
-                        <li><a href="<?php echo url('guides/how-it-works'); ?>" class="text-white text-decoration-none">How It Works</a></li>
+                        <li><a href="<?php echo url('tourGuide/browse'); ?>" class="text-white text-decoration-none"><?php echo __('nav.find_guide'); ?></a></li>
+                        <li><a href="<?php echo url('tourGuide/categories'); ?>" class="text-white text-decoration-none"><?php echo __('nav.guide_categories'); ?></a></li>
+                        <li><a href="<?php echo url('account/register/guide'); ?>" class="text-white text-decoration-none "><?php echo __('nav.become_guide'); ?></a></li>
+                        <li><a href="<?php echo url('guides/how-it-works'); ?>" class="text-white text-decoration-none"><?php echo __('footer.how_it_works'); ?></a></li>
                     </ul>
                 </div>
                 <div class="col-md-2 mb-4 mb-md-0">
-                    <h6>Company</h6>
+                    <h6><?php echo __('footer.company'); ?></h6>
                     <ul class="list-unstyled">
-                        <li><a href="<?php echo url('about'); ?>" class="text-white text-decoration-none">About Us</a></li>
-                        <li><a href="<?php echo url('careers'); ?>" class="text-white text-decoration-none">Careers</a></li>
-                        <li><a href="<?php echo url('blog'); ?>" class="text-white text-decoration-none">Blog</a></li>
-                        <li><a href="<?php echo url('contact'); ?>" class="text-white text-decoration-none">Contact</a></li>
+                        <li><a href="<?php echo url('about'); ?>" class="text-white text-decoration-none"><?php echo __('nav.about'); ?></a></li>
+                        <li><a href="<?php echo url('careers'); ?>" class="text-white text-decoration-none"><?php echo __('footer.careers'); ?></a></li>
+                        <li><a href="<?php echo url('blog'); ?>" class="text-white text-decoration-none"><?php echo __('footer.blog'); ?></a></li>
+                        <li><a href="<?php echo url('contact'); ?>" class="text-white text-decoration-none"><?php echo __('nav.contact'); ?></a></li>
                     </ul>
                 </div>
                 <div class="col-md-4">
-                    <h6>Contact Us</h6>
+                    <h6><?php echo __('footer.contact_us'); ?></h6>
                     <address class="text-white">
                         <i class="fas fa-map-marker-alt me-2"></i> <?php echo getConfig('contact.address'); ?><br>
                         <i class="fas fa-phone me-2"></i> <?php echo getConfig('contact.phone'); ?><br>
@@ -47,9 +47,9 @@
                 </div>
                 <div class="col-md-6 text-center text-md-end">
                     <ul class="list-inline small text-white mb-0">
-                        <li class="list-inline-item"><a href="<?php echo url('terms'); ?>" class="text-white text-decoration-none">Terms of Service</a></li>
+                        <li class="list-inline-item"><a href="<?php echo url('terms'); ?>" class="text-white text-decoration-none"><?php echo __('footer.terms'); ?></a></li>
                         <li class="list-inline-item">|</li>
-                        <li class="list-inline-item"><a href="<?php echo url('privacy'); ?>" class="text-white text-decoration-none">Privacy Policy</a></li>
+                        <li class="list-inline-item"><a href="<?php echo url('privacy'); ?>" class="text-white text-decoration-none"><?php echo __('footer.privacy'); ?></a></li>
                     </ul>
                 </div>
             </div>
@@ -65,7 +65,7 @@
     <!-- Map Floating Button -->
     <button type="button" class="btn btn-success rounded-circle shadow position-fixed"
             style="bottom: 120px; right: 20px; width: 56px; height: 56px; z-index: 1050;"
-            data-bs-toggle="modal" data-bs-target="#mapModal" title="Xem bản đồ">
+            data-bs-toggle="modal" data-bs-target="#mapModal" title="<?php echo __('footer.map_button'); ?>">
         <i class="fas fa-map-marked-alt fa-lg"></i>
     </button>
 
@@ -73,10 +73,10 @@
     <div class="modal fade" id="mapModal" tabindex="-1" aria-labelledby="mapModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="mapModalLabel">Our office address</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
-          </div>
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="mapModalLabel"><?php echo __('contact.our_location'); ?></h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="<?php echo __('buttons.close'); ?>"></button>
+                    </div>
           <div class="modal-body p-0">
             <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3723.657600383133!2d105.78236757374515!3d21.046398484339835!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3135ab323f3a20f1%3A0x4898724834e6958!2sHanoi%20University%20of%20Science%20and%20Technology!5e0!3m2!1sen!2s!4v1715167113971!5m2!1sen!2s"
               width="100%" height="400" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
@@ -88,7 +88,7 @@
     <!-- Back to Top Button -->
     <button id="backToTop" class="btn btn-primary rounded-circle shadow position-fixed" 
             style="bottom: 30px; right: 30px; width: 36px; height: 36px; display: none; z-index: 1050;"
-            title="Back to top">
+            title="<?php echo __('footer.back_to_top'); ?>">
         <i class="fas fa-arrow-up"></i>
     </button>
 

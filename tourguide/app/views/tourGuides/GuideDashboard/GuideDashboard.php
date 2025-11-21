@@ -376,8 +376,8 @@
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                <button type="submit" class="btn text-white rounded-pill" style="background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);">Save Rates</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><?php echo __('buttons.cancel'); ?></button>
+                                <button type="submit" class="btn text-white rounded-pill" style="background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);"><?php echo __('buttons.save_rates') ?? 'Save Rates'; ?></button>
                             </div>
                         </div>
                     </form>
@@ -402,8 +402,8 @@
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                <button type="submit" class="btn text-white rounded-pill" style="background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);">Save Bio</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><?php echo __('buttons.cancel'); ?></button>
+                                <button type="submit" class="btn text-white rounded-pill" style="background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);"><?php echo __('buttons.save_bio') ?? 'Save Bio'; ?></button>
                             </div>
                         </div>
                     </form>

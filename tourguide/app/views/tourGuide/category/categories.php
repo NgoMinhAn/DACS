@@ -3,7 +3,7 @@
     <div class="container">
         <div class="row">
             <div class="col-12 text-center">
-                <h1 class="fw-bold">Tour Guide Categories</h1>
+                <h1 class="fw-bold"><?php echo __('nav.guide_categories'); ?></h1>
                 <p class="lead">Browse our guides by their areas of expertise</p>
             </div>
         </div>

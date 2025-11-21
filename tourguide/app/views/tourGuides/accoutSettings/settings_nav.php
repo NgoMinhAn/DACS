@@ -13,7 +13,7 @@
             <i class="fas fa-user me-2"></i> Profile Settings
         </a>
         <a href="<?php echo url('guide/password-settings'); ?>" class="list-group-item list-group-item-action rounded-3 m-2 <?php echo $isPassword ? 'active' : ''; ?>" style="<?php echo $isPassword ? 'background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%); color: white; border: none;' : ''; ?>">
-            <i class="fas fa-key me-2"></i> Change Password
+            <i class="fas fa-key me-2"></i> <?php echo __('buttons.change_password') ?? 'Change Password'; ?>
         </a>
     </div>
     </div>

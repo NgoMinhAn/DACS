@@ -114,3 +114,127 @@ function getConfig($key = null) {
     
     return $value;
 } 
+
+if (!function_exists('getLocale')) {
+    /**
+     * Get current locale
+     * Checks session, then cookie, defaults to 'en'
+     *
+     * @return string 'en' or 'vi'
+     */
+    function getLocale() {
+        if (session_status() === PHP_SESSION_NONE) {
+            @session_start();
+        }
+        if (!empty($_SESSION['locale'])) {
+            return $_SESSION['locale'];
+        }
+        if (!empty($_COOKIE['locale'])) {
+            return $_COOKIE['locale'];
+        }
+        return 'en';
+    }
+}
+
+if (!function_exists('site_set_locale')) {
+    /**
+     * Set current locale (stores in session and cookie)
+     *
+     * @param string $lang 'en' or 'vi'
+     * @return void
+     */
+    function site_set_locale($lang) {
+        $allowed = ['en', 'vi'];
+        $lang = in_array($lang, $allowed) ? $lang : 'en';
+        if (session_status() === PHP_SESSION_NONE) {
+            @session_start();
+        }
+        $_SESSION['locale'] = $lang;
+        setcookie('locale', $lang, time() + (365 * 24 * 60 * 60), '/');
+    }
+}
+
+/**
+ * Load translation array for a locale (cached in global)
+ *
+ * @param string $locale
+ * @return array
+ */
+if (!function_exists('loadTranslations')) {
+    function loadTranslations($locale = null) {
+    global $translations;
+    if ($locale === null) {
+        $locale = getLocale();
+    }
+    $locale = in_array($locale, ['en', 'vi']) ? $locale : 'en';
+
+    if (!isset($translations)) {
+        $translations = [];
+    }
+
+    if (!empty($translations[$locale])) {
+        return $translations[$locale];
+    }
+
+    $langFile = APP_PATH . '/lang/' . $locale . '.php';
+    if (file_exists($langFile)) {
+        $trans = require $langFile;
+        if (is_array($trans)) {
+            $translations[$locale] = $trans;
+            return $trans;
+        }
+    }
+
+    // Fallback to empty
+    $translations[$locale] = [];
+    return $translations[$locale];
+    }
+}
+
+/**
+ * Translate a key using loaded translations. Supports dot notation.
+ *
+ * @param string $key
+ * @param array $replace replacements for placeholders like :name
+ * @return string
+ */
+if (!function_exists('__')) {
+    function __($key, $replace = []) {
+    $locale = getLocale();
+    $trans = loadTranslations($locale);
+
+    $segments = explode('.', $key);
+    $value = $trans;
+    foreach ($segments as $seg) {
+        if (is_array($value) && array_key_exists($seg, $value)) {
+            $value = $value[$seg];
+        } else {
+            $value = null;
+            break;
+        }
+    }
+
+    if ($value === null) {
+        // Attempt English fallback
+        $en = loadTranslations('en');
+        $value = $en;
+        foreach ($segments as $seg) {
+            if (is_array($value) && array_key_exists($seg, $value)) {
+                $value = $value[$seg];
+            } else {
+                $value = $key; // final fallback: return key
+                break;
+            }
+        }
+    }
+
+    // Replace placeholders
+    if (!empty($replace) && is_string($value)) {
+        foreach ($replace as $k => $v) {
+            $value = str_replace(':' . $k, $v, $value);
+        }
+    }
+
+        return is_string($value) ? $value : $key;
+    }
+}

@@ -211,7 +211,7 @@ ALTER TABLE bookings MODIFY status ENUM('pending','confirmed','completed','cance
 -- Additional legacy column not needed; keep schema minimal
 -- ALTER TABLE guide_languages ADD COLUMN fluent TINYINT(1) NOT NULL DEFAULT 0;
 -- Insert sample data
-
+ALTER TABLE messages ADD delivered_at DATETIME NULL, ADD read_at DATETIME NULL; 
 -- Users (password is 'password' hashed with bcrypt)
 INSERT INTO users (name, email, password, user_type, status) VALUES
 ('John Smith', 'john@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'guide', 'active'),

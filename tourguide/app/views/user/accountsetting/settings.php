@@ -11,7 +11,7 @@
                         Settings
                     </h5>
                     <div class="list-group list-group-flush">
-                        <a href="<?php echo url('account/settings'); ?>" class="list-group-item list-group-item-action d-flex align-items-center rounded-3 mb-2 <?php echo ($section === 'general') ? 'active' : ''; ?>" 
+                            <a href="<?php echo url('account/settings'); ?>" class="list-group-item list-group-item-action d-flex align-items-center rounded-3 mb-2 <?php echo ($section === 'general') ? 'active' : ''; ?>" 
                            style="<?php echo ($section === 'general') ? 'background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%); color: white; border: none;' : ''; ?>">
                             <i class="fas fa-cog me-2"></i> General
                         </a>
@@ -19,7 +19,7 @@
                            style="<?php echo ($section === 'profile') ? 'background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%); color: white; border: none;' : ''; ?>">
                             <i class="fas fa-user me-2"></i> Profile
                         </a>
-                        <a href="<?php echo url('account/settings/password'); ?>" class="list-group-item list-group-item-action d-flex align-items-center rounded-3 <?php echo ($section === 'password') ? 'active' : ''; ?>"
+                            <a href="<?php echo url('account/settings/password'); ?>" class="list-group-item list-group-item-action d-flex align-items-center rounded-3 <?php echo ($section === 'password') ? 'active' : ''; ?>"
                            style="<?php echo ($section === 'password') ? 'background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%); color: white; border: none;' : ''; ?>">
                             <i class="fas fa-lock me-2"></i> Password
                         </a>
@@ -43,7 +43,7 @@
                             <div class="rounded-circle p-3 me-3" style="background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);">
                                 <i class="fas fa-user-tag fa-lg text-white"></i>
                             </div>
-                            <h5 class="mb-0 fw-bold">Account Type</h5>
+                            <h5 class="mb-0 fw-bold"><?php echo __('settings.account_type') ?? 'Account Type'; ?></h5>
                         </div>
                         <p class="text-muted mb-2">
                             Your current account type is: 
@@ -52,10 +52,10 @@
                             </span>
                         </p>
                         <?php if ($user->user_type === 'user'): ?>
-                            <p class="text-muted mb-2">Interested in sharing your knowledge and guiding others?</p>
+                            <p class="text-muted mb-2"><?php echo __('settings.become_prompt') ?? 'Interested in sharing your knowledge and guiding others?'; ?></p>
                             <a href="<?php echo url('account/becomeguide?step=1'); ?>" class="btn rounded-pill px-4 text-white" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);">
                                 <i class="fas fa-chalkboard-teacher me-2"></i>
-                                Become a Guide
+                                <?php echo __('nav.become_guide'); ?>
                             </a>
                         <?php endif; ?>
                     </div>
@@ -66,7 +66,7 @@
                             <div class="rounded-circle p-3 me-3" style="background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);">
                                 <i class="fas fa-check-circle fa-lg text-white"></i>
                             </div>
-                            <h5 class="mb-0 fw-bold">Account Status</h5>
+                            <h5 class="mb-0 fw-bold"><?php echo __('settings.account_status') ?? 'Account Status'; ?></h5>
                         </div>
                         <p class="text-muted mb-2">
                             Your account is currently 
@@ -82,7 +82,7 @@
                             <div class="rounded-circle p-3 me-3" style="background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);">
                                 <i class="fas fa-shield-alt fa-lg text-white"></i>
                             </div>
-                            <h5 class="mb-0 fw-bold">Account Security</h5>
+                            <h5 class="mb-0 fw-bold"><?php echo __('settings.account_security') ?? 'Account Security'; ?></h5>
                         </div>
                         <p class="text-muted mb-3">Manage your account security settings and connected devices</p>
                         <a href="<?php echo url('account/settings/password'); ?>" class="btn btn-outline-primary rounded-pill px-4">
@@ -97,7 +97,7 @@
                             <div class="rounded-circle p-3 me-3" style="background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);">
                                 <i class="fas fa-language fa-lg text-white"></i>
                             </div>
-                            <h5 class="mb-0 fw-bold">Language</h5>
+                            <h5 class="mb-0 fw-bold"><?php echo __('settings.language'); ?></h5>
                         </div>
                         <form action="<?php echo url('account/settings'); ?>" method="POST" class="row g-2 align-items-center">
                             <div class="col-sm-6">
@@ -107,9 +107,9 @@
                                     <option value="vi" <?php echo $current==='vi'?'selected':''; ?>>Tiếng Việt</option>
                                 </select>
                             </div>
-                            <div class="col-sm-6 text-sm-start">
+                                <div class="col-sm-6 text-sm-start">
                                 <button type="submit" class="btn btn-primary">
-                                    <i class="fas fa-save me-2"></i>Save
+                                    <i class="fas fa-save me-2"></i><?php echo __('settings.save'); ?>
                                 </button>
                             </div>
                         </form>
@@ -121,7 +121,7 @@
                             <div class="rounded-circle p-3 me-3 bg-danger">
                                 <i class="fas fa-exclamation-triangle fa-lg text-white"></i>
                             </div>
-                            <h5 class="text-danger mb-0 fw-bold">Danger Zone</h5>
+                            <h5 class="text-danger mb-0 fw-bold"><?php echo __('common.danger_zone') ?? 'Danger Zone'; ?></h5>
                         </div>
                         <p class="text-muted mb-3">Once you delete your account, there is no going back. Please be certain.</p>
                         <button type="button" class="btn btn-danger rounded-pill px-4" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">
@@ -149,11 +149,11 @@
             <div class="modal-body">
                 <div class="alert alert-warning">
                     <i class="fas fa-exclamation-circle me-2"></i>
-                    This action cannot be undone. All your data will be permanently deleted.
+                    <?php echo __('settings.delete_warning') ?? 'This action cannot be undone. All your data will be permanently deleted.'; ?>
                 </div>
                 <form action="<?php echo URL_ROOT; ?>/account/delete" method="POST" id="deleteAccountForm">
                     <div class="mb-3">
-                        <label for="password" class="form-label">Please enter your password to confirm:</label>
+                        <label for="password" class="form-label"><?php echo __('settings.confirm_password') ?? 'Please enter your password to confirm:'; ?></label>
                         <div class="input-group">
                             <span class="input-group-text"><i class="fas fa-lock"></i></span>
                             <input type="password" class="form-control" id="password" name="password" required>
@@ -164,11 +164,11 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                     <i class="fas fa-times me-2"></i>
-                    Cancel
+                    <?php echo __('buttons.cancel') ?? 'Cancel'; ?>
                 </button>
                 <button type="submit" form="deleteAccountForm" class="btn btn-danger">
                     <i class="fas fa-trash-alt me-2"></i>
-                    Delete Account
+                    <?php echo __('buttons.delete_account') ?? 'Delete Account'; ?>
                 </button>
             </div>
         </div>
