@@ -31,15 +31,9 @@ app.use(express.json());
 
 const io = new Server(server, {
   cors: {
-    origin: (origin, callback) => {
-      // Allow same-origin requests (no Origin header) and configured origins
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error('Origin not allowed by CORS'));
-      }
-    },
+    origin: "*", // Allow all origins (for development)
     credentials: true,
+    methods: ["GET", "POST"]
   },
 });
 

@@ -400,3 +400,31 @@ FodyWeavers.xsd
 *.sln.iml
 
 /vendor
+
+# ========================================
+# PHP Project Specific
+# ========================================
+
+# User uploaded files (avatars, profile images, etc.)
+public/uploads/*
+!public/uploads/.gitkeep
+
+# Keep folder structure but ignore content
+public/uploads/avatars/*
+!public/uploads/avatars/.gitkeep
+
+# Environment files
+.env
+.env.local
+
+# Composer
+composer.phar
+composer.lock
+
+# PHP error logs
+error_log
+php_error.log
+
+# Database backups
+*.sql.gz
+*.sql.backup
