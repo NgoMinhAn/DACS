@@ -1,7 +1,9 @@
 <?php $realtimeSignature = generate_realtime_signature($booking->id, $currentUserId); ?>
 <?php
     $clientName = $booking->client_name ?? 'Khách hàng';
-    $clientAvatar = 'https://via.placeholder.com/48x48?text=U';
+    $clientAvatar = !empty($booking->client_image) 
+        ? url('public/uploads/avatars/' . $booking->client_image) 
+        : 'https://via.placeholder.com/48x48?text=U';
 ?>
 
 <style>
@@ -622,17 +624,30 @@
             }
         });
 
-        socket.on('connect_error', () => {
+        socket.on('connect', () => {
+            console.log('[Chat] Socket connected successfully!');
+        });
+
+        socket.on('connect_error', (error) => {
+            console.error('[Chat] Connection error:', error);
             console.warn('Realtime server unavailable. Falling back to manual refresh.');
         });
 
+        socket.on('disconnect', (reason) => {
+            console.log('[Chat] Socket disconnected:', reason);
+        });
+
+        console.log('[Chat] Joining room - Booking:', bookingId, 'User:', currentUserId);
         socket.emit('join', {
             bookingId: bookingId,
             userId: currentUserId,
             signature: signature
         });
 
-        socket.on('message', appendMessage);
+        socket.on('message', (data) => {
+            console.log('[Chat] New message received:', data);
+            appendMessage(data);
+        });
 
         socket.on('messageStatus', (payload) => {
             if (!payload) return;
@@ -674,8 +689,10 @@
         });
 
         socket.on('presence', (payload) => {
+            console.log('[Chat] Presence update:', payload, 'Looking for user:', otherUserId);
             if (!payload || !presenceStatus || !otherUserId) return;
             const participant = (payload.users || []).find((user) => Number(user.userId) === otherUserId);
+            console.log('[Chat] Found participant:', participant);
             if (!participant) {
                 setPresence(false);
                 return;

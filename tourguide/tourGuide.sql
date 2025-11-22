@@ -7,6 +7,7 @@ SET FOREIGN_KEY_CHECKS = 0;
 
 -- Drop tables if they exist (for clean installation)
 DROP TABLE IF EXISTS messages;
+DROP TABLE IF EXISTS vnpay_transactions;
 DROP TABLE IF EXISTS bookings;
 DROP TABLE IF EXISTS guide_languages;
 DROP TABLE IF EXISTS guide_specialties;
@@ -180,6 +181,32 @@ CREATE TABLE bookings (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
+-- VNPay Transactions table
+CREATE TABLE vnpay_transactions (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    booking_id INT NULL,
+    vnp_TxnRef VARCHAR(100) NOT NULL COMMENT 'Order ID/Transaction Reference',
+    vnp_TransactionNo VARCHAR(100) NULL COMMENT 'VNPay Transaction Number',
+    vnp_Amount DECIMAL(15, 2) NOT NULL COMMENT 'Transaction Amount',
+    vnp_OrderInfo TEXT NULL COMMENT 'Order Information',
+    vnp_ResponseCode VARCHAR(10) NULL COMMENT 'VNPay Response Code',
+    vnp_TransactionStatus VARCHAR(10) NULL COMMENT 'VNPay Transaction Status',
+    vnp_BankCode VARCHAR(50) NULL COMMENT 'Bank Code',
+    vnp_BankTranNo VARCHAR(100) NULL COMMENT 'Bank Transaction Number',
+    vnp_CardType VARCHAR(50) NULL COMMENT 'Card Type',
+    vnp_PayDate DATETIME NULL COMMENT 'Payment Date',
+    payment_status VARCHAR(20) DEFAULT 'pending' COMMENT 'Payment Status: pending, success, failed',
+    payment_method VARCHAR(50) DEFAULT 'VNPay' COMMENT 'Payment Method',
+    ip_address VARCHAR(50) NULL COMMENT 'User IP Address',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (booking_id) REFERENCES bookings(id) ON DELETE CASCADE,
+    INDEX idx_booking_id (booking_id),
+    INDEX idx_vnp_txn_ref (vnp_TxnRef),
+    INDEX idx_payment_status (payment_status)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci 
+COMMENT='VNPay payment transactions table';
+
 CREATE TABLE messages (
     id INT AUTO_INCREMENT PRIMARY KEY,
     booking_id INT NOT NULL,
@@ -211,7 +238,6 @@ ALTER TABLE bookings MODIFY status ENUM('pending','confirmed','completed','cance
 -- Additional legacy column not needed; keep schema minimal
 -- ALTER TABLE guide_languages ADD COLUMN fluent TINYINT(1) NOT NULL DEFAULT 0;
 -- Insert sample data
-ALTER TABLE messages ADD delivered_at DATETIME NULL, ADD read_at DATETIME NULL; 
 -- Users (password is 'password' hashed with bcrypt)
 INSERT INTO users (name, email, password, user_type, status) VALUES
 ('John Smith', 'john@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'guide', 'active'),
