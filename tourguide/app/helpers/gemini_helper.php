@@ -37,8 +37,8 @@ function getGeminiRecommendations(array $userMessages, array $pastGuides = [], ?
     $prompt .= "The user says: '" . $userInput . "'\n";
     $prompt .= "If you do not have enough information about the user's interests, ask a friendly follow-up question to learn more (such as their hobbies, preferred activities, or travel style).\n";
     $prompt .= "If you have enough information, recommend 3 suitable tour guides from the list above, and explain why they are a good fit.\n";
-    $prompt .= "Keep the conversation natural and helpful, and only ask for more info if needed.";
-
+    $prompt .= "Keep the conversation natural and helpful, and only ask for more info if needed. Try to ask as little as possible and recommend the tourguides after each question. If they don't tell you anything related to tourguide then just act like a normal helpful AI.\n";
+    $prompt .= "Remember to use the user's language. For example, if they ask you in vietnamese, keep answering in vietnamese\n";
     try {
         $modelId = 'gemini-2.5-flash';
         $response = $client->generativeModel($modelId)->generateContent(

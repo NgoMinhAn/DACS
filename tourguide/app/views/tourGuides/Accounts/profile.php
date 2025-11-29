@@ -6,7 +6,7 @@
             <div class="card h-100 border-0 shadow-lg scroll-animate fade-up">
                 <div class="card-header border-0 pb-0" style="background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);">
                     <h5 class="mb-0 text-white fw-bold">
-                        <i class="fas fa-user-circle me-2"></i>Guide Profile
+                        <i class="fas fa-user-circle me-2"></i><?php echo __('profile.title'); ?>
                     </h5>
                 </div>
                 <div class="card-body text-center p-4">
@@ -42,41 +42,41 @@
                         </div>
                         <div class="text-white">
                             <strong class="h4 mb-0"><?php echo number_format($guide->avg_rating, 1); ?></strong>
-                            <small class="d-block"><?php echo $guide->total_reviews; ?> <?php echo $guide->total_reviews == 1 ? 'review' : 'reviews'; ?></small>
+                            <small class="d-block"><?php echo $guide->total_reviews; ?> <?php echo $guide->total_reviews == 1 ? __('profile.review_singular') : __('profile.review_plural'); ?></small>
                         </div>
                     </div>
 
                     <!-- Verification badge -->
                     <?php if($guide->verified): ?>
                         <div class="badge mb-3 p-2 px-3 rounded-pill" style="background: linear-gradient(135deg, #22543d 0%, #2f855a 100%); color: white; font-size: 0.9rem;">
-                            <i class="fas fa-check-circle me-1"></i> Verified Guide
+                            <i class="fas fa-check-circle me-1"></i> <?php echo __('profile.verified'); ?>
                         </div>
                     <?php else: ?>
                         <div class="badge bg-warning mb-3 p-2 px-3 rounded-pill">
-                            <i class="fas fa-clock me-1"></i> Verification Pending
+                            <i class="fas fa-clock me-1"></i> <?php echo __('profile.verification_pending'); ?>
                         </div>
                     <?php endif; ?>
 
                     <!-- Experience -->
                     <p class="mb-3 text-muted">
                         <i class="fas fa-briefcase me-2 text-primary"></i>
-                        <strong><?php echo isset($guide->experience_years) ? (int)$guide->experience_years : 0; ?></strong> years of experience
+                        <strong><?php echo isset($guide->experience_years) ? (int)$guide->experience_years : 0; ?></strong> <?php echo __('profile.years_experience_suffix'); ?>
                     </p>
 
                     <!-- Quick info -->
                     <div class="mb-4">
                         <div class="d-flex justify-content-between align-items-center p-3 mb-2 rounded" style="background-color: var(--warm-cream);">
-                            <span class="fw-medium"><i class="fas fa-clock me-2 text-primary"></i>Hourly Rate</span>
+                            <span class="fw-medium"><i class="fas fa-clock me-2 text-primary"></i><?php echo __('profile.hourly_rate'); ?></span>
                             <span class="badge rounded-pill px-3 py-2" style="background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%); color: white;">$<?php echo number_format($guide->hourly_rate, 2); ?></span>
                         </div>
                         <div class="d-flex justify-content-between align-items-center p-3 mb-2 rounded" style="background-color: var(--warm-cream);">
-                            <span class="fw-medium"><i class="fas fa-calendar-day me-2 text-primary"></i>Daily Rate</span>
+                            <span class="fw-medium"><i class="fas fa-calendar-day me-2 text-primary"></i><?php echo __('profile.daily_rate'); ?></span>
                             <span class="badge rounded-pill px-3 py-2" style="background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%); color: white;">$<?php echo number_format($guide->daily_rate, 2); ?></span>
                         </div>
                         <div class="d-flex justify-content-between align-items-center p-3 rounded" style="background-color: var(--warm-cream);">
-                            <span class="fw-medium"><i class="fas fa-toggle-<?php echo $guide->available ? 'on' : 'off'; ?> me-2 text-primary"></i>Availability</span>
+                            <span class="fw-medium"><i class="fas fa-toggle-<?php echo $guide->available ? 'on' : 'off'; ?> me-2 text-primary"></i><?php echo __('profile.availability'); ?></span>
                             <span class="badge <?php echo $guide->available ? 'bg-success' : 'bg-danger'; ?> rounded-pill px-3 py-2">
-                                <?php echo $guide->available ? 'Available' : 'Not Available'; ?>
+                                <?php echo $guide->available ? __('profile.available') : __('profile.not_available'); ?>
                             </span>
                         </div>
                     </div>
@@ -87,29 +87,29 @@
                     <?php if ($isUser): ?>
                         <?php if($guide->available): ?>
                             <a href="#book-tour" class="btn btn-lg w-100 mb-3 shadow text-white" style="background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);">
-                                <i class="fas fa-calendar-check me-2"></i> Book Now
+                                <i class="fas fa-calendar-check me-2"></i> <?php echo __('profile.book_now'); ?>
                             </a>
                         <?php else: ?>
                             <button disabled class="btn btn-secondary btn-lg w-100 mb-3">
-                                <i class="fas fa-calendar-times me-2"></i> Currently Unavailable
+                                <i class="fas fa-calendar-times me-2"></i> <?php echo __('profile.currently_unavailable'); ?>
                             </button>
                         <?php endif; ?>
                         <!-- Contact Button with authentication check -->
                         <?php if (isset($requires_auth) && $requires_auth): ?>
                             <a href="<?php echo url('account/login'); ?>" class="btn btn-outline-primary w-100 rounded-pill">
-                                <i class="fas fa-sign-in-alt me-2"></i> Login to Contact Guide
+                                <i class="fas fa-sign-in-alt me-2"></i> <?php echo __('profile.login_to_contact'); ?>
                             </a>
-                            <small class="text-muted mt-2 d-block text-center">You need to be logged in to contact guides</small>
+                            <small class="text-muted mt-2 d-block text-center"><?php echo __('profile.login_required_contact'); ?></small>
                         <?php else: ?>
                             <a href="<?php echo url('tourGuide/contact/' . $guide->id); ?>" class="btn btn-outline-primary w-100 rounded-pill">
-                                <i class="fas fa-envelope me-2"></i> Contact Guide
+                                <i class="fas fa-envelope me-2"></i> <?php echo __('profile.contact_guide'); ?>
                             </a>
                         <?php endif; ?>
                     <?php endif; ?>
                 </div>
                 <div class="card-footer bg-white border-0 pt-0">
                     <small class="text-muted">
-                        <i class="fas fa-calendar me-1"></i>Member since: <?php echo isset($guide->created_at) ? date('M Y', strtotime($guide->created_at)) : 'N/A'; ?>
+                        <i class="fas fa-calendar me-1"></i><?php echo __('profile.member_since', ['date' => isset($guide->created_at) ? date('M Y', strtotime($guide->created_at)) : 'N/A']); ?>
                     </small>
                 </div>
             </div>
@@ -122,7 +122,7 @@
                 <div class="card-header border-0 pb-0" style="background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);">
                     <h4 class="mb-0 fw-bold text-white">
                         <i class="fas fa-user-circle me-2"></i>
-                        About <?php echo htmlspecialchars($guide->name); ?>
+                        <?php echo __('profile.about', ['name' => htmlspecialchars($guide->name)]); ?>
                     </h4>
                 </div>
                 <div class="card-body">
@@ -138,7 +138,7 @@
                         <div class="card-header border-0" style="background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);">
                             <h5 class="mb-0 fw-bold text-white">
                                 <i class="fas fa-star me-2"></i>
-                                Specialties
+                                <?php echo __('profile.specialties'); ?>
                             </h5>
                         </div>
                         <div class="card-body">
@@ -147,7 +147,7 @@
                                     <span class="badge rounded-pill px-3 py-2 mb-2 me-2" style="background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%); color: white;"><?php echo htmlspecialchars($specialty->name); ?></span>
                                 <?php endforeach; ?>
                             <?php else: ?>
-                                <p class="text-muted">No specialties listed</p>
+                                <p class="text-muted"><?php echo __('profile.no_specialties'); ?></p>
                             <?php endif; ?>
                         </div>
                     </div>
@@ -159,7 +159,7 @@
                         <div class="card-header border-0" style="background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);">
                             <h5 class="mb-0 fw-bold text-white">
                                 <i class="fas fa-language me-2"></i>
-                                Languages
+                                <?php echo __('profile.languages'); ?>
                             </h5>
                         </div>
                         <div class="card-body">
@@ -173,7 +173,7 @@
                                     <?php endforeach; ?>
                                 </div>
                             <?php else: ?>
-                                <p class="text-muted">No languages listed</p>
+                                <p class="text-muted"><?php echo __('profile.no_languages'); ?></p>
                             <?php endif; ?>
                         </div>
                     </div>
@@ -185,13 +185,13 @@
                 <div class="card-header border-0 d-flex justify-content-between align-items-center" style="background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);">
                     <h4 class="mb-0 fw-bold text-white">
                         <i class="fas fa-star me-2"></i>
-                        Reviews
+                        <?php echo __('profile.reviews'); ?>
                     </h4>
                     
                     <!-- Add Review Button (show only if logged in and not viewing own profile) -->
                     <?php if(isLoggedIn() && $_SESSION['user_id'] != $guide->user_id): ?>
                     <a href="<?php echo url('tourGuide/review/' . $guide->guide_id); ?>" class="btn btn-sm rounded-pill px-3" style="background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%); color: white;">                        
-                         <i class="fas fa-edit me-1"></i> Write a Review</a>
+                         <i class="fas fa-edit me-1"></i> <?php echo __('profile.write_review'); ?></a>
                     <?php endif; ?>
                 </div>
                 <div class="card-body">
@@ -213,7 +213,7 @@
                                 </div>
                                 <p class="text-muted fw-medium">
                                     <?php echo $guide->total_reviews; ?> 
-                                    <?php echo $guide->total_reviews == 1 ? 'review' : 'reviews'; ?>
+                                    <?php echo $guide->total_reviews == 1 ? __('profile.review_singular') : __('profile.review_plural'); ?>
                                 </p>
                             </div>
                             <div class="col-md-9">
@@ -348,7 +348,7 @@
                         <?php if($totalReviews > 3): ?>
                             <div class="text-center mt-4" id="viewAllContainer">
                                 <button class="btn rounded-pill px-4 shadow" id="viewAllBtn" style="background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%); color: white;">
-                                    <i class="fas fa-chevron-down me-2"></i>View All Reviews (<?php echo $totalReviews; ?>)
+                                    <i class="fas fa-chevron-down me-2"></i><?php echo __('profile.view_all_reviews', ['count' => $totalReviews]); ?>
                                 </button>
                             </div>
                         <?php endif; ?>
@@ -362,9 +362,9 @@
                     
                     <?php else: ?>
                         <div class="alert alert-info">
-                            <i class="fas fa-info-circle me-2"></i> No reviews yet for this guide.
+                            <i class="fas fa-info-circle me-2"></i> <?php echo __('profile.no_reviews_yet'); ?>
                             <?php if(isLoggedIn() && $_SESSION['user_id'] != $guide->user_id): ?>
-                                Be the first to leave a review!
+                                <?php echo __('profile.be_first_review'); ?>
                             <?php endif; ?>
                         </div>
                     <?php endif; ?>
@@ -377,12 +377,12 @@
                 <div class="card-header border-0" style="background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);">
                     <h4 class="mb-0 fw-bold text-white" id="book-tour">
                         <i class="fas fa-calendar-check me-2"></i>
-                        Book a Tour with <?php echo htmlspecialchars($guide->name); ?>
+                        <?php echo __('profile.book_tour_with', ['name' => htmlspecialchars($guide->name)]); ?>
                     </h4>
                 </div>
                 <div class="card-body">
                     <?php if($guide->available): ?>
-                        <p class="mb-4">Select a date and time to book a tour with <?php echo htmlspecialchars($guide->name); ?>.</p>
+                        <p class="mb-4"><?php echo __('profile.select_date_time', ['name' => htmlspecialchars($guide->name)]); ?></p>
                         
                         <!-- Simple booking form -->
                         <form action="<?php echo url('tourGuide/confirmBooking'); ?>" method="post">
@@ -390,28 +390,28 @@
                             
                             <div class="row">
                                 <div class="col-md-6 mb-3">
-                                    <label for="booking_date" class="form-label">Date</label>
+                                    <label for="booking_date" class="form-label"><?php echo __('profile.date'); ?></label>
                                     <input type="date" class="form-control" id="booking_date" name="booking_date" 
                                            min="<?php echo date('Y-m-d'); ?>" required>
                                 </div>
                                 
                                 <div class="col-md-6 mb-3">
-                                    <label for="booking_type" class="form-label">Booking Type</label>
+                                    <label for="booking_type" class="form-label"><?php echo __('profile.booking_type'); ?></label>
                                     <select class="form-select" id="booking_type" name="booking_type" required>
-                                        <option value="hourly">Hourly - $<?php echo number_format($guide->hourly_rate, 2); ?> per hour</option>
-                                        <option value="daily">Full Day - $<?php echo number_format($guide->daily_rate, 2); ?></option>
+                                        <option value="hourly"><?php echo __('profile.booking_type_hourly', ['price' => '$' . number_format($guide->hourly_rate, 2)]); ?></option>
+                                        <option value="daily"><?php echo __('profile.booking_type_daily', ['price' => '$' . number_format($guide->daily_rate, 2)]); ?></option>
                                     </select>
                                 </div>
                             </div>
                             
                             <div class="row hourly-options">
                                 <div class="col-md-6 mb-3">
-                                    <label for="start_time" class="form-label">Start Time</label>
+                                    <label for="start_time" class="form-label"><?php echo __('profile.start_time'); ?></label>
                                     <input type="time" class="form-control" id="start_time" name="start_time" required>
                                 </div>
                                 
                                 <div class="col-md-6 mb-3">
-                                    <label for="hours" class="form-label">Number of Hours</label>
+                                    <label for="hours" class="form-label"><?php echo __('profile.number_of_hours'); ?></label>
                                     <select class="form-select" id="hours" name="hours">
                                         <?php for($i = 1; $i <= 8; $i++): ?>
                                             <option value="<?php echo $i; ?>"><?php echo $i; ?> hour<?php echo $i > 1 ? 's' : ''; ?></option>
@@ -422,13 +422,13 @@
                             
                             <div class="row daily-options" style="display: none;">
                                 <div class="col-md-12 mb-3">
-                                    <p class="text-muted">Full day tours typically run from 9:00 AM to 5:00 PM.</p>
+                                    <p class="text-muted"><?php echo __('profile.full_day_note'); ?></p>
                                 </div>
                             </div>
                             
                             <div class="row">
                                 <div class="col-md-6 mb-3">
-                                    <label for="number_of_people" class="form-label">Number of People</label>
+                                    <label for="number_of_people" class="form-label"><?php echo __('profile.number_of_people'); ?></label>
                                     <select class="form-select" id="number_of_people" name="number_of_people" required>
                                         <?php for($i = 1; $i <= 10; $i++): ?>
                                             <option value="<?php echo $i; ?>"><?php echo $i; ?> person<?php echo $i > 1 ? 's' : ''; ?></option>
@@ -437,22 +437,22 @@
                                 </div>
                                 
                                 <div class="col-md-6 mb-3">
-                                    <label for="meeting_location" class="form-label">Meeting Location</label>
-                                    <input type="text" class="form-control" id="meeting_location" name="meeting_location" 
-                                           placeholder="Where would you like to meet?" required>
+                                     <label for="meeting_location" class="form-label"><?php echo __('profile.meeting_location'); ?></label>
+                                     <input type="text" class="form-control" id="meeting_location" name="meeting_location" 
+                                         placeholder="<?php echo __('profile.meeting_placeholder'); ?>" required>
                                 </div>
                             </div>
                             
                             <div class="mb-3">
-                                <label for="special_requests" class="form-label">Special Requests (Optional)</label>
+                                <label for="special_requests" class="form-label"><?php echo __('profile.special_requests'); ?></label>
                                 <textarea class="form-control" id="special_requests" name="special_requests" rows="3" 
-                                          placeholder="Any special requirements or requests?"></textarea>
+                                          placeholder="<?php echo __('profile.special_requests_placeholder'); ?>"></textarea>
                             </div>
                             
                             <!-- Estimated Price -->
                             <div class="p-4 mb-4 rounded" style="background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);">
                                 <div class="d-flex justify-content-between align-items-center text-white">
-                                    <span class="h5 mb-0 fw-bold"><i class="fas fa-dollar-sign me-2"></i>Estimated Price:</span>
+                                    <span class="h5 mb-0 fw-bold"><i class="fas fa-dollar-sign me-2"></i><?php echo __('profile.estimated_price'); ?></span>
                                     <span id="estimated_price" class="h3 mb-0 fw-bold">$<?php echo number_format($guide->hourly_rate, 2); ?></span>
                                 </div>
                             </div>
@@ -460,11 +460,11 @@
                             <div class="d-grid">
                                 <?php if(isLoggedIn()): ?>
                                     <button type="submit" class="btn btn-lg shadow text-white" style="background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);">
-                                        <i class="fas fa-check-circle me-2"></i>Request Booking
+                                        <i class="fas fa-check-circle me-2"></i><?php echo __('profile.request_booking'); ?>
                                     </button>
                                 <?php else: ?>
                                     <a href="<?php echo url('account/login?redirect=' . urlencode('tourGuide/profile/' . $guide->guide_id)); ?>" class="btn btn-lg shadow text-white" style="background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);">
-                                        <i class="fas fa-sign-in-alt me-2"></i>Log in to Book
+                                        <i class="fas fa-sign-in-alt me-2"></i><?php echo __('profile.log_in_to_book'); ?>
                                     </a>
                                 <?php endif; ?>
                             </div>
