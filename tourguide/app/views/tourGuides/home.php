@@ -160,7 +160,7 @@
                                 </div>
                                 <div class="card-footer bg-white border-0">
                                     <small class="text-muted">
-                                        <i class="fas fa-tags me-1"></i><?php echo $guide->specialties ?? 'Various specialties'; ?>
+                                        <i class="fas fa-tags me-1"></i><?php echo $guide->specialties ?? __('profile.various_specialties'); ?>
                                     </small>
                                 </div>
                             </div>
@@ -170,7 +170,7 @@
             <?php else: ?>
                 <div class="col-12 text-center">
                     <div class="alert alert-info rounded-4 p-4">
-                        <i class="fas fa-info-circle me-2"></i> No featured guides available at the moment. Check back soon!
+                        <i class="fas fa-info-circle me-2"></i> <?php echo __('home.no_featured_guides'); ?>
                     </div>
                 </div>
             <?php endif; ?>
@@ -205,7 +205,7 @@
                             <i class="fas fa-search fa-3x text-white"></i>
                         </div>
                         <h5 class="card-title fw-bold mb-3">1. Find Your Guide</h5>
-                        <p class="card-text text-muted">Browse profiles of experienced local guides and find one that matches your interests and needs.</p>
+                        <p class="card-text text-muted"><?php echo __('home.browse_profiles_desc'); ?></p>
                     </div>
                 </div>
             </div>

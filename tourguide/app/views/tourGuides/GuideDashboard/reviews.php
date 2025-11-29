@@ -5,11 +5,11 @@
             <!-- Header -->
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <div>
-                    <h2>My Reviews</h2>
-                    <p class="text-muted">Manage and view all reviews from your clients</p>
+                    <h2><?php echo __('reviews.my_reviews'); ?></h2>
+                    <p class="text-muted"><?php echo __('reviews.manage_desc'); ?></p>
                 </div>
                 <a href="<?php echo url('guide/dashboard'); ?>" class="btn btn-outline-primary">
-                    <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+                    <i class="fas fa-arrow-left me-2"></i><?php echo __('reviews.back_to_dashboard'); ?>
                 </a>
             </div>
 
@@ -18,7 +18,7 @@
                 <div class="col-md-6">
                     <div class="card h-100">
                         <div class="card-body">
-                            <h4 class="card-title mb-3">Overall Rating</h4>
+                            <h4 class="card-title mb-3"><?php echo __('reviews.overall_rating'); ?></h4>
                             <div class="d-flex align-items-center">
                                 <div class="display-4 me-3"><?php echo number_format($guide->avg_rating, 1); ?></div>
                                 <div>
@@ -32,7 +32,7 @@
                                         <?php endfor; ?>
                                     </div>
                                     <div class="text-muted">
-                                        Based on <?php echo $total_reviews; ?> <?php echo $total_reviews == 1 ? 'review' : 'reviews'; ?>
+                                        <?php echo 'Based on ' . $total_reviews . ' ' . ($total_reviews == 1 ? __('profile.review_singular') : __('profile.review_plural')); ?>
                                     </div>
                                 </div>
                             </div>
@@ -42,7 +42,7 @@
                 <div class="col-md-6">
                     <div class="card h-100">
                         <div class="card-body">
-                            <h4 class="card-title mb-3">Rating Distribution</h4>
+                            <h4 class="card-title mb-3"><?php echo __('reviews.rating_distribution'); ?></h4>
                             <?php
                             $ratingCounts = array_fill(1, 5, 0);
                             foreach ($reviews as $review) {
@@ -77,9 +77,9 @@
             <!-- Reviews List -->
             <div class="card">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                    <h4 class="mb-0">All Reviews</h4>
+                    <h4 class="mb-0"><?php echo __('reviews.all_reviews'); ?></h4>
                     <div class="text-muted">
-                        Showing <?php echo count($reviews); ?> of <?php echo $total_reviews; ?> reviews
+                        <?php echo __('reviews.showing_of', ['shown' => count($reviews), 'total' => $total_reviews]); ?>
                     </div>
                 </div>
                 <div class="card-body">
@@ -114,7 +114,7 @@
                         <?php endforeach; ?>
                     <?php else: ?>
                         <div class="alert alert-info mb-0">
-                            <i class="fas fa-info-circle me-2"></i> You don't have any reviews yet.
+                            <i class="fas fa-info-circle me-2"></i> <?php echo __('dashboard.no_reviews_yet'); ?>
                         </div>
                     <?php endif; ?>
                 </div>

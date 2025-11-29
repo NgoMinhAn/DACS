@@ -33,8 +33,7 @@ define('REALTIME_BROADCAST_TOKEN', 'f3bd869c9c3945cf8cbab3b2f1da6d7ae21983f2a4c7
 
 
 // Gemini API Key (set your Gemini API key here)
-
-define('GEMINI_API_KEY', 'AIzaSyDycavDDn6Mst5QPRbh2fSzk5fZdHdvPe8');
+define('GEMINI_API_KEY', '');
 
 //Remember to encode the key
 

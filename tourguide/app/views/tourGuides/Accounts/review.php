@@ -8,7 +8,7 @@
                     <li class="breadcrumb-item"><a href="<?php echo url(''); ?>">Home</a></li>
                     <li class="breadcrumb-item"><a href="<?php echo url('tourGuide/guides'); ?>">Tour Guides</a></li>
                     <li class="breadcrumb-item"><a href="<?php echo url('tourGuide/profile/' . $guide->guide_id); ?>"><?php echo htmlspecialchars($guide->name); ?></a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Write a Review</li>
+                    <li class="breadcrumb-item active" aria-current="page"><?php echo __('profile.write_review'); ?></li>
                 </ol>
             </nav>
         </div>
@@ -18,7 +18,7 @@
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header bg-white">
-                    <h4 class="mb-0">Write a Review for <?php echo htmlspecialchars($guide->name); ?></h4>
+                    <h4 class="mb-0"><?php echo __('reviews.write_review_for', ['name' => htmlspecialchars($guide->name)]); ?></h4>
                 </div>
                 <div class="card-body">
                     <?php if(isset($error)): ?>
@@ -38,7 +38,7 @@
                         
                         <!-- Rating -->
                         <div class="mb-4">
-                            <label class="form-label">Rating</label>
+                            <label class="form-label"><?php echo __('reviews.rating_label'); ?></label>
                             <div class="star-rating">
                                 <?php for($i = 5; $i >= 1; $i--): ?>
                                 <input type="radio" id="star<?php echo $i; ?>" name="rating" value="<?php echo $i; ?>" required>
@@ -51,14 +51,14 @@
 
                         <!-- Review Text -->
                         <div class="mb-4">
-                            <label for="review_text" class="form-label">Your Review</label>
-                            <textarea class="form-control" id="review_text" name="review_text" rows="5" 
-                                    placeholder="Share your experience with this tour guide..." required></textarea>
+                                <label for="review_text" class="form-label"><?php echo __('profile.write_review'); ?></label>
+                                <textarea class="form-control" id="review_text" name="review_text" rows="5" 
+                                    placeholder="<?php echo __('reviews.review_placeholder'); ?>" required></textarea>
                         </div>
 
                         <!-- Submit Button -->
                         <div class="d-grid">
-                            <button type="submit" class="btn btn-primary">Submit Review</button>
+                            <button type="submit" class="btn btn-primary"><?php echo __('reviews.submit'); ?></button>
                         </div>
                     </form>
                 </div>
@@ -143,7 +143,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (!rating) {
             e.preventDefault();
-            alert('Please select a rating');
+            alert('<?php echo addslashes(__("reviews.please_select_rating")); ?>');
             return;
         }
     });
