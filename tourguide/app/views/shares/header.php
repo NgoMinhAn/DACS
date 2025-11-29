@@ -122,7 +122,7 @@
     <?php flash('success_message'); ?>
 
     <!-- Main Content Container -->
-    <div class="container my-4 flex-grow-1"><?php // Main content will be here, closed in footer ?>
+    <div class="container flex-grow-1"><?php // Main content will be here, closed in footer ?>
 </body>
 
 </html>

@@ -137,8 +137,29 @@ if (!empty($url[0])) {
 }
 
 // Set the controller (default to tourGuide if none specified)
-$controller = !empty($url[0]) ? $url[0] : 'tourGuide';
-$controller = ucfirst($controller) . 'Controller';
+$controllerName = !empty($url[0]) ? $url[0] : 'tourGuide';
+
+// Handle special controller names (case-insensitive mapping)
+$controllerMap = [
+    'tourguide' => 'TourGuide',
+    'guide' => 'Guide',
+    'user' => 'User',
+    'admin' => 'Admin',
+    'account' => 'Account',
+    'page' => 'Page',
+    'error' => 'Error',
+    'message' => 'Message',
+    'locale' => 'Locale',
+    'vnpay' => 'VNPay',
+];
+
+$controllerKey = strtolower($controllerName);
+if (isset($controllerMap[$controllerKey])) {
+    $controller = $controllerMap[$controllerKey] . 'Controller';
+} else {
+    $controller = ucfirst($controllerName) . 'Controller';
+}
+
 $controllerFile = CONTROLLER_PATH . '/' . $controller . '.php';
 
 // Set the method (default to index if none specified)

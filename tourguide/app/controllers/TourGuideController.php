@@ -179,7 +179,17 @@ class TourGuideController {
                 // If no personalized results, fall back to top rated
                 if (empty($recommended_guides)) {
                     $recommended_guides = $this->guideModel->getTopRatedGuides(6);
-                    $ai_debug = 'No personalized data found; showing top-rated guides.';
+                    $ai_debug = 'No personalized data found (hobbies or booking history); showing top-rated guides.';
+                } else {
+                    // Check if user has hobbies to determine recommendation source
+                    require_once MODEL_PATH . '/UserModel.php';
+                    $userModel = new UserModel();
+                    $userHobbies = $userModel->getUserHobbies($_SESSION['user_id']);
+                    if (!empty($userHobbies) && trim($userHobbies) !== '') {
+                        $ai_debug = 'Recommendations based on your hobbies using weighted matching algorithm.';
+                    } else {
+                        $ai_debug = 'Recommendations based on your booking history.';
+                    }
                 }
             } else {
                 // Not logged in: show top-rated guides

@@ -1,3 +1,5 @@
+</div><!-- Close container temporarily for full-width carousel -->
+
 <!-- Hero Section with Carousel -->
 <!-- 
     IMAGE ADD INSTRUCTIONS:
@@ -40,60 +42,73 @@
     </button>
     
     <!-- Overlay and Search Bar -->
-    <div class="position-absolute top-0 start-0 w-100 h-100" style="background:rgba(0,0,0,0.3); z-index: 1;"></div>
+    <div class="position-absolute top-0 start-0 w-100 h-100" style="background:rgba(0,0,0,0.4); z-index: 1;"></div>
     <div class="container h-100 position-absolute top-0 start-0 w-100" style="z-index:2; min-height: 600px;">
-        <div class="row align-items-end h-100" style="padding-bottom: 80px;">
-            <div class="col-12">
-                <!-- Search Bar Overlay -->
-                <div class="search-overlay bg-light rounded-4 p-4 shadow-lg" style="background-color: #ffffff !important; border: 1px solid #e0e0e0;">
+        <div class="row h-100" style="padding-top: 100px; padding-left: 80px;">
+            <div class="col-lg-8 col-xl-7">
+                <!-- Hero Title -->
+                <div class="mb-4">
+                    <h1 class="display-3 fw-bold text-white mb-3" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.3); line-height: 1.2;">
+                        <?php echo __('hero.title'); ?>
+                    </h1>
+                    <p class="lead text-white fs-5 mb-4" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.3);">
+                        <?php echo __('hero.desc'); ?>
+                    </p>
+                </div>
+                
+                <!-- Compact Search Bar -->
+                <div class="search-overlay bg-white">
                     <form action="<?php echo url('tourGuide/search'); ?>" method="GET">
-                        <div class="row g-3 align-items-end">
-                            <div class="col-md-5">
-                                <label class="form-label text-dark fw-semibold mb-2">
-                                    <i class="fas fa-search text-primary me-2"></i><?php echo __('search.label'); ?>
-                                </label>
-                                <input type="text" class="form-control form-control-lg" name="q" placeholder="<?php echo __('search.placeholder'); ?>" style="border-radius: 10px; border: 2px solid #e0e0e0;">
+                        <div class="d-flex align-items-stretch">
+                            <!-- Search Icon -->
+                            <div class="d-flex align-items-center bg-white" style="border-radius: 5px 0 0 5px; border-right: 1px solid #ccc; padding: 0 12px;">
+                                <i class="fas fa-search" style="font-size: 0.85rem; color: #666;"></i>
                             </div>
-                            <div class="col-md-4">
-                                <label class="form-label text-dark fw-semibold mb-2">
-                                    <i class="fas fa-map-marker-alt text-primary me-2"></i><?php echo __('search.location'); ?>
-                                </label>
-                                <select class="form-select form-select-lg" name="location" style="border-radius: 10px; border: 2px solid #e0e0e0;">
-                                    <option value="" selected><?php echo __('search.all_locations'); ?></option>
-                                    <option value="hanoi">Hà Nội</option>
-                                    <option value="hochiminh">Hồ Chí Minh</option>
-                                    <option value="danang">Đà Nẵng</option>
-                                    <option value="hue">Huế</option>
-                                    <option value="halong">Hạ Long</option>
-                                    <option value="sapa">Sapa</option>
-                                    <option value="nhatrang">Nha Trang</option>
-                                    <option value="dalat">Đà Lạt</option>
-                                </select>
-                            </div>
-                            <div class="col-md-3">
-                                    <button class="btn btn-lg w-100 text-white fw-bold" type="submit" style="background-color: #4CAF50; border-radius: 10px; min-height: 58px; border: none;">
-                                    <i class="fas fa-search me-2"></i><?php echo __('search.button'); ?>
-                                </button>
-                            </div>
+                            
+                            <!-- Search Input -->
+                            <input type="text" class="form-control border-0 search-input-custom" name="q" 
+                                   placeholder="<?php echo __('search.placeholder'); ?>" 
+                                   style="box-shadow: none; flex: 1; border-right: 1px solid #ccc !important; padding: 8px 12px; font-size: 0.9rem; color: #333;">
+                            
+                            <!-- Location Dropdown -->
+                            <select class="form-select border-0 search-select-custom" name="location" 
+                                    style="box-shadow: none; max-width: 160px; border-right: 1px solid #ccc !important; padding: 8px 12px; font-size: 0.9rem; color: #333;">
+                                <option value="" selected><?php echo __('search.all_locations'); ?></option>
+                                <option value="hanoi">Hà Nội</option>
+                                <option value="hochiminh">Hồ Chí Minh</option>
+                                <option value="danang">Đà Nẵng</option>
+                                <option value="hue">Huế</option>
+                                <option value="halong">Hạ Long</option>
+                                <option value="sapa">Sapa</option>
+                                <option value="nhatrang">Nha Trang</option>
+                                <option value="dalat">Đà Lạt</option>
+                            </select>
+                            
+                            <!-- Search Button -->
+                            <button class="btn fw-semibold text-white d-flex align-items-center justify-content-center" type="submit" 
+                                    style="background-color: #4CAF50; border: none; border-radius: 0 5px 5px 0; padding: 8px 18px; font-size: 0.9rem; white-space: nowrap;">
+                                <i class="fas fa-search me-2"></i><?php echo __('search.button'); ?>
+                            </button>
                         </div>
                     </form>
+                </div>
+                
+                <!-- Top Destinations -->
+                <div class="mt-3 text-white" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">
+                    <span class="fw-semibold me-2">Top Destinations:</span>
+                    <a href="<?php echo url('tourGuide/search?location=hanoi'); ?>" class="text-white text-decoration-none me-3 hover-underline">Hà Nội</a>
+                    <a href="<?php echo url('tourGuide/search?location=hochiminh'); ?>" class="text-white text-decoration-none me-3 hover-underline">Hồ Chí Minh</a>
+                    <a href="<?php echo url('tourGuide/search?location=danang'); ?>" class="text-white text-decoration-none me-3 hover-underline">Đà Nẵng</a>
+                    <a href="<?php echo url('tourGuide/search?location=hue'); ?>" class="text-white text-decoration-none me-3 hover-underline">Huế</a>
+                    <a href="<?php echo url('tourGuide/search?location=halong'); ?>" class="text-white text-decoration-none me-3 hover-underline">Hạ Long</a>
+                    <a href="<?php echo url('tourGuide/search?location=sapa'); ?>" class="text-white text-decoration-none hover-underline">Sapa</a>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Title Section -->
-<section class="py-5 scroll-animate fade-up" style="background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);">
-    <div class="container">
-        <div class="row">
-                <div class="col-12 text-center text-white">
-                <h1 class="display-4 fw-bold mb-3"><?php echo __('hero.title'); ?></h1>
-                <p class="lead mb-0 fs-5"><?php echo __('hero.desc'); ?></p>
-            </div>
-        </div>
-    </div>
-</section>
+<div class="container"><!-- Re-open container for remaining content -->
 
 <!-- Featured Guides Section -->
 <section class="mb-5 py-5" style="background-color: var(--warm-cream);">

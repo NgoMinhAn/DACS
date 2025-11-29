@@ -10,10 +10,15 @@
     --warm-cream: #fffef9;
 }
 
+html {
+    overflow-x: hidden; /* Prevent horizontal scroll */
+}
+
 /* Body Background */
 body {
     background-color: var(--warm-beige) !important;
     min-height: 100vh;
+    overflow-x: hidden; /* Prevent horizontal scroll */
 }
 
 /* Hero Section Styles */
@@ -22,10 +27,109 @@ body {
     overflow: hidden;
 }
 
-/* Carousel Styles */
+/* Carousel Styles - Full Width */
 #heroCarousel {
     position: relative;
     min-height: 600px;
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+    margin-top: -1px; /* Remove small gap with header */
+    margin-bottom: 0;
+}
+
+/* Compact Search Bar Styles */
+.search-overlay {
+    overflow: hidden;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: none;
+}
+
+.search-overlay .form-control,
+.search-overlay .form-select,
+.search-overlay .btn,
+.search-overlay .d-flex > div:first-child {
+    height: 40px;
+}
+
+.search-overlay .form-control:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+.search-overlay .form-select:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+/* Placeholder rõ hơn */
+.search-input-custom::placeholder {
+    color: #888 !important;
+    opacity: 1 !important;
+}
+
+.search-select-custom {
+    color: #333 !important;
+}
+
+.search-overlay .btn {
+    transition: background-color 0.3s ease;
+}
+
+.search-overlay .btn:hover {
+    background-color: #45a049 !important;
+}
+
+.search-overlay .btn:active {
+    background-color: #3d8b40 !important;
+}
+
+/* Top Destinations Links */
+.hover-underline {
+    position: relative;
+    transition: opacity 0.2s ease;
+}
+
+.hover-underline:hover {
+    opacity: 0.8;
+    text-decoration: underline !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 991px) {
+    #heroCarousel .container > .row {
+        padding-top: 60px !important;
+        padding-left: 20px !important;
+        padding-right: 20px !important;
+    }
+    
+    #heroCarousel h1 {
+        font-size: 2.5rem !important;
+    }
+    
+    .search-overlay .d-flex {
+        flex-direction: column !important;
+    }
+    
+    .search-overlay .d-flex > div,
+    .search-overlay .form-control,
+    .search-overlay .form-select,
+    .search-overlay .btn {
+        border-radius: 0 !important;
+        border-right: none !important;
+        border-bottom: 1px solid #e8e8e8 !important;
+        max-width: 100% !important;
+    }
+    
+    .search-overlay .d-flex > div:first-child {
+        border-radius: 14px 14px 0 0 !important;
+    }
+    
+    .search-overlay .btn {
+        border-radius: 0 0 14px 14px !important;
+        border-bottom: none !important;
+    }
 }
 
 #heroCarousel .carousel-item {
