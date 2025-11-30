@@ -34,11 +34,11 @@
     </div>
     <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev" style="z-index: 10;">
         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Previous</span>
+        <span class="visually-hidden"><?php echo __('home.carousel_previous'); ?></span>
     </button>
     <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next" style="z-index: 10;">
         <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Next</span>
+        <span class="visually-hidden"><?php echo __('home.carousel_next'); ?></span>
     </button>
     
     <!-- Overlay and Search Bar -->
@@ -95,7 +95,7 @@
                 
                 <!-- Top Destinations -->
                 <div class="mt-3 text-white" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">
-                    <span class="fw-semibold me-2">Top Destinations:</span>
+                    <span class="fw-semibold me-2"><?php echo __('home.top_destinations'); ?></span>
                     <a href="<?php echo url('tourGuide/search?location=hanoi'); ?>" class="text-white text-decoration-none me-3 hover-underline">Hà Nội</a>
                     <a href="<?php echo url('tourGuide/search?location=hochiminh'); ?>" class="text-white text-decoration-none me-3 hover-underline">Hồ Chí Minh</a>
                     <a href="<?php echo url('tourGuide/search?location=danang'); ?>" class="text-white text-decoration-none me-3 hover-underline">Đà Nẵng</a>
@@ -191,9 +191,9 @@
             <div class="col-12 text-center mb-5 scroll-animate fade-up">
                 <h2 class="fw-bold display-5 mb-3">
                     <i class="fas fa-cog me-2" style="background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
-                    How It Works
+                    <?php echo __('home.how_it_works_title'); ?>
                 </h2>
-                <p class="text-muted lead">Easy steps to connect with your perfect guide</p>
+                <p class="text-muted lead"><?php echo __('home.how_it_works_desc'); ?></p>
             </div>
         </div>
         
@@ -204,7 +204,7 @@
                         <div class="mb-4 p-4 rounded-circle d-inline-block" style="background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%); width: 100px; height: 100px; display: flex; align-items: center; justify-content: center;">
                             <i class="fas fa-search fa-3x text-white"></i>
                         </div>
-                        <h5 class="card-title fw-bold mb-3">1. Find Your Guide</h5>
+                        <h5 class="card-title fw-bold mb-3"><?php echo __('home.step1_title'); ?></h5>
                         <p class="card-text text-muted"><?php echo __('home.browse_profiles_desc'); ?></p>
                     </div>
                 </div>
@@ -215,8 +215,8 @@
                         <div class="mb-4 p-4 rounded-circle d-inline-block" style="background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%); width: 100px; height: 100px; display: flex; align-items: center; justify-content: center;">
                             <i class="fas fa-comments fa-3x text-white"></i>
                         </div>
-                        <h5 class="card-title fw-bold mb-3">2. Connect Directly</h5>
-                        <p class="card-text text-muted">Message your chosen guide to discuss your interests, dates, and personalize your experience.</p>
+                        <h5 class="card-title fw-bold mb-3"><?php echo __('home.step2_title'); ?></h5>
+                        <p class="card-text text-muted"><?php echo __('home.step2_desc'); ?></p>
                     </div>
                 </div>
             </div>
@@ -226,8 +226,8 @@
                         <div class="mb-4 p-4 rounded-circle d-inline-block" style="background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%); width: 100px; height: 100px; display: flex; align-items: center; justify-content: center;">
                             <i class="fas fa-map-marked-alt fa-3x text-white"></i>
                         </div>
-                        <h5 class="card-title fw-bold mb-3">3. Enjoy Your Experience</h5>
-                        <p class="card-text text-muted">Meet your guide and enjoy a personalized experience crafted just for you.</p>
+                        <h5 class="card-title fw-bold mb-3"><?php echo __('home.step3_title'); ?></h5>
+                        <p class="card-text text-muted"><?php echo __('home.step3_desc'); ?></p>
                     </div>
                 </div>
             </div>
@@ -239,8 +239,8 @@
                         <div class="mb-4 p-4 rounded-circle d-inline-block" style="background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%); width: 100px; height: 100px; display: flex; align-items: center; justify-content: center;">
                             <i class="fas fa-lock fa-3x text-white"></i>
                         </div>
-                        <h5 class="card-title fw-bold mb-3">4. Secure Your Booking</h5>
-                        <p class="card-text text-muted">Confirm your guide and make a secure payment through our trusted platform.</p>
+                        <h5 class="card-title fw-bold mb-3"><?php echo __('home.step4_title'); ?></h5>
+                        <p class="card-text text-muted"><?php echo __('home.step4_desc'); ?></p>
                     </div>
                 </div>
             </div>
@@ -250,8 +250,8 @@
                         <div class="mb-4 p-4 rounded-circle d-inline-block" style="background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%); width: 100px; height: 100px; display: flex; align-items: center; justify-content: center;">
                             <i class="fas fa-lightbulb fa-3x text-white"></i>
                         </div>
-                        <h5 class="card-title fw-bold mb-3">5. Get Travel Tips</h5>
-                        <p class="card-text text-muted">Receive custom tips, local insights, and preparation advice tailored to your destination.</p>
+                        <h5 class="card-title fw-bold mb-3"><?php echo __('home.step5_title'); ?></h5>
+                        <p class="card-text text-muted"><?php echo __('home.step5_desc'); ?></p>
                     </div>
                 </div>
             </div>
@@ -261,15 +261,15 @@
                         <div class="mb-4 p-4 rounded-circle d-inline-block" style="background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%); width: 100px; height: 100px; display: flex; align-items: center; justify-content: center;">
                             <i class="fas fa-share-alt fa-3x text-white"></i>
                         </div>
-                        <h5 class="card-title fw-bold mb-3">6. Share Your Journey</h5>
-                        <p class="card-text text-muted">Leave a review and share your experience to help future travelers make informed choices.</p>
+                        <h5 class="card-title fw-bold mb-3"><?php echo __('home.step6_title'); ?></h5>
+                        <p class="card-text text-muted"><?php echo __('home.step6_desc'); ?></p>
                     </div>
                 </div>
             </div>
         </div>
         <div class="text-center mt-4">
             <a href="#" class="btn btn-outline-primary rounded-pill px-4" id="how-it-works-learn-more">
-                <i class="fas fa-chevron-down me-2"></i>Learn More
+                <i class="fas fa-chevron-down me-2"></i><?php echo __('home.learn_more'); ?>
             </a>
         </div>
         <script>
@@ -293,9 +293,9 @@
             <div class="col-12 text-center mb-5 scroll-animate fade-up">
                 <h2 class="fw-bold display-5 mb-3">
                     <i class="fas fa-quote-left me-2" style="background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
-                    What Our Travelers Say
+                    <?php echo __('home.testimonials_title'); ?>
                 </h2>
-                <p class="text-muted lead">Real experiences from people who connected with their perfect guides</p>
+                <p class="text-muted lead"><?php echo __('home.testimonials_desc'); ?></p>
             </div>
         </div>
         
@@ -384,9 +384,9 @@
                     <div class="row align-items-center">
                         <div class="col-lg-8 mb-4 mb-lg-0">
                             <h2 class="fw-bold text-white mb-3">
-                                <i class="fas fa-user-tie me-2"></i>Are You a Tour Guide?
+                                <i class="fas fa-user-tie me-2"></i><?php echo __('home.cta_guide_title'); ?>
                             </h2>
-                            <p class="lead mb-0 text-white">Join our platform and connect directly with travelers seeking your expertise. No middleman, higher earnings, and full control of your services.</p>
+                            <p class="lead mb-0 text-white"><?php echo __('home.cta_guide_desc'); ?></p>
                         </div>
                         <div class="col-lg-4 text-lg-end">
                             <a href="<?php echo url('account/register/guide'); ?>" class="btn btn-light btn-lg rounded-pill px-4 shadow">

@@ -6,9 +6,9 @@
             <div>
                 <h1 class="display-5 fw-bold mb-2">
                     <i class="fas fa-file-invoice-dollar me-2 text-primary"></i>
-                    Lịch Sử Hóa Đơn
+                    <?php echo __('bookings.invoice_history'); ?>
                 </h1>
-                <p class="text-muted mb-0">Xem và quản lý tất cả các đơn đặt tour và hóa đơn thanh toán của bạn</p>
+                <p class="text-muted mb-0"><?php echo __('bookings.invoice_history_desc'); ?></p>
             </div>
         </div>
     </div>
@@ -25,7 +25,7 @@
                             </div>
                         </div>
                         <div class="flex-grow-1 ms-3">
-                            <h6 class="text-muted mb-1">Tổng Đơn</h6>
+                            <h6 class="text-muted mb-1"><?php echo __('bookings.total_orders'); ?></h6>
                             <h3 class="mb-0 fw-bold"><?php echo count($allBookings ?? $bookings); ?></h3>
                         </div>
                     </div>
@@ -42,7 +42,7 @@
                             </div>
                         </div>
                         <div class="flex-grow-1 ms-3">
-                            <h6 class="text-muted mb-1">Đã Thanh Toán</h6>
+                            <h6 class="text-muted mb-1"><?php echo __('bookings.paid'); ?></h6>
                             <h3 class="mb-0 fw-bold">
                                 <?php 
                                     $paidCount = 0;
@@ -70,7 +70,7 @@
                             </div>
                         </div>
                         <div class="flex-grow-1 ms-3">
-                            <h6 class="text-muted mb-1">Đang Chờ</h6>
+                            <h6 class="text-muted mb-1"><?php echo __('bookings.pending'); ?></h6>
                             <h3 class="mb-0 fw-bold">
                                 <?php 
                                     $pendingCount = 0;
@@ -100,7 +100,7 @@
                             </div>
                         </div>
                         <div class="flex-grow-1 ms-3">
-                            <h6 class="text-muted mb-1">Tổng Chi</h6>
+                            <h6 class="text-muted mb-1"><?php echo __('bookings.total_spent'); ?></h6>
                             <h3 class="mb-0 fw-bold">
                                 <?php 
                                     $totalAmount = 0;
@@ -110,7 +110,7 @@
                                             $totalAmount += $b->total_price;
                                         }
                                     }
-                                    echo number_format($totalAmount, 0, ',', '.') . ' đ';
+                                    echo '$' . number_format($totalAmount, 2);
                                 ?>
                             </h3>
                         </div>
@@ -129,10 +129,10 @@
                         <div class="mb-4">
                             <i class="fas fa-file-invoice fa-5x text-muted mb-3"></i>
                         </div>
-                        <h3 class="fw-bold mb-3">Chưa Có Đơn Đặt Tour</h3>
-                        <p class="text-muted mb-4">Bạn chưa có đơn đặt tour nào. Hãy bắt đầu khám phá và tìm hướng dẫn viên phù hợp với bạn!</p>
+                        <h3 class="fw-bold mb-3"><?php echo __('bookings.no_bookings_title'); ?></h3>
+                        <p class="text-muted mb-4"><?php echo __('bookings.no_bookings_desc'); ?></p>
                         <a href="<?php echo url('tourGuide/browse'); ?>" class="btn btn-lg btn-primary rounded-pill px-5">
-                            <i class="fas fa-search me-2"></i>Tìm Hướng Dẫn Viên
+                            <i class="fas fa-search me-2"></i><?php echo __('bookings.find_guide'); ?>
                         </a>
                     </div>
                 </div>
@@ -146,13 +146,13 @@
                     <table class="table table-hover align-middle mb-0">
                         <thead style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
                             <tr>
-                                <th class="ps-4 py-3">Mã Đơn</th>
-                                <th class="py-3">Hướng Dẫn Viên</th>
-                                <th class="py-3">Ngày & Giờ</th>
-                                <th class="py-3">Số Tiền</th>
-                                <th class="py-3">Thanh Toán</th>
-                                <th class="py-3">Trạng Thái</th>
-                                <th class="py-3 text-end pe-4">Thao Tác</th>
+                                <th class="ps-4 py-3"><?php echo __('bookings.order_id'); ?></th>
+                                <th class="py-3"><?php echo __('bookings.guide'); ?></th>
+                                <th class="py-3"><?php echo __('bookings.date_time'); ?></th>
+                                <th class="py-3"><?php echo __('bookings.amount'); ?></th>
+                                <th class="py-3"><?php echo __('bookings.payment'); ?></th>
+                                <th class="py-3"><?php echo __('bookings.status'); ?></th>
+                                <th class="py-3 text-end pe-4"><?php echo __('bookings.actions'); ?></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -168,7 +168,7 @@
                                         <div>
                                             <div class="fw-bold"><?php echo htmlspecialchars($booking->guide_name); ?></div>
                                             <small class="text-muted">
-                                                <i class="fas fa-users me-1"></i><?php echo (int)$booking->number_of_people; ?> người
+                                                <i class="fas fa-users me-1"></i><?php echo (int)$booking->number_of_people; ?> <?php echo __('bookings.people'); ?>
                                             </small>
                                         </div>
                                     </td>
@@ -191,10 +191,10 @@
                                     </td>
                                     <td>
                                         <div class="fw-bold text-success fs-5">
-                                            <?php echo number_format($booking->total_price, 0, ',', '.'); ?> đ
+                                            $<?php echo number_format($booking->total_price, 2); ?>
                                         </div>
                                         <small class="text-muted">
-                                            <i class="fas fa-clock me-1"></i><?php echo (int)$booking->total_hours; ?> giờ
+                                            <i class="fas fa-clock me-1"></i><?php echo (int)$booking->total_hours; ?> <?php echo __('bookings.hours'); ?>
                                         </small>
                                     </td>
                                     <td>
@@ -207,7 +207,7 @@
                                         ?>
                                             <div class="d-flex align-items-center">
                                                 <span class="badge bg-success rounded-pill me-2">
-                                                    <i class="fas fa-check-circle me-1"></i>Đã thanh toán
+                                                    <i class="fas fa-check-circle me-1"></i><?php echo __('bookings.paid_badge'); ?>
                                                 </span>
                                             </div>
                                             <?php if($paymentMethod): ?>
@@ -227,13 +227,27 @@
                                             <?php endif; ?>
                                             <?php if($booking->vnp_TransactionNo): ?>
                                                 <small class="text-muted d-block">
-                                                    <i class="fas fa-receipt me-1"></i>Mã GD: <?php echo htmlspecialchars($booking->vnp_TransactionNo); ?>
+                                                    <i class="fas fa-receipt me-1"></i><?php echo __('bookings.transaction_id'); ?>: <?php echo htmlspecialchars($booking->vnp_TransactionNo); ?>
                                                 </small>
                                             <?php endif; ?>
                                         <?php else: ?>
-                                            <span class="badge bg-warning text-dark rounded-pill">
-                                                <i class="fas fa-clock me-1"></i>Chưa thanh toán
-                                            </span>
+                                            <?php 
+                                                // Calculate amount in VND (convert from USD)
+                                                $exchangeRate = 24500;
+                                                $amountVND = $booking->total_price * $exchangeRate;
+                                                $paymentUrl = url('vnpay/createPayment') . 
+                                                    '?amount=' . $amountVND . 
+                                                    '&orderInfo=Tour Booking #' . str_pad($booking->id, 6, '0', STR_PAD_LEFT) . 
+                                                    '&orderId=' . $booking->id . 
+                                                    '&guide_id=' . $booking->guide_id .
+                                                    '&booking_id=' . $booking->id;
+                                            ?>
+                                            <a href="<?php echo $paymentUrl; ?>" 
+                                               class="badge bg-warning text-dark rounded-pill text-decoration-none" 
+                                               style="cursor: pointer;"
+                                               title="<?php echo __('bookings.pay_now'); ?>">
+                                                <i class="fas fa-credit-card me-1"></i><?php echo __('bookings.pay_now'); ?>
+                                            </a>
                                         <?php endif; ?>
                                     </td>
                                     <td>
@@ -245,32 +259,32 @@
                                                 case 'pending':
                                                     $statusClass = 'bg-warning text-dark';
                                                     $statusIcon = 'fa-clock';
-                                                    $statusText = 'Chờ xác nhận';
+                                                    $statusText = __('bookings.pending');
                                                     break;
                                                 case 'confirmed':
                                                     $statusClass = 'bg-info text-white';
                                                     $statusIcon = 'fa-check-circle';
-                                                    $statusText = 'Đã xác nhận';
+                                                    $statusText = __('booking_status.confirmed');
                                                     break;
                                                 case 'accepted':
                                                     $statusClass = 'bg-primary text-white';
                                                     $statusIcon = 'fa-check';
-                                                    $statusText = 'Đã chấp nhận';
+                                                    $statusText = __('booking_status.accepted');
                                                     break;
                                                 case 'completed':
                                                     $statusClass = 'bg-success text-white';
                                                     $statusIcon = 'fa-check-double';
-                                                    $statusText = 'Hoàn thành';
+                                                    $statusText = __('booking_status.completed');
                                                     break;
                                                 case 'cancelled':
                                                     $statusClass = 'bg-danger text-white';
                                                     $statusIcon = 'fa-times-circle';
-                                                    $statusText = 'Đã hủy';
+                                                    $statusText = __('booking_status.cancelled');
                                                     break;
                                                 case 'declined':
                                                     $statusClass = 'bg-secondary text-white';
                                                     $statusIcon = 'fa-times';
-                                                    $statusText = 'Từ chối';
+                                                    $statusText = __('booking_status.declined');
                                                     break;
                                                 default:
                                                     $statusClass = 'bg-secondary text-white';
@@ -287,17 +301,17 @@
                                         <div class="btn-group" role="group">
                                             <button type="button" class="btn btn-sm btn-outline-primary rounded-pill" 
                                                     onclick="viewInvoice(<?php echo $booking->id; ?>)"
-                                                    title="Xem hóa đơn">
+                                                    title="<?php echo __('bookings.view_invoice'); ?>">
                                                 <i class="fas fa-file-invoice"></i>
                                             </button>
                                             <a href="<?php echo url('user/chat/' . $booking->id); ?>" 
                                                class="btn btn-sm btn-outline-info rounded-pill"
-                                               title="Nhắn tin">
+                                               title="<?php echo __('bookings.message'); ?>">
                                                 <i class="fas fa-comments"></i>
                                             </a>
                                             <button type="button" class="btn btn-sm btn-outline-success rounded-pill"
                                                     onclick="printInvoice(<?php echo $booking->id; ?>)"
-                                                    title="In hóa đơn">
+                                                    title="<?php echo __('bookings.print_invoice'); ?>">
                                                 <i class="fas fa-print"></i>
                                             </button>
                                         </div>
@@ -321,7 +335,7 @@
                             <a class="page-link rounded-pill me-2" 
                                href="<?php echo url('user/bookings?page=' . max(1, $currentPage - 1)); ?>"
                                aria-label="Previous">
-                                <span aria-hidden="true">&laquo; Trước</span>
+                                <span aria-hidden="true">&laquo; <?php echo __('bookings.previous'); ?></span>
                             </a>
                         </li>
 
@@ -360,7 +374,7 @@
                             <a class="page-link rounded-pill ms-2" 
                                href="<?php echo url('user/bookings?page=' . min($totalPages, $currentPage + 1)); ?>"
                                aria-label="Next">
-                                <span aria-hidden="true">Sau &raquo;</span>
+                                <span aria-hidden="true"><?php echo __('bookings.next'); ?> &raquo;</span>
                             </a>
                         </li>
                     </ul>
@@ -370,7 +384,7 @@
                 <?php if (isset($currentPage) && isset($totalPages)): ?>
                 <div class="text-center mt-3">
                     <p class="text-muted mb-0">
-                        Trang <?php echo $currentPage; ?> / <?php echo $totalPages; ?>
+                        <?php echo __('bookings.page'); ?> <?php echo $currentPage; ?> / <?php echo $totalPages; ?>
                     </p>
                 </div>
                 <?php endif; ?>
@@ -385,7 +399,7 @@
                     <div class="modal-header border-0 pb-0">
                         <h5 class="modal-title fw-bold" id="invoiceModalLabel">
                             <i class="fas fa-file-invoice-dollar me-2 text-primary"></i>
-                            Chi Tiết Hóa Đơn
+                            <?php echo __('bookings.invoice_details'); ?>
                         </h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
@@ -393,9 +407,9 @@
                         <!-- Invoice content will be loaded here -->
                     </div>
                     <div class="modal-footer border-0">
-                        <button type="button" class="btn btn-secondary rounded-pill" data-bs-dismiss="modal">Đóng</button>
+                        <button type="button" class="btn btn-secondary rounded-pill" data-bs-dismiss="modal"><?php echo __('bookings.close'); ?></button>
                         <button type="button" class="btn btn-primary rounded-pill" onclick="printInvoice()">
-                            <i class="fas fa-print me-2"></i>In Hóa Đơn
+                            <i class="fas fa-print me-2"></i><?php echo __('bookings.print'); ?>
                         </button>
                     </div>
                 </div>
@@ -477,12 +491,12 @@ function viewInvoice(bookingId) {
                 // Store booking ID for print function
                 invoiceModalElement.setAttribute('data-booking-id', bookingId);
             } else {
-                alert('Không thể tải hóa đơn. Vui lòng thử lại.');
+                alert('<?php echo __('bookings.unable_load_invoice'); ?>');
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('Đã xảy ra lỗi. Vui lòng thử lại.');
+            alert('<?php echo __('bookings.error_occurred'); ?>');
         });
 }
 
@@ -497,7 +511,7 @@ function printInvoice(bookingId) {
         if(bookingId) {
             window.open('<?php echo url('user/invoice/print/'); ?>' + bookingId, '_blank');
         } else {
-            alert('Không tìm thấy mã đơn hàng');
+            alert('<?php echo __('bookings.order_id_not_found'); ?>');
         }
     }
 }

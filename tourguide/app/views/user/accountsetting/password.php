@@ -8,20 +8,20 @@
                 <div class="card-body">
                     <h5 class="card-title mb-4 fw-bold">
                         <i class="fas fa-cog me-2" style="background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;"></i>
-                        Settings
+                        <?php echo __('settings.settings_title'); ?>
                     </h5>
                     <div class="list-group list-group-flush">
                         <a href="<?php echo url('account/settings'); ?>" class="list-group-item list-group-item-action d-flex align-items-center rounded-3 mb-2 <?php echo ($section === 'general') ? 'active' : ''; ?>"
                            style="<?php echo ($section === 'general') ? 'background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%); color: white; border: none;' : ''; ?>">
-                            <i class="fas fa-cog me-2"></i> General
+                            <i class="fas fa-cog me-2"></i> <?php echo __('settings.general'); ?>
                         </a>
                         <a href="<?php echo url('account/settings/profile'); ?>" class="list-group-item list-group-item-action d-flex align-items-center rounded-3 mb-2 <?php echo ($section === 'profile') ? 'active' : ''; ?>"
                            style="<?php echo ($section === 'profile') ? 'background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%); color: white; border: none;' : ''; ?>">
-                            <i class="fas fa-user me-2"></i> Profile
+                            <i class="fas fa-user me-2"></i> <?php echo __('settings.profile'); ?>
                         </a>
                         <a href="<?php echo url('account/settings/password'); ?>" class="list-group-item list-group-item-action d-flex align-items-center rounded-3 <?php echo ($section === 'password') ? 'active' : ''; ?>"
                            style="<?php echo ($section === 'password') ? 'background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%); color: white; border: none;' : ''; ?>">
-                            <i class="fas fa-lock me-2"></i> Password
+                            <i class="fas fa-lock me-2"></i> <?php echo __('settings.password'); ?>
                         </a>
                     </div>
                 </div>
@@ -40,7 +40,7 @@
                     <form action="<?php echo url('account/settings/password'); ?>" method="POST">
                         <div class="mb-4 p-4 rounded-4 shadow-sm" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);">
                             <div class="mb-4">
-                                <label for="current_password" class="form-label fw-semibold">Current Password</label>
+                                <label for="current_password" class="form-label fw-semibold"><?php echo __('settings.current_password'); ?></label>
                                 <div class="input-group">
                                     <span class="input-group-text rounded-start"><i class="fas fa-lock"></i></span>
                                     <input type="password" class="form-control <?php echo (!empty($errors['current_password'])) ? 'is-invalid' : ''; ?>" 
@@ -53,7 +53,7 @@
                             </div>
 
                             <div class="mb-4">
-                                <label for="new_password" class="form-label fw-semibold">New Password</label>
+                                <label for="new_password" class="form-label fw-semibold"><?php echo __('settings.new_password'); ?></label>
                                 <div class="input-group">
                                     <span class="input-group-text rounded-start"><i class="fas fa-key"></i></span>
                                     <input type="password" class="form-control <?php echo (!empty($errors['new_password'])) ? 'is-invalid' : ''; ?>" 
@@ -65,12 +65,12 @@
                                 </div>
                                 <div class="form-text mt-2">
                                     <i class="fas fa-info-circle me-1"></i>
-                                    Password must be at least 6 characters long.
+                                    <?php echo __('settings.password_min_length'); ?>
                                 </div>
                             </div>
 
                             <div class="mb-4">
-                                <label for="confirm_password" class="form-label fw-semibold">Confirm New Password</label>
+                                <label for="confirm_password" class="form-label fw-semibold"><?php echo __('settings.confirm_new_password'); ?></label>
                                 <div class="input-group">
                                     <span class="input-group-text rounded-start"><i class="fas fa-key"></i></span>
                                     <input type="password" class="form-control <?php echo (!empty($errors['confirm_password'])) ? 'is-invalid' : ''; ?>" 
@@ -85,7 +85,7 @@
                             <div class="text-end">
                                 <button type="submit" class="btn rounded-pill px-5 text-white" style="background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);">
                                     <i class="fas fa-save me-2"></i>
-                                    Update Password
+                                    <?php echo __('settings.update_password'); ?>
                                 </button>
                             </div>
                         </div>

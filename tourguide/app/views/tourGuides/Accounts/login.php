@@ -10,7 +10,7 @@
         <div class="col-md-6 col-lg-5">
             <div class="card shadow-lg border-0" style="border-radius: 20px; overflow: hidden;">
                 <div class="card-header text-white text-center py-4" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);">
-                    <h4 class="m-0 fw-bold"><i class="fas fa-sign-in-alt me-2"></i>Đăng Nhập</h4>
+                    <h4 class="m-0 fw-bold"><i class="fas fa-sign-in-alt me-2"></i><?php echo __('auth.login'); ?></h4>
                 </div>
                 <div class="card-body p-4">
                     <!-- Display Flash Messages -->
@@ -19,13 +19,13 @@
                     <!-- Login Form -->
                     <form action="<?php echo url('account/login'); ?>" method="POST">
                         <div class="mb-4">
-                            <label for="email" class="form-label fw-semibold">Email</label>
+                            <label for="email" class="form-label fw-semibold"><?php echo __('auth.email'); ?></label>
                             <div class="input-group" style="border-radius: 10px;">
                                 <span class="input-group-text" style="background-color: #f5f5f5; border: 2px solid #e0e0e0; border-right: none;"><i class="fas fa-envelope text-primary"></i></span>
                                 <input type="email" class="form-control <?php echo isset($errors['email']) ? 'is-invalid' : ''; ?>" 
                                        id="email" name="email" value="<?php echo $email ?? ''; ?>" 
                                        style="border: 2px solid #e0e0e0; border-left: none; border-radius: 10px;" 
-                                       placeholder="Nhập email của bạn" required>
+                                       placeholder="<?php echo __('auth.email_placeholder'); ?>" required>
                                 <?php if (isset($errors['email'])): ?>
                                     <div class="invalid-feedback">
                                         <?php echo $errors['email']; ?>
@@ -35,13 +35,13 @@
                         </div>
                         
                         <div class="mb-4">
-                            <label for="password" class="form-label fw-semibold">Mật khẩu</label>
+                            <label for="password" class="form-label fw-semibold"><?php echo __('auth.password'); ?></label>
                             <div class="input-group" style="border-radius: 10px;">
                                 <span class="input-group-text" style="background-color: #f5f5f5; border: 2px solid #e0e0e0; border-right: none;"><i class="fas fa-lock text-primary"></i></span>
                                 <input type="password" class="form-control <?php echo isset($errors['password']) ? 'is-invalid' : ''; ?>" 
                                        id="password" name="password" 
                                        style="border: 2px solid #e0e0e0; border-left: none; border-right: none;" 
-                                       placeholder="Nhập mật khẩu" required>
+                                       placeholder="<?php echo __('auth.password_placeholder'); ?>" required>
                                 <button class="btn btn-outline-secondary toggle-password" type="button" tabindex="-1" style="border: 2px solid #e0e0e0; border-left: none; border-radius: 0 10px 10px 0; background-color: #f5f5f5;">
                                     <i class="fas fa-eye"></i>
                                 </button>
@@ -58,38 +58,38 @@
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" value="1" id="remember_me" name="remember_me" style="border-color: #4CAF50;">
                                     <label class="form-check-label" for="remember_me">
-                                        Ghi nhớ đăng nhập
+                                        <?php echo __('auth.remember_me'); ?>
                                     </label>
                                 </div>
                             </div>
                             <div class="col-6 text-end">
-                                <a href="<?php echo url('account/forgot-password'); ?>" class="text-decoration-none" style="color: #4CAF50;">Quên mật khẩu?</a>
+                                <a href="<?php echo url('account/forgot-password'); ?>" class="text-decoration-none" style="color: #4CAF50;"><?php echo __('auth.forgot_password'); ?></a>
                             </div>
                         </div>
                         
                         <button type="submit" class="btn w-100 text-white fw-bold py-3" style="background-color: #4CAF50; border-radius: 10px; font-size: 1.1rem; border: none;">
-                            <i class="fas fa-sign-in-alt me-2"></i>Đăng Nhập
+                            <i class="fas fa-sign-in-alt me-2"></i><?php echo __('auth.login'); ?>
                         </button>
                     </form>
 
                     <div class="mt-4 text-center">
                         <div class="position-relative mb-3">
                             <hr>
-                            <span class="position-absolute top-50 start-50 translate-middle bg-white px-3 text-muted">Hoặc</span>
+                            <span class="position-absolute top-50 start-50 translate-middle bg-white px-3 text-muted"><?php echo __('auth.or'); ?></span>
                         </div>
                         <a href="<?php echo url('account/google-login'); ?>" class="btn btn-outline-danger w-100" style="border-radius: 10px;">
-                            <i class="fab fa-google me-2"></i> Đăng nhập bằng Google
+                            <i class="fab fa-google me-2"></i> <?php echo __('auth.login_with_google'); ?>
                         </a>
                     </div>
                 </div>
                 <div class="card-footer text-center py-4" style="background-color: #f8f9fa;">
-                    <p class="mb-3">Chưa có tài khoản?</p>
+                    <p class="mb-3"><?php echo __('auth.no_account'); ?></p>
                     <div class="d-flex flex-column flex-md-row justify-content-center gap-2">
                         <a href="<?php echo url('account/register'); ?>" class="btn btn-outline-primary" style="border-radius: 10px;">
-                            <i class="fas fa-user-plus me-2"></i> Đăng ký người dùng
+                            <i class="fas fa-user-plus me-2"></i> <?php echo __('auth.register_as_user'); ?>
                         </a>
                         <a href="<?php echo url('account/register/guide'); ?>" class="btn text-white" style="background-color: #FF9800; border-radius: 10px; border: none;">
-                            <i class="fas fa-map-marked-alt me-2"></i> Trở thành Hướng dẫn viên
+                            <i class="fas fa-map-marked-alt me-2"></i> <?php echo __('auth.become_guide'); ?>
                         </a>
                     </div>
                 </div>

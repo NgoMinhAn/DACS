@@ -1,6 +1,7 @@
 <?php
-return [
-    'nav' => [
+return array (
+  'nav' => 
+  array (
         'home' => 'Home',
         'find_guide' => 'Find a Guide',
         'guide_categories' => 'Guide Categories',
@@ -10,9 +11,45 @@ return [
         'login' => 'Login',
         'register' => 'Register',
         'account_settings' => 'Account Settings',
-        'logout' => 'Logout'
-    ],
-    'search' => [
+    'logout' => 'Logout',
+  ),
+  'auth' => 
+  array (
+        'login' => 'Login',
+        'email' => 'Email',
+        'email_placeholder' => 'Enter your email',
+        'password' => 'Password',
+        'password_placeholder' => 'Enter your password',
+        'remember_me' => 'Remember me',
+        'forgot_password' => 'Forgot password?',
+        'or' => 'Or',
+        'login_with_google' => 'Login with Google',
+        'no_account' => 'Don\'t have an account?',
+        'register_as_user' => 'Register as User',
+        'become_guide' => 'Become a Guide',
+        'register_account' => 'Register Account',
+        'full_name' => 'Full Name',
+        'full_name_placeholder' => 'Enter your full name',
+        'email_privacy' => 'We will not share your email with anyone.',
+        'confirm_password' => 'Confirm Password',
+        'confirm_password_placeholder' => 'Re-enter your password',
+        'agree_terms' => 'I agree to the',
+        'terms_of_service' => 'Terms of Service',
+        'and' => 'and',
+        'privacy_policy' => 'Privacy Policy',
+        'register' => 'Register',
+        'already_have_account' => 'Already have an account?',
+        'login_now' => 'Login now',
+        'or_register_guide' => 'Or',
+        'register_as_guide' => 'register as a guide',
+        'instead' => 'instead.',
+        'forgot_password_title' => 'Forgot Password',
+        'forgot_password_desc' => 'Enter your email address and we will send you a link to reset your password.',
+        'send_reset_link' => 'Send Password Reset Link',
+        'back_to_login' => 'Back to login',
+  ),
+  'search' => 
+  array (
         'label' => 'Search Guides',
         'placeholder' => 'Name, specialty, or keywords...',
         'location' => 'Location',
@@ -25,46 +62,72 @@ return [
         'city_tours' => 'City tours',
         'food_experiences' => 'Food experiences',
         'cultural_guides' => 'Cultural guides',
-        'adventure_guides' => 'Adventure guides'
-    ],
-    'hero' => [
+    'adventure_guides' => 'Adventure guides',
+  ),
+  'hero' => 
+  array (
         'title' => 'Connecting Guides with Travelers',
-        'desc' => 'The leading platform to help you find the right guide and create memorable travel experiences'
-    ],
-    'home' => [
-        'top_rated_title' => 'Our Top-Rated Guides',
-        'top_rated_desc' => 'Connect with our highest-rated local experts for an unforgettable experience'
-    ],
-    'category' => [
+    'desc' => 'The leading platform to help you find the right guide and create memorable travel experiences',
+  ),
+  'category' => 
+  array (
         'none_title' => 'No guides available',
         'none_desc' => 'This category currently has no guides. Please check back later or explore other categories.',
         'view_all' => 'View all categories',
         'search_guides' => 'Search Guides',
         'taste_the_world' => 'Taste the World',
-        'taste_the_world_desc' => 'Discover delicious culinary experiences with our food guides'
-        , 'contact_prompt' => 'Contact us to connect with specialized guides for your needs',
+    'taste_the_world_desc' => 'Discover delicious culinary experiences with our food guides',
+    'contact_prompt' => 'Contact us to connect with specialized guides for your needs',
         'food_title' => 'Food & Cuisine Guides',
         'cta_title' => 'Need a Customized Experience?',
-        'cta_desc' => 'Contact us to connect with specialized guides for your perfect trip'
-        , 'city_title' => 'City Tours',
+    'cta_desc' => 'Contact us to connect with specialized guides for your perfect trip',
+    'city_title' => 'City Tours',
         'popular_city_title' => 'Popular City Tour Experiences',
         'popular_city_desc' => 'Explore the urban landscape with specialized city tours',
-        'urban_specialists' => 'Urban Exploration Specialists'
-    ],
-    'settings' => [
+    'urban_specialists' => 'Urban Exploration Specialists',
+  ),
+  'settings' => 
+  array (
         'language' => 'Language',
         'save' => 'Save',
         'language_saved' => 'Language preference saved.',
         'account_status' => 'Account Status',
         'account_security' => 'Account Security',
         'delete_warning' => 'This action cannot be undone. All your data will be permanently deleted.',
-        'confirm_password' => 'Please enter your password to confirm:'
-    ],
-    'settings_account' => [
+    'confirm_password' => 'Please enter your password to confirm:',
+    'account_type' => 'Account Type',
+    'become_prompt' => 'Interested in sharing your knowledge and guiding others?',
+    'general_settings' => 'General Settings',
+    'settings_title' => 'Settings',
+    'general' => 'General',
+    'profile' => 'Profile',
+    'password' => 'Password',
+    'your_current_account_type' => 'Your current account type is:',
+    'your_account_is_currently' => 'Your account is currently',
+    'manage_account_security' => 'Manage your account security settings and connected devices',
+    'change_password' => 'Change Password',
+    'delete_account' => 'Delete Account',
+    'delete_account_warning' => 'Once you delete your account, there is no going back. Please be certain.',
+    'profile_settings' => 'Profile Settings',
+    'current_password' => 'Current Password',
+    'new_password' => 'New Password',
+    'confirm_new_password' => 'Confirm New Password',
+    'password_min_length' => 'Password must be at least 6 characters long.',
+    'update_password' => 'Update Password',
+    'email_address' => 'Email Address',
+    'update_email' => 'Update Email',
+    'view_contact_requests' => 'View contact requests from users',
+    'contact_requests_desc' => 'See all messages sent to you by users who want to contact you as a guide.',
+    'account_settings' => 'Account Settings',
+    'profile_settings_title' => 'Profile Settings',
+  ),
+  'settings_account' => 
+  array (
         'account_type' => 'Account Type',
-        'become_prompt' => 'Interested in sharing your knowledge and guiding others?'
-    ],
-    'buttons' => [
+    'become_prompt' => 'Interested in sharing your knowledge and guiding others?',
+  ),
+  'buttons' => 
+  array (
         'back_to_categories' => 'Back to All Categories',
         'view_profile' => 'View Profile',
         'print' => 'Print Invoice',
@@ -79,61 +142,73 @@ return [
         'save_changes' => 'Save Changes',
         'clear' => 'Clear',
         'view' => 'View',
-        'send' => 'Send'
-    ],
-    'invoice' => [
+    'send' => 'Send',
+    'accept_booking' => 'Accept Booking',
+    'decline_booking' => 'Decline Booking',
+  ),
+  'invoice' => 
+  array (
         'guide_info' => 'Guide Information',
-        'meeting_place' => 'Meeting Place'
-    ],
-    'invoice_meta' => [
+    'meeting_place' => 'Meeting Place',
+  ),
+  'invoice_meta' => 
+  array (
         'title' => 'Payment Invoice',
         'invoice_number' => 'Invoice Number',
         'created_at' => 'Created At',
         'customer_info' => 'Customer Information',
         'booking_details' => 'Booking Details',
         'payment_info' => 'Payment Information',
-        'thank_you' => 'Thank you for using our service!'
-    ],
-    'booking_status' => [
+    'thank_you' => 'Thank you for using our service!',
+  ),
+  'booking_status' => 
+  array (
         'pending' => 'Pending',
         'confirmed' => 'Confirmed',
         'accepted' => 'Accepted',
         'completed' => 'Completed',
         'cancelled' => 'Cancelled',
-        'declined' => 'Declined'
-    ],
-    'table' => [
+    'declined' => 'Declined',
+  ),
+  'table' => 
+  array (
         'info' => 'Information',
-        'details' => 'Details'
-    ],
-    'status' => [
+    'details' => 'Details',
+  ),
+  'status' => 
+  array (
         'cancelled' => 'Cancelled',
         'sent' => 'Sent',
-        'sending' => 'Sending...'
-    ],
-    'chat' => [
+    'sending' => 'Sending...',
+  ),
+  'chat' => 
+  array (
         'offline' => 'Guide is offline',
         'online' => 'Guide is online',
         'last_active' => 'Last active:',
         'open' => 'Open chat',
         'ai_title' => 'Tour AI',
-        'ai_placeholder' => 'Ask for tour recommendations...'
-    ],
-    'messages' => [
+    'ai_placeholder' => 'Ask for tour recommendations...',
+  ),
+  'messages' => 
+  array (
         'read' => 'Seen',
         'sent' => 'Sent',
-        'sending' => 'Sending...'
-    ],
-    'message' => [
-        'placeholder' => 'Aa'
-    ],
-    'chat_ui' => [
+    'sending' => 'Sending...',
+  ),
+  'message' => 
+  array (
+    'placeholder' => 'Aa',
+  ),
+  'chat_ui' => 
+  array (
         'you' => 'You',
         'guide' => 'Guide',
-        'typing' => 'is typing...'
-    ],
-    'contact' => [
-        'tagline' => "Have questions? We're here to help you find the perfect tour guide.",
+    'typing' => 'is typing...',
+  ),
+  'contact' => 
+  array (
+    'tagline' => 'Have questions? We\'re here to help you find the perfect tour guide.',
         'get_in_touch' => 'Get In Touch',
         'our_location' => 'Our Location',
         'phone_number' => 'Phone Number',
@@ -142,19 +217,22 @@ return [
         'send_message' => 'Send Us a Message',
         'agree_privacy' => 'I agree to the',
         'privacy_policy' => 'Privacy Policy',
-        'send_message_button' => 'Send Message'
-    ],
-    'form' => [
+    'send_message_button' => 'Send Message',
+  ),
+  'form' => 
+  array (
         'name' => 'Your Name',
         'email' => 'Your email address',
         'subject' => 'Subject',
-        'message' => 'Message'
-    ],
-    'cta' => [
+    'message' => 'Message',
+  ),
+  'cta' => 
+  array (
         'hungry_title' => 'Hungry for an Authentic Experience?',
-        'hungry_desc' => 'Let us connect you with food guides who know all the best local flavors'
-    ],
-    'footer' => [
+    'hungry_desc' => 'Let us connect you with food guides who know all the best local flavors',
+  ),
+  'footer' => 
+  array (
         'guides' => 'Guides',
         'company' => 'Company',
         'contact_us' => 'Contact Us',
@@ -164,26 +242,63 @@ return [
         'terms' => 'Terms of Service',
         'privacy' => 'Privacy Policy',
         'map_button' => 'View Map',
-        'back_to_top' => 'Back to top'
-    ],
-    'bookings' => [
+    'back_to_top' => 'Back to top',
+  ),
+  'bookings' => 
+  array (
+        'invoice_history' => 'Invoice History',
+        'invoice_history_desc' => 'View and manage all your tour bookings and payment invoices',
+        'total_orders' => 'Total Orders',
+        'paid' => 'Paid',
+        'pending' => 'Pending',
+        'total_spent' => 'Total Spent',
+        'no_bookings_title' => 'No Tour Bookings Yet',
+        'no_bookings_desc' => 'You don\'t have any tour bookings yet. Start exploring and find a guide that suits you!',
+        'find_guide' => 'Find a Guide',
+        'order_id' => 'Order ID',
+        'guide' => 'Guide',
+        'date_time' => 'Date & Time',
+        'amount' => 'Amount',
+        'payment' => 'Payment',
+        'status' => 'Status',
+        'actions' => 'Actions',
+        'people' => 'people',
+        'hours' => 'hours',
+        'paid_badge' => 'Paid',
+        'transaction_id' => 'Transaction ID',
+        'pay_now' => 'Pay Now',
+        'view_invoice' => 'View invoice',
+        'message' => 'Message',
+        'print_invoice' => 'Print invoice',
+        'previous' => 'Previous',
+        'next' => 'Next',
+        'page' => 'Page',
+        'invoice_details' => 'Invoice Details',
+        'close' => 'Close',
+        'print' => 'Print Invoice',
+        'unable_load_invoice' => 'Unable to load invoice. Please try again.',
+        'error_occurred' => 'An error occurred. Please try again.',
+        'order_id_not_found' => 'Order ID not found',
         'back_to_list' => 'Back to bookings list',
         'empty_title' => 'No bookings yet',
         'empty_desc' => 'You don\'t have any bookings. Start exploring and find a guide that fits your needs!',
-        'search_guides' => 'Find Guides'
-    ],
-    'faq' => [
-        'how_become_guide' => 'How do I become a guide on your platform?'
-    ],
-    'browse' => [
+    'search_guides' => 'Find Guides',
+  ),
+  'faq' => 
+  array (
+    'how_become_guide' => 'How do I become a guide on your platform?',
+  ),
+  'browse' => 
+  array (
         'lead' => 'Find your perfect guide for an unforgettable experience',
         'recommended_title' => 'Recommended for you',
         'recommended_sub' => 'Based on your interests and past activity',
         'top_picks' => 'Top Picks',
         'recommended_badge' => 'Recommended',
-        'no_results' => 'No tour guides found matching your criteria. Try adjusting your filters.'
-    ],
-    'filters' => [
+    'no_results' => 'No tour guides found matching your criteria. Try adjusting your filters.',
+  ),
+  'filters' => 
+  array (
         'title' => 'Filters',
         'languages' => 'Languages',
         'all_languages' => 'All Languages',
@@ -196,9 +311,10 @@ return [
         'price_50_100' => '$50 - $100',
         'price_100_plus' => '$100+',
         'minimum_rating' => 'Minimum Rating',
-        'apply' => 'Apply Filters'
-    ],
-    'profile' => [
+    'apply' => 'Apply Filters',
+  ),
+  'profile' => 
+  array (
         'title' => 'Guide Profile',
         'about' => 'About :name',
         'verified' => 'Verified Guide',
@@ -243,8 +359,7 @@ return [
         'request_booking' => 'Request Booking',
         'log_in_to_book' => 'Log in to Book',
         'not_available_contact' => ':name is currently not available for bookings. Please check back later or contact them for more information.',
-        'login_required_contact' => 'You need to be logged in to contact guides'
-        ,
+    'login_required_contact' => 'You need to be logged in to contact guides',
         'edit_profile_title' => 'Edit Profile',
         'profile_picture' => 'Profile Picture',
         'click_camera_upload' => 'Click on the camera icon to change your profile picture',
@@ -252,15 +367,39 @@ return [
         'location' => 'Location',
         'bio_label' => 'Bio',
         'languages_hint' => 'Languages (comma separated)',
-        'languages_placeholder' => 'e.g. English, French'
-        ,
-        'various_specialties' => 'Various specialties'
-    ],
-    'home' => [
+    'languages_placeholder' => 'e.g. English, French',
+    'various_specialties' => 'Various specialties',
+  ),
+  'home' => 
+  array (
+    'top_rated_title' => 'Our Top-Rated Guides',
+    'top_rated_desc' => 'Connect with our highest-rated local experts for an unforgettable experience',
         'browse_profiles_desc' => 'Browse profiles of experienced local guides and find one that matches your interests and needs.',
-        'no_featured_guides' => 'No featured guides available at the moment. Check back soon!'
-    ],
-    'dashboard' => [
+    'no_featured_guides' => 'No featured guides available at the moment. Check back soon!',
+    'top_destinations' => 'Top Destinations:',
+    'carousel_previous' => 'Previous',
+    'carousel_next' => 'Next',
+    'how_it_works_title' => 'How It Works',
+    'how_it_works_desc' => 'Easy steps to connect with your perfect guide',
+    'step1_title' => '1. Find Your Guide',
+    'step2_title' => '2. Connect Directly',
+    'step2_desc' => 'Message your chosen guide to discuss your interests, dates, and personalize your experience.',
+    'step3_title' => '3. Enjoy Your Experience',
+    'step3_desc' => 'Meet your guide and enjoy a personalized experience crafted just for you.',
+    'step4_title' => '4. Secure Your Booking',
+    'step4_desc' => 'Confirm your guide and make a secure payment through our trusted platform.',
+    'step5_title' => '5. Get Travel Tips',
+    'step5_desc' => 'Receive custom tips, local insights, and preparation advice tailored to your destination.',
+    'step6_title' => '6. Share Your Journey',
+    'step6_desc' => 'Leave a review and share your experience to help future travelers make informed choices.',
+    'learn_more' => 'Learn More',
+    'testimonials_title' => 'What Our Travelers Say',
+    'testimonials_desc' => 'Real experiences from people who connected with their perfect guides',
+    'cta_guide_title' => 'Are You a Tour Guide?',
+    'cta_guide_desc' => 'Join our platform and connect directly with travelers seeking your expertise. No middleman, higher earnings, and full control of your services.',
+  ),
+  'dashboard' => 
+  array (
         'status_label' => 'Status:',
         'experience_label' => 'Experience:',
         'your_specialties' => 'Your Specialties',
@@ -280,8 +419,8 @@ return [
         'payment' => 'Payment',
         'price' => 'Price',
         'actions' => 'Actions',
-        'no_bookings_yet' => "You don't have any bookings yet.",
-        'no_reviews_yet' => "You don't have any reviews yet.",
+    'no_bookings_yet' => 'You don\'t have any bookings yet.',
+    'no_reviews_yet' => 'You don\'t have any reviews yet.',
         'quick_actions' => 'Quick Actions',
         'manage_calendar' => 'Manage Calendar',
         'manage_schedule' => 'Set your availability and manage your schedule',
@@ -291,21 +430,221 @@ return [
         'update_bio' => 'Update Bio',
         'update_bio_desc' => 'Edit your guide profile description',
         'verification_label' => 'Verification:',
-        'view_details' => 'Details'
-    ],
-    'reviews' => [
+    'view_details' => 'Details',
+  ),
+  'reviews' => 
+  array (
         'my_reviews' => 'My Reviews',
         'manage_desc' => 'Manage and view all reviews from your clients',
         'back_to_dashboard' => 'Back to Dashboard',
         'overall_rating' => 'Overall Rating',
         'rating_distribution' => 'Rating Distribution',
         'all_reviews' => 'All Reviews',
-        'showing_of' => 'Showing :shown of :total reviews'
-        ,
+    'showing_of' => 'Showing :shown of :total reviews',
         'write_review_for' => 'Write a Review for :name',
         'rating_label' => 'Rating',
         'review_placeholder' => 'Share your experience with this tour guide...',
         'submit' => 'Submit Review',
-        'please_select_rating' => 'Please select a rating'
-    ],
-];
+    'please_select_rating' => 'Please select a rating',
+  ),
+  'auto' => 
+  array (
+    'add_new_category' => 'Add New Category',
+    'category_name' => 'Category Name',
+    'category_image' => 'Category Image',
+    'create_category' => 'Create Category',
+    'category_management' => 'Category Management',
+    'guides_using' => 'Guides Using',
+    'created_at' => 'Created At',
+    'total_users' => 'Total Users',
+    'view_details' => 'View Details',
+    'total_guides' => 'Total Guides',
+    'pending_applications' => 'Pending Applications',
+    'manage_users' => 'Manage Users',
+    'manage_guides' => 'Manage Guides',
+    'manage_categories' => 'Manage Categories',
+    'edit_category' => 'Edit Category',
+    'current_image' => 'Current Image:',
+    'new_image_preview' => 'New Image Preview:',
+    'update_category' => 'Update Category',
+    'edit_guide' => 'Edit Guide',
+    'basic_information' => 'Basic Information',
+    'average_rating' => 'Average Rating',
+    'total_reviews' => 'Total Reviews',
+    'hourly_rate' => 'Hourly Rate ($)',
+    'daily_rate' => 'Daily Rate ($)',
+    'fluent_languages' => 'Fluent Languages',
+    'save_changes' => 'Save Changes',
+    'edit_user' => 'Edit User',
+    'guide_application_detail' => 'Guide Application Detail',
+    'applicant_information' => 'Applicant Information',
+    'submitted_at' => 'Submitted At',
+    'approve_application' => 'Approve Application',
+    'reject_application' => 'Reject Application',
+    'pending_guide_applications' => 'Pending Guide Applications',
+    'guide_management' => 'Guide Management',
+    'user_management' => 'User Management',
+    'about_our_tour_guide_platform' => 'About Our Tour Guide Platform',
+    'our_story' => 'Our Story',
+    'our_mission' => 'Our Mission',
+    'what_makes_us_different' => 'What Makes Us Different',
+    'verified_local_guides' => 'Verified Local Guides',
+    'customized_experiences' => 'Customized Experiences',
+    'meet_our_leadership_team' => 'Meet Our Leadership Team',
+    'ngo_minh_an' => 'Ngo Minh An',
+    'main_developer' => 'Main Developer',
+    'phan_tri_tai' => 'Phan Tri Tai',
+    'nguyen_thanh_khoa' => 'Nguyen Thanh Khoa',
+    'what_people_say_about_us' => 'What People Say About Us',
+    'join_our_community' => 'Join Our Community',
+    'sign_up_as_traveler' => 'Sign Up as Traveler',
+    'quick_response' => 'Quick Response',
+    'find_us_on_map' => 'Find Us On Map',
+    'page_not_found' => 'Page Not Found',
+    'privacy_policy' => 'Privacy Policy',
+    'view_site' => 'View Site',
+    'adventure_tours' => 'Adventure Tours',
+    'cultural_tours' => 'Cultural Tours',
+    'guide_dashboard' => 'Guide Dashboard',
+    'view_my_public_profile' => 'View My Public Profile',
+    'my_bookings' => 'My Bookings',
+    'adventure_specialists' => 'Adventure Specialists',
+    'top_rated' => 'Top Rated',
+    'most_experienced' => 'Most Experienced',
+    'popular_adventure_activities' => 'Popular Adventure Activities',
+    'rock_climbing' => 'Rock Climbing',
+    'white_water_rafting' => 'White Water Rafting',
+    'scuba_diving' => 'Scuba Diving',
+    'view_guides' => 'View Guides',
+    'city_guides' => 'City Guides',
+    'adventure_guides' => 'Adventure Guides',
+    'cultural_guides' => 'Cultural Guides',
+    'advanced_search' => 'Advanced Search',
+    'architecture_tours' => 'Architecture Tours',
+    'urban_food_tours' => 'Urban Food Tours',
+    'historical_walking_tours' => 'Historical Walking Tours',
+    'cultural_experiences' => 'Cultural Experiences',
+    'historical_sites' => 'Historical Sites',
+    'museum_tours' => 'Museum Tours',
+    'traditional_crafts' => 'Traditional Crafts',
+    'festival_experiences' => 'Festival Experiences',
+    'culinary_specialists' => 'Culinary Specialists',
+    'market_tours' => 'Market Tours',
+    'cooking_classes' => 'Cooking Classes',
+    'street_food_adventures' => 'Street Food Adventures',
+    'quick_demo_login' => 'Quick Demo Login',
+    'tour_guides' => 'Tour Guides',
+    'current_password' => 'Current Password',
+    'new_password' => 'New Password',
+    'confirm_new_password' => 'Confirm New Password',
+    'full_name' => 'Full Name',
+    'email_address' => 'Email Address',
+    'update_email' => 'Update Email',
+    'account_security' => 'Account Security',
+    'special_requests' => 'Special Requests:',
+    'accept_booking' => 'Accept Booking',
+    'decline_booking' => 'Decline Booking',
+  ),
+  'about' => 
+  array (
+    'hero_title' => 'About Our Tour Guide Platform',
+    'hero_desc' => 'Connecting travelers with authentic local experiences since 2010',
+    'hero_badge' => 'Your Journey, Our Passion',
+    'our_story_title' => 'Our Story',
+    'our_story_lead' => 'Founded by students who want to show appreciation to local guides, :site_name began with a simple mission: to create meaningful connections between visitors and local guides worldwide.',
+    'our_story_text' => 'What started as a small network of guides in Vietnam has grown into a global community of certified tour guides offering unique, personalized experiences all over the world. Our platform makes it easy for travelers to find guides who match their interests, preferred language, and travel style.',
+    'our_mission_title' => 'Our Mission',
+    'our_mission_lead' => 'We believe that the best way to experience a destination is through the eyes of a local.',
+    'our_mission_text' => 'Our mission is to empower local guides to share their knowledge and passion while helping travelers discover authentic experiences that go beyond typical tourist attractions.',
+    'what_makes_different_title' => 'What Makes Us Different',
+    'verified_guides_title' => 'Verified Local Guides',
+    'verified_guides_text' => 'All our guides undergo a thorough verification process. We personally interview each guide and verify their qualifications and expertise.',
+    'community_title' => 'Community-Based Approach',
+    'community_text' => 'We promote sustainable tourism that benefits local communities, ensuring that tourism income goes directly to local experts.',
+    'customized_title' => 'Customized Experiences',
+    'customized_text' => 'Each tour is tailored to your interests. Whether you\'re a history buff, foodie, or adventure seeker, we connect you with the perfect guide.',
+    'team_title' => 'Meet Our Leadership Team',
+    'testimonials_title' => 'What People Say About Us',
+    'join_title' => 'Join Our Community',
+    'join_desc' => 'Whether you\'re looking to discover the world with a local guide or share your passion for your hometown with travelers, we invite you to join our growing community.',
+    'sign_up_traveler' => 'Sign Up as Traveler',
+  ),
+  'guide_bookings' => 
+  array (
+    'all_bookings' => 'All Bookings',
+    'back_to_dashboard' => 'Back to Dashboard',
+    'client' => 'Client',
+    'date' => 'Date',
+    'time' => 'Time',
+    'status' => 'Status',
+    'payment' => 'Payment',
+    'price' => 'Price',
+    'actions' => 'Actions',
+    'details' => 'Details',
+    'no_bookings' => 'You don\'t have any bookings yet.',
+    'booking_details' => 'Booking Details',
+    'back_to_bookings' => 'Back to Bookings',
+    'email' => 'Email',
+    'special_requests' => 'Special Requests',
+    'chat_with_client' => 'Chat with Client',
+    'booking_not_found' => 'Booking not found.',
+  ),
+  'profile' => 
+  array (
+    'basic_information' => 'Basic Information',
+    'full_name' => 'Full Name',
+    'contact_information' => 'Contact Information',
+    'phone_number' => 'Phone Number',
+    'address' => 'Address',
+    'hobbies_title' => 'Hobbies & Tourism Interests',
+    'hobbies_label' => 'Your hobbies and interests related to tourism',
+    'hobbies_placeholder' => 'e.g. Hiking, Food tours, Museums, Adventure sports, Local culture, Nature walks, Photography, etc.',
+    'hobbies_hint' => 'List your hobbies and interests to get better tour guide recommendations.',
+    'guide_information' => 'Guide Information',
+    'bio' => 'Bio',
+    'bio_placeholder' => 'Tell visitors about yourself and your experience as a tour guide',
+    'bio_hint' => 'Share your experience and what makes you unique as a tour guide.',
+    'languages' => 'Languages',
+    'languages_placeholder' => 'e.g. English, Spanish, French',
+    'languages_hint' => 'Separate languages with commas',
+    'specialties' => 'Specialties',
+    'specialties_placeholder' => 'e.g. Historical Tours, Food Tours',
+    'specialties_hint' => 'Separate specialties with commas',
+    'save_changes' => 'Save Changes',
+    'avatar_allowed' => 'Allowed formats: JPG, JPEG, PNG, GIF (Max: 5MB)',
+    'enter_address' => 'Enter your full address',
+  ),
+  'auto' => 
+  array (
+    'any_rating' => 'Any Rating',
+    'my_calendar' => 'My Calendar',
+    'urban_exploration_specialists' => 'Urban Exploration Specialists',
+    'confirm_tour_booking' => 'Confirm Tour Booking',
+    'booking_type' => 'Booking Type',
+    'start_time' => 'Start Time',
+    'total_amount' => 'Total Amount:',
+    'confirm_booking' => 'Confirm Booking',
+    'your_name' => 'Your Name',
+    'your_email' => 'Your Email',
+    'contact_requests' => 'Contact Requests',
+    'sent_at' => 'Sent At',
+    'recent_reviews' => 'Recent Reviews',
+    'quick_actions' => 'Quick Actions',
+    'nha_trang' => 'Nha Trang',
+    'john_smith' => 'John Smith',
+    'new_york_usa' => 'New York, USA',
+    'emily_johnson' => 'Emily Johnson',
+    'michael_chen' => 'Michael Chen',
+    'personal_information' => 'Personal Information',
+    'profile_image' => 'Profile Image',
+    'professional_details' => 'Professional Details',
+    'submit_application' => 'Submit Application',
+    'phone_number' => 'Phone Number',
+    'booking_details' => 'Booking Details',
+    'booking_date' => 'Booking Date:',
+    'tour_name' => 'Tour Name:',
+    'end_time' => 'End Time:',
+    'thanh_ton' => 'Thanh Toán',
+    'chi_tit' => 'Chi Tiết',
+  ),
+);

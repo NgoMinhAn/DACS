@@ -8,20 +8,20 @@
                 <div class="card-body">
                     <h5 class="card-title mb-4 fw-bold">
                         <i class="fas fa-cog me-2" style="background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;"></i>
-                        Settings
+                        <?php echo __('settings.settings_title'); ?>
                     </h5>
                     <div class="list-group list-group-flush">
                         <a href="<?php echo url('account/settings'); ?>" class="list-group-item list-group-item-action d-flex align-items-center rounded-3 mb-2 <?php echo ($section === 'general') ? 'active' : ''; ?>"
                            style="<?php echo ($section === 'general') ? 'background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%); color: white; border: none;' : ''; ?>">
-                            <i class="fas fa-cog me-2"></i> General
+                            <i class="fas fa-cog me-2"></i> <?php echo __('settings.general'); ?>
                         </a>
                         <a href="<?php echo url('account/settings/profile'); ?>" class="list-group-item list-group-item-action d-flex align-items-center rounded-3 mb-2 <?php echo ($section === 'profile') ? 'active' : ''; ?>"
                            style="<?php echo ($section === 'profile') ? 'background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%); color: white; border: none;' : ''; ?>">
-                            <i class="fas fa-user me-2"></i> Profile
+                            <i class="fas fa-user me-2"></i> <?php echo __('settings.profile'); ?>
                         </a>
                         <a href="<?php echo url('account/settings/password'); ?>" class="list-group-item list-group-item-action d-flex align-items-center rounded-3 <?php echo ($section === 'password') ? 'active' : ''; ?>"
                            style="<?php echo ($section === 'password') ? 'background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%); color: white; border: none;' : ''; ?>">
-                            <i class="fas fa-lock me-2"></i> Password
+                            <i class="fas fa-lock me-2"></i> <?php echo __('settings.password'); ?>
                         </a>
                     </div>
                 </div>
@@ -34,7 +34,7 @@
                 <div class="card-body p-4">
                     <h3 class="card-title mb-4 fw-bold">
                         <i class="fas fa-user-circle me-2" style="background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;"></i>
-                        Profile Settings
+                        <?php echo __('settings.profile_settings'); ?>
                     </h3>
                     
                     <form action="<?php echo url('account/settings/profile'); ?>" method="POST" enctype="multipart/form-data">
@@ -52,7 +52,7 @@
                             </div>
                             <div class="text-muted small">
                                 <i class="fas fa-info-circle me-1"></i>
-                                Allowed formats: JPG, JPEG, PNG, GIF (Max: 5MB)
+                                <?php echo __('profile.avatar_allowed'); ?>
                             </div>
                             <?php if (isset($errors['avatar'])) : ?>
                                 <div class="text-danger mt-2"><?= $errors['avatar'] ?></div>
@@ -65,11 +65,11 @@
                                 <div class="rounded-circle p-2 me-3" style="background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);">
                                     <i class="fas fa-user text-white"></i>
                                 </div>
-                                Basic Information
+                                <?php echo __('profile.basic_information'); ?>
                             </h5>
                             <div class="row">
                                 <div class="col-md-6 mb-3">
-                                    <label for="name" class="form-label fw-semibold">Full Name</label>
+                                    <label for="name" class="form-label fw-semibold"><?php echo __('profile.full_name'); ?></label>
                                     <div class="input-group">
                                         <span class="input-group-text rounded-start"><i class="fas fa-user"></i></span>
                                         <input type="text" class="form-control rounded-end <?php echo (!empty($errors['name'])) ? 'is-invalid' : ''; ?>" 
@@ -78,7 +78,7 @@
                                     </div>
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label for="email" class="form-label fw-semibold">Email Address</label>
+                                    <label for="email" class="form-label fw-semibold"><?php echo __('settings.email_address'); ?></label>
                                     <div class="input-group">
                                         <span class="input-group-text rounded-start"><i class="fas fa-envelope"></i></span>
                                         <input type="email" class="form-control rounded-end <?php echo (!empty($errors['email'])) ? 'is-invalid' : ''; ?>" 
@@ -95,11 +95,11 @@
                                 <div class="rounded-circle p-2 me-3" style="background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);">
                                     <i class="fas fa-address-card text-white"></i>
                                 </div>
-                                Contact Information
+                                <?php echo __('profile.contact_information'); ?>
                             </h5>
                             <div class="row">
                                 <div class="col-md-6 mb-3">
-                                    <label for="phone" class="form-label fw-semibold">Phone Number</label>
+                                    <label for="phone" class="form-label fw-semibold"><?php echo __('profile.phone_number'); ?></label>
                                     <div class="input-group">
                                         <span class="input-group-text rounded-start"><i class="fas fa-phone"></i></span>
                                         <input type="tel" class="form-control rounded-end" id="phone" name="phone" 
@@ -108,11 +108,11 @@
                                     </div>
                                 </div>
                                 <div class="col-md-12 mb-3">
-                                    <label for="address" class="form-label fw-semibold">Address</label>
+                                    <label for="address" class="form-label fw-semibold"><?php echo __('profile.address'); ?></label>
                                     <div class="input-group">
                                         <span class="input-group-text rounded-start"><i class="fas fa-map-marker-alt"></i></span>
                                         <textarea class="form-control rounded-end" id="address" name="address" rows="3" 
-                                                  placeholder="Enter your full address"><?php echo htmlspecialchars($user->address ?? ''); ?></textarea>
+                                                  placeholder="<?php echo __('profile.enter_address'); ?>"><?php echo htmlspecialchars($user->address ?? ''); ?></textarea>
                                     </div>
                                 </div>
                             </div>
@@ -124,14 +124,14 @@
                                 <div class="rounded-circle p-2 me-3" style="background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);">
                                     <i class="fas fa-heart text-white"></i>
                                 </div>
-                                Hobbies & Tourism Interests
+                                <?php echo __('profile.hobbies_title'); ?>
                             </h5>
                             <div class="mb-3">
-                                <label for="hobbies" class="form-label fw-semibold">Your hobbies and interests related to tourism</label>
-                                <textarea class="form-control rounded-3" id="hobbies" name="hobbies" rows="3" placeholder="e.g. Hiking, Food tours, Museums, Adventure sports, Local culture, Nature walks, Photography, etc."><?php echo htmlspecialchars($user->hobbies ?? '', ENT_QUOTES, 'UTF-8'); ?></textarea>
+                                <label for="hobbies" class="form-label fw-semibold"><?php echo __('profile.hobbies_label'); ?></label>
+                                <textarea class="form-control rounded-3" id="hobbies" name="hobbies" rows="3" placeholder="<?php echo __('profile.hobbies_placeholder'); ?>"><?php echo htmlspecialchars($user->hobbies ?? '', ENT_QUOTES, 'UTF-8'); ?></textarea>
                                 <div class="form-text">
                                     <i class="fas fa-info-circle me-1"></i>
-                                    List your hobbies and interests to get better tour guide recommendations.
+                                    <?php echo __('profile.hobbies_hint'); ?>
                                 </div>
                             </div>
                         </div>
@@ -143,40 +143,40 @@
                                 <div class="rounded-circle p-2 me-3" style="background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);">
                                     <i class="fas fa-map text-white"></i>
                                 </div>
-                                Guide Information
+                                <?php echo __('profile.guide_information'); ?>
                             </h5>
                             <div class="mb-3">
-                                <label for="bio" class="form-label fw-semibold">Bio</label>
+                                <label for="bio" class="form-label fw-semibold"><?php echo __('profile.bio'); ?></label>
                                 <div class="input-group">
                                     <span class="input-group-text rounded-start"><i class="fas fa-pen"></i></span>
                                     <textarea class="form-control rounded-end" id="bio" name="bio" rows="4" 
-                                              placeholder="Tell visitors about yourself and your experience as a tour guide"><?php echo htmlspecialchars($user->bio ?? ''); ?></textarea>
+                                              placeholder="<?php echo __('profile.bio_placeholder'); ?>"><?php echo htmlspecialchars($user->bio ?? ''); ?></textarea>
                                 </div>
                                 <div class="form-text">
                                     <i class="fas fa-info-circle me-1"></i>
-                                    Share your experience and what makes you unique as a tour guide.
+                                    <?php echo __('profile.bio_hint'); ?>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-6 mb-3">
-                                    <label for="languages" class="form-label fw-semibold">Languages</label>
+                                    <label for="languages" class="form-label fw-semibold"><?php echo __('profile.languages'); ?></label>
                                     <div class="input-group">
                                         <span class="input-group-text rounded-start"><i class="fas fa-language"></i></span>
                                         <input type="text" class="form-control rounded-end" id="languages" name="languages" 
                                                value="<?php echo htmlspecialchars($user->languages ?? ''); ?>"
-                                               placeholder="e.g. English, Spanish, French">
+                                               placeholder="<?php echo __('profile.languages_placeholder'); ?>">
                                     </div>
-                                    <div class="form-text">Separate languages with commas</div>
+                                    <div class="form-text"><?php echo __('profile.languages_hint'); ?></div>
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label for="specialties" class="form-label fw-semibold">Specialties</label>
+                                    <label for="specialties" class="form-label fw-semibold"><?php echo __('profile.specialties'); ?></label>
                                     <div class="input-group">
                                         <span class="input-group-text rounded-start"><i class="fas fa-star"></i></span>
                                         <input type="text" class="form-control rounded-end" id="specialties" name="specialties" 
                                                value="<?php echo htmlspecialchars($user->specialties ?? ''); ?>"
-                                               placeholder="e.g. Historical Tours, Food Tours">
+                                               placeholder="<?php echo __('profile.specialties_placeholder'); ?>">
                                     </div>
-                                    <div class="form-text">Separate specialties with commas</div>
+                                    <div class="form-text"><?php echo __('profile.specialties_hint'); ?></div>
                                 </div>
                             </div>
                         </div>
@@ -185,7 +185,7 @@
                         <div class="text-end mt-4">
                             <button type="submit" class="btn rounded-pill px-5 text-white" style="background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);">
                                 <i class="fas fa-save me-2"></i>
-                                Save Changes
+                                <?php echo __('profile.save_changes'); ?>
                             </button>
                         </div>
                     </form>
