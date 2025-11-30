@@ -4,6 +4,30 @@
  * Focusing on connecting users directly with tour guides
  */
 
+// Enable error reporting first
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+// Set error handler to catch fatal errors
+register_shutdown_function(function() {
+    $error = error_get_last();
+    if ($error !== NULL && in_array($error['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR])) {
+        error_log('Fatal Error: ' . $error['message'] . ' in ' . $error['file'] . ' on line ' . $error['line']);
+        if (defined('ENVIRONMENT') && ENVIRONMENT === 'development') {
+            echo '<div style="background-color: #f8d7da; color: #721c24; padding: 15px; margin: 10px; border: 1px solid #f5c6cb; border-radius: 5px;">';
+            echo '<h3>Fatal Error</h3>';
+            echo '<p><strong>Message:</strong> ' . htmlspecialchars($error['message']) . '</p>';
+            echo '<p><strong>File:</strong> ' . htmlspecialchars($error['file']) . '</p>';
+            echo '<p><strong>Line:</strong> ' . $error['line'] . '</p>';
+            echo '</div>';
+        } else {
+            http_response_code(500);
+            echo '<h1>Internal Server Error</h1><p>The server encountered an internal error. Please try again later.</p>';
+        }
+    }
+});
+
 // Load Composer's autoloader (support both local and project-root vendor)
 $localAutoload = __DIR__ . '/vendor/autoload.php';
 $rootAutoload  = __DIR__ . '/../vendor/autoload.php';
@@ -15,11 +39,6 @@ if (file_exists($localAutoload)) {
 
 // Load PHP configuration
 require_once __DIR__ . '/app/config/php-config.php';
-
-// Enable error reporting
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
 
 // Define base path constants
 define('ROOT_PATH', __DIR__);
@@ -115,27 +134,6 @@ if (!empty($url[0])) {
     }
 }
 
-// Special URL handling for static pages
-if (!empty($url[0])) {
-    $static_pages = ['about', 'contact', 'terms', 'privacy', 'careers'];
-    
-    if (in_array($url[0], $static_pages)) {
-        // Route static pages to PageController
-        require_once CONTROLLER_PATH . '/PageController.php';
-        $pageController = new PageController();
-        
-        // Call the corresponding method if it exists
-        $method = $url[0];
-        if (method_exists($pageController, $method)) {
-            $pageController->$method();
-        } else {
-            // Default to index if method doesn't exist
-            $pageController->index();
-        }
-        exit;
-    }
-}
-
 // Set the controller (default to tourGuide if none specified)
 $controllerName = !empty($url[0]) ? $url[0] : 'tourGuide';
 
@@ -178,16 +176,33 @@ if (file_exists($controllerFile)) {
         
         // Check if method exists
         if (method_exists($controllerObj, $method)) {
-            call_user_func_array([$controllerObj, $method], $params);
+            try {
+                call_user_func_array([$controllerObj, $method], $params);
+            } catch (Exception $e) {
+                // Log the error
+                error_log('Controller Error: ' . $e->getMessage());
+                error_log('Stack trace: ' . $e->getTraceAsString());
+                
+                // Show error in development, redirect in production
+                if (defined('ENVIRONMENT') && ENVIRONMENT === 'development') {
+                    die('Error: ' . $e->getMessage() . '<br><pre>' . $e->getTraceAsString() . '</pre>');
+                } else {
+                    header('Location: ' . url('error/notFound'));
+                    exit;
+                }
+            }
         } else {
             // Method not found - redirect to 404
-            header('Location: /error/notFound');
+            header('Location: ' . url('error/notFound'));
+            exit;
         }
     } else {
         // Controller class not found - redirect to 404
-        header('Location: /error/notFound');
+        header('Location: ' . url('error/notFound'));
+        exit;
     }
 } else {
     // Controller file not found - redirect to 404
-    header('Location: /error/notFound');
+    header('Location: ' . url('error/notFound'));
+    exit;
 }
