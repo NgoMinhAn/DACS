@@ -126,7 +126,10 @@ $paymentDate = $booking->transaction_pay_date ?? $booking->payment_date ?? null;
                         <tr>
                             <td><strong>Tổng tiền</strong></td>
                             <td class="fw-bold text-success fs-5">
-                                <?php echo number_format($booking->total_price, 0, ',', '.'); ?> đ
+                                <?php 
+                                    $exchangeRate = 24500; // USD to VND exchange rate
+                                    echo number_format($booking->total_price * $exchangeRate, 0, ',', '.'); 
+                                ?> đ
                             </td>
                         </tr>
                         <tr>

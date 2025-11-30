@@ -8,20 +8,20 @@
                 <div class="card-body">
                     <h5 class="card-title mb-4 fw-bold">
                         <i class="fas fa-cog me-2" style="background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;"></i>
-                        Settings
+                        <?php echo __('settings.settings_title'); ?>
                     </h5>
                     <div class="list-group list-group-flush">
                             <a href="<?php echo url('account/settings'); ?>" class="list-group-item list-group-item-action d-flex align-items-center rounded-3 mb-2 <?php echo ($section === 'general') ? 'active' : ''; ?>" 
                            style="<?php echo ($section === 'general') ? 'background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%); color: white; border: none;' : ''; ?>">
-                            <i class="fas fa-cog me-2"></i> General
+                            <i class="fas fa-cog me-2"></i> <?php echo __('settings.general'); ?>
                         </a>
                         <a href="<?php echo url('account/settings/profile'); ?>" class="list-group-item list-group-item-action d-flex align-items-center rounded-3 mb-2 <?php echo ($section === 'profile') ? 'active' : ''; ?>"
                            style="<?php echo ($section === 'profile') ? 'background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%); color: white; border: none;' : ''; ?>">
-                            <i class="fas fa-user me-2"></i> Profile
+                            <i class="fas fa-user me-2"></i> <?php echo __('settings.profile'); ?>
                         </a>
                             <a href="<?php echo url('account/settings/password'); ?>" class="list-group-item list-group-item-action d-flex align-items-center rounded-3 <?php echo ($section === 'password') ? 'active' : ''; ?>"
                            style="<?php echo ($section === 'password') ? 'background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%); color: white; border: none;' : ''; ?>">
-                            <i class="fas fa-lock me-2"></i> Password
+                            <i class="fas fa-lock me-2"></i> <?php echo __('settings.password'); ?>
                         </a>
                     </div>
                 </div>
@@ -34,7 +34,7 @@
                 <div class="card-body p-4">
                     <h3 class="card-title mb-4 fw-bold">
                         <i class="fas fa-cog me-2" style="background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;"></i>
-                        General Settings
+                        <?php echo __('settings.general_settings'); ?>
                     </h3>
                     
                     <!-- Account Type -->
@@ -46,7 +46,7 @@
                             <h5 class="mb-0 fw-bold"><?php echo __('settings.account_type') ?? 'Account Type'; ?></h5>
                         </div>
                         <p class="text-muted mb-2">
-                            Your current account type is: 
+                            <?php echo __('settings.your_current_account_type'); ?> 
                             <span class="badge rounded-pill px-3 py-2" style="background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%); color: white;">
                                 <?php echo ucfirst($user->user_type); ?>
                             </span>
@@ -69,7 +69,7 @@
                             <h5 class="mb-0 fw-bold"><?php echo __('settings.account_status') ?? 'Account Status'; ?></h5>
                         </div>
                         <p class="text-muted mb-2">
-                            Your account is currently 
+                            <?php echo __('settings.your_account_is_currently'); ?> 
                             <span class="badge bg-<?php echo ($user->status === 'active') ? 'success' : 'warning'; ?>">
                                 <?php echo ucfirst($user->status); ?>
                             </span>
@@ -84,10 +84,10 @@
                             </div>
                             <h5 class="mb-0 fw-bold"><?php echo __('settings.account_security') ?? 'Account Security'; ?></h5>
                         </div>
-                        <p class="text-muted mb-3">Manage your account security settings and connected devices</p>
+                        <p class="text-muted mb-3"><?php echo __('settings.manage_account_security'); ?></p>
                         <a href="<?php echo url('account/settings/password'); ?>" class="btn btn-outline-primary rounded-pill px-4">
                             <i class="fas fa-key me-2"></i>
-                            Change Password
+                            <?php echo __('settings.change_password'); ?>
                         </a>
                     </div>
 
@@ -123,10 +123,10 @@
                             </div>
                             <h5 class="text-danger mb-0 fw-bold"><?php echo __('common.danger_zone') ?? 'Danger Zone'; ?></h5>
                         </div>
-                        <p class="text-muted mb-3">Once you delete your account, there is no going back. Please be certain.</p>
+                        <p class="text-muted mb-3"><?php echo __('settings.delete_account_warning'); ?></p>
                         <button type="button" class="btn btn-danger rounded-pill px-4" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">
                             <i class="fas fa-trash-alt me-2"></i>
-                            Delete Account
+                            <?php echo __('settings.delete_account'); ?>
                         </button>
                     </div>
                 </div>
@@ -142,7 +142,7 @@
             <div class="modal-header bg-danger text-white">
                 <h5 class="modal-title" id="deleteAccountModalLabel">
                     <i class="fas fa-exclamation-triangle me-2"></i>
-                    Delete Account
+                    <?php echo __('settings.delete_account'); ?>
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>

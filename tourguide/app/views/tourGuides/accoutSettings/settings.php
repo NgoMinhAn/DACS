@@ -10,16 +10,16 @@
                 <div class="card-body p-4">
                     <h3 class="card-title mb-4 fw-bold">
                         <i class="fas fa-cog me-2" style="background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;"></i>
-                        General Settings
+                        <?php echo __('settings.general_settings'); ?>
                     </h3>
 
                     <!-- Contact Requests Button -->
                     <?php if ($_SESSION['user_type'] === 'guide'): ?>
                         <a href="<?php echo url('guide/contacts'); ?>" class="btn btn-outline-primary btn-lg w-100 d-flex align-items-center justify-content-center gap-2 mb-3 rounded-pill">
                             <i class="fa fa-envelope-open-text"></i>
-                            <span>View contact requests from users</span>
+                            <span><?php echo __('settings.view_contact_requests'); ?></span>
                         </a>
-                        <p class="text-muted mb-4" style="font-size: 0.95rem;">See all messages sent to you by users who want to contact you as a guide.</p>
+                        <p class="text-muted mb-4" style="font-size: 0.95rem;"><?php echo __('settings.contact_requests_desc'); ?></p>
                     <?php endif; ?>
 
                     <!-- Email -->
@@ -28,7 +28,7 @@
                             <div class="rounded-circle p-3 me-3" style="background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);">
                                 <i class="fas fa-envelope fa-lg text-white"></i>
                             </div>
-                            <h5 class="mb-0 fw-bold">Email Address</h5>
+                            <h5 class="mb-0 fw-bold"><?php echo __('settings.email_address'); ?></h5>
                         </div>
                         <form method="post" action="">
                             <div class="row">
@@ -38,7 +38,7 @@
                                 </div>
                                 <div class="col-md-4 mb-2">
                                     <button type="submit" class="btn btn-outline-primary w-100 rounded-pill">
-                                        <i class="fas fa-save me-2"></i>Update Email
+                                        <i class="fas fa-save me-2"></i><?php echo __('settings.update_email'); ?>
                                     </button>
                                 </div>
                             </div>
@@ -51,9 +51,9 @@
                             <div class="rounded-circle p-3 me-3" style="background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);">
                                 <i class="fas fa-shield-alt fa-lg text-white"></i>
                             </div>
-                                <h5 class="mb-0 fw-bold">Account Security</h5>
+                                <h5 class="mb-0 fw-bold"><?php echo __('settings.account_security'); ?></h5>
                         </div>
-                        <p class="text-muted mb-3">Manage your account security settings and password.</p>
+                        <p class="text-muted mb-3"><?php echo __('settings.manage_account_security'); ?></p>
                         <a href="<?php echo url('guide/password-settings'); ?>" class="btn btn-outline-primary rounded-pill px-4">
                             <i class="fas fa-key me-2"></i>
                                 <?php echo __('buttons.change_password') ?? 'Change Password'; ?>
@@ -68,7 +68,7 @@
                             </div>
                                 <h5 class="text-danger mb-0 fw-bold"><?php echo __('common.danger_zone') ?? 'Danger Zone'; ?></h5>
                         </div>
-                        <p class="text-muted mb-3">Once you delete your account, there is no going back. Please be certain.</p>
+                        <p class="text-muted mb-3"><?php echo __('settings.delete_account_warning'); ?></p>
                         <button type="button" class="btn btn-danger rounded-pill px-4" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">
                             <i class="fas fa-trash-alt me-2"></i>
                                 <?php echo __('buttons.delete_account') ?? 'Delete Account'; ?>
@@ -87,18 +87,18 @@
             <div class="modal-header bg-danger text-white">
                 <h5 class="modal-title" id="deleteAccountModalLabel">
                     <i class="fas fa-exclamation-triangle me-2"></i>
-                    Delete Account
+                    <?php echo __('settings.delete_account'); ?>
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div class="alert alert-warning">
                     <i class="fas fa-exclamation-circle me-2"></i>
-                    This action cannot be undone. All your data will be permanently deleted.
+                    <?php echo __('settings.delete_warning'); ?>
                 </div>
                 <form action="<?php echo url('tourGuide/delete-account'); ?>" method="POST" id="deleteAccountForm">
                     <div class="mb-3">
-                        <label for="delete_password" class="form-label">Please enter your password to confirm:</label>
+                        <label for="delete_password" class="form-label"><?php echo __('settings.confirm_password'); ?></label>
                         <div class="input-group">
                             <span class="input-group-text"><i class="fas fa-lock"></i></span>
                             <input type="password" class="form-control" id="delete_password" name="password" required>
@@ -109,11 +109,11 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                     <i class="fas fa-times me-2"></i>
-                    Cancel
+                    <?php echo __('buttons.cancel'); ?>
                 </button>
                 <button type="submit" form="deleteAccountForm" class="btn btn-danger">
                     <i class="fas fa-trash-alt me-2"></i>
-                    Delete Account
+                    <?php echo __('settings.delete_account'); ?>
                 </button>
             </div>
         </div>

@@ -3,10 +3,10 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="display-6 fw-bold mb-0">
             <i class="fas fa-calendar-check me-2" style="background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;"></i>
-            All Bookings
+            <?php echo __('guide_bookings.all_bookings'); ?>
         </h1>
         <a href="<?php echo url('guide/dashboard'); ?>" class="btn btn-outline-primary rounded-pill">
-            <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+            <i class="fas fa-arrow-left me-2"></i><?php echo __('guide_bookings.back_to_dashboard'); ?>
         </a>
     </div>
 
@@ -17,13 +17,13 @@
                     <table class="table table-hover align-middle mb-0">
                         <thead>
                             <tr style="background: linear-gradient(135deg, #f8f9fc 0%, #eef1f6 100%);">
-                                <th class="py-3 ps-4">Client</th>
-                                <th class="py-3">Date</th>
-                                <th class="py-3">Time</th>
-                                <th class="py-3">Status</th>
-                                <th class="py-3">Payment</th>
-                                <th class="py-3">Price</th>
-                                <th class="py-3 pe-4 text-end">Actions</th>
+                                <th class="py-3 ps-4"><?php echo __('guide_bookings.client'); ?></th>
+                                <th class="py-3"><?php echo __('guide_bookings.date'); ?></th>
+                                <th class="py-3"><?php echo __('guide_bookings.time'); ?></th>
+                                <th class="py-3"><?php echo __('guide_bookings.status'); ?></th>
+                                <th class="py-3"><?php echo __('guide_bookings.payment'); ?></th>
+                                <th class="py-3"><?php echo __('guide_bookings.price'); ?></th>
+                                <th class="py-3 pe-4 text-end"><?php echo __('guide_bookings.actions'); ?></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -55,7 +55,7 @@
                                     <td>$<?php echo number_format($booking->total_price, 2); ?></td>
                                     <td class="pe-4 text-end">
                                         <a href="<?php echo url('guide/booking/' . $booking->id); ?>" class="btn btn-sm rounded-pill px-3" style="background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%); color: white;">
-                                            <i class="fas fa-eye me-1"></i>Details
+                                            <i class="fas fa-eye me-1"></i><?php echo __('guide_bookings.details'); ?>
                                         </a>
                                     </td>
                                 </tr>
@@ -67,7 +67,7 @@
         </div>
     <?php else: ?>
         <div class="alert alert-info rounded-4 p-4 shadow">
-            <i class="fas fa-info-circle me-2"></i>You don't have any bookings yet.
+            <i class="fas fa-info-circle me-2"></i><?php echo __('guide_bookings.no_bookings'); ?>
         </div>
     <?php endif; ?>
 </div>
