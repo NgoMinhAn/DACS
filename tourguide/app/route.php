@@ -78,6 +78,9 @@ $routes = [
     ['pattern' => '#^account/forgot-password$#', 'controller' => 'AccountController', 'method' => 'forgotPassword', 'params' => []],
     ['pattern' => '#^account/reset-password/([a-zA-Z0-9]+)$#', 'controller' => 'AccountController', 'method' => 'resetPassword', 'params' => [1]],
     ['pattern' => '#^account/becomeguide$#', 'controller' => 'AccountController', 'method' => 'becomeguide', 'params' => []],
+
+    // Locale routes
+    ['pattern' => '#^locale/set/([a-zA-Z]+)$#', 'controller' => 'LocaleController', 'method' => 'set', 'params' => [1]],
 ];
 
 function handle_custom_routes($uri, $routes) {
