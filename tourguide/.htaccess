@@ -2,8 +2,8 @@
 Options -MultiViews
 RewriteEngine On
 
-# Set the base to the subfolder this app is in
-RewriteBase /tourguide/
+# Set the base to the root (application is at domain root)
+RewriteBase /
 
 # Redirect to index.php if the file or directory doesn't exist
 RewriteCond %{REQUEST_FILENAME} !-d
